@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>FIFA FanConnect Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@600;700;900&amp;display=swap"
+    rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js" defer></script>
+  <script src="/js/init.js" defer></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <!-- Scripts deferred -->
+  <script src="/js/dompurify.min.js" defer></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/fan.js" defer></script>
+  <script src="/js/volunteer.js" defer></script>
+  <script src="/js/staff.js" defer></script>
+</head>
+
+
+<body class="text-on-surface font-body-md antialiased min-h-screen relative overflow-x-hidden">
+  <!-- Skip Navigation Link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-primary-fixed focus:text-on-primary-fixed focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg">
+    Skip to main content
+  </a>
+  <!-- Background Layers -->
+  <div class="fixed inset-0 z-[-2]">
+    <img alt="" class="w-full h-full object-cover opacity-60"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHLntuB_RrKKFmPmy9HrfqjPJdi7wiQkAakt3JlMsUx8gW3icLa0JOqZv23FuPGWks-o4ZGb3LvLu99-8OK5dtGybvBNEvH373OcDA42pnJH-jQ7FernqsRBMJGGrlzXp6SrfpPVv8S8vxOQtiKPu1A1qRuh1u7aiZIkmJcdtJdInsYwCU3UpItrHzgqEkei_EY3xmOGxbKFK1C_cWh_6-OtwZhERjbGqfVES-j0g_hEAcoSGEW83dl494hb-RZtqtKWAl3fYlzP78" />
+  </div>
+  <div class="fixed inset-0 z-[-1] pointer-events-none">
+    <div class="absolute inset-0 w-full h-full" style="display:block;">
+      <canvas id="shader-canvas-ANIMATION_4" style="display:block;width:100%;height:100%"></canvas>
+    </div>
+  </div>
+
+  <!-- TopNavBar -->
+  <nav
+    class="flex justify-between items-center w-full px-4 md:px-lg max-w-full fixed top-0 z-50 bg-background/40 backdrop-blur-xl border-b border-secondary-container/20 shadow-[0_4px_30px_rgba(0,0,0,0.5)] h-20">
+    <div class="flex items-center gap-4 md:gap-xl">
+      <button id="mobile-menu-btn"
+        class="lg:hidden text-secondary-fixed-dim hover:bg-white/10 p-2 rounded-lg transition-all">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <span
+        class="font-display-md text-[20px] md:text-display-md font-black tracking-tighter text-secondary-fixed-dim hidden sm:block">FIFA
+        FanConnect</span>
+      <div class="hidden md:flex gap-lg">
+        <a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
+          href="#">All Stadiums</a>
+        <a class="text-secondary-fixed-dim border-b-2 border-secondary-fixed-dim pb-2 font-label-md text-label-md"
+          href="#">Live Heatmaps</a>
+        <a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
+          href="#">Global Chat</a>
+      </div>
+    </div>
+    <div class="flex items-center gap-md">
+      <select id="fan-stadium"
+        class="hidden lg:block bg-surface-container/60 text-white rounded border border-secondary-container/30 px-2 py-1 outline-none text-sm">
+        <option value="metlife">MetLife Stadium</option>
+        <option value="atandt">AT&T Stadium</option>
+        <option value="sofi">SoFi Stadium</option>
+      </select>
+      <select id="fan-language"
+        class="hidden lg:block bg-surface-container/60 text-white rounded border border-secondary-container/30 px-2 py-1 outline-none text-sm">
+        <option value="en">EN</option>
+        <option value="es">ES</option>
+        <option value="fr">FR</option>
+        <option value="ar">AR</option>
+        <option value="pt">PT</option>
+      </select>
+
+      <!-- Crowd Status Badge -->
+      <div
+        class="hidden lg:flex items-center gap-sm bg-surface-container/60 px-4 py-2 rounded-full border border-secondary-container/30"
+        id="crowd-status-badge">
+        <span class="material-symbols-outlined text-tertiary-fixed-dim text-sm"
+          style="font-variation-settings: 'FILL' 1;">groups</span>
+        <span class="font-label-md text-label-md text-on-surface mr-2">Crowd:</span>
+        <span id="fan-crowd-pill"
+          class="px-2 py-1 rounded bg-green-500/20 text-green-400 font-label-md text-caption border border-green-500/30">LOW</span>
+      </div>
+      <button
+        class="bg-secondary-fixed-dim text-on-secondary-fixed px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-secondary transition-all shadow-[0_0_15px_rgba(0,218,243,0.3)] hidden lg:block">
+        Crowd Status
+      </button>
+    </div>
+  </nav>
+
+  <!-- SideNavBar (Desktop & Mobile) -->
+  <aside id="sidebar"
+    class="fixed left-0 top-0 z-40 h-full w-64 flex flex-col bg-surface-container/90 lg:bg-surface-container/60 backdrop-blur-3xl border-r border-secondary-container/20 shadow-[0_0_40px_rgba(0,227,253,0.15)] saturate-150 pt-24 pb-lg justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <div class="flex flex-col gap-2 px-md" id="nav-tabs-container">
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-secondary-fixed-dim bg-secondary-container/10 border-r-4 border-secondary-fixed-dim font-bold font-label-md text-label-md cursor-pointer transition-all duration-300"
+        data-target="fan-screen">
+        <span class="material-symbols-outlined">sports_soccer</span> Pitch Feed
+      </a>
+      <div class="h-px bg-white/10 my-2"></div>
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
+        data-target="squad-screen">
+        <span class="material-symbols-outlined">leaderboard</span> Squad Stats
+      </a>
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
+        data-target="map-screen">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stadium</span> Stadium Map
+      </a>
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
+        data-target="volunteer-screen">
+        <span class="material-symbols-outlined">groups</span> Fan Zone
+      </a>
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
+        data-target="staff-screen">
+        <span class="material-symbols-outlined">event</span> Match Day
+      </a>
+    </div>
+    <div class="px-md flex flex-col gap-4">
+      <button
+        class="nav-btn w-full bg-secondary-fixed-dim text-on-secondary-fixed py-3 rounded-lg font-label-md text-label-md shadow-[0_0_15px_rgba(0,218,243,0.3)] hover:bg-secondary transition-all cursor-pointer"
+        data-target="live-match-screen">
+        Live Match Center
+      </button>
+    </div>
+  </aside>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Content Canvas -->
+  <main id="main-content" class="pt-24 pb-24 px-md lg:pl-72 lg:pr-8 min-h-screen">
+
+    <!-- FAN SCREEN -->
+    <section id="fan-screen" class="screen grid grid-cols-1 lg:grid-cols-12 gap-lg relative">
+      <!-- Left Column: Dashboard Cards -->
+      <div class="col-span-1 lg:col-span-7 flex flex-col gap-lg">
+        <!-- Hero / 3D Element Container -->
+        <div
+          class="liquid-glass rounded-xl h-64 w-full relative overflow-hidden flex items-center justify-between p-lg chromatic-edge">
+          <div class="z-10 max-w-[50%] sm:max-w-md">
+            <h1
+              class="font-display-lg text-headline-lg-mobile lg:text-display-lg text-white mb-2 shadow-black drop-shadow-lg">
+              FIFA FanConnect</h1>
+            <p
+              class="font-body-lg text-body-md lg:text-body-lg text-on-surface-variant mb-4 lg:mb-6 shadow-black drop-shadow-md">
+              Immerse yourself in the live stadium pulse.<br />Ask FAN Ai for real-time routing.</p>
+          </div>
+          <!-- 3D Football Asset -->
+          <div
+            class="absolute right-0 top-0 bottom-0 w-[40%] sm:w-[45%] lg:w-1/2 pointer-events-none opacity-80 mix-blend-screen">
+            <div class="w-full h-full" style="display:block;">
+              <div id="threejs-container-ANIMATION_3" style="width:100%;height:100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento Grid Stats (Decorative) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mt-2">
+          <!-- Next Fixture / Match Center -->
+          <div
+            class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge">
+            <div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
+              <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Match Details</h2>
+              <span
+                class="px-2 py-1 rounded bg-tertiary-fixed-dim/20 text-tertiary-fixed-dim border border-tertiary-fixed-dim/30 font-label-md text-caption uppercase tracking-wider">Historic Final</span>
+            </div>
+             <div class="flex items-center justify-between mt-2">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-16 h-16 rounded-full bg-surface-container border-2 border-secondary-container/50 flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(0,218,243,0.2)]">
+                  <img class="w-full h-full object-cover" src="/images/argentina.png" alt="Argentina" />
+                </div>
+                <span class="font-label-md text-label-md mt-2">Argentina</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <span class="font-display-md text-display-md text-white">3 - 3</span>
+                <span class="font-label-md text-caption text-secondary-fixed-dim font-bold mt-1">FT (4-2 pen)</span>
+              </div>
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-16 h-16 rounded-full bg-surface-container border-2 border-error/50 flex items-center justify-center overflow-hidden shadow-[0_0_15px_rgba(255,180,171,0.2)]">
+                  <img class="w-full h-full object-cover" src="/images/france.png" alt="France" />
+                </div>
+                <span class="font-label-md text-label-md mt-2">France</span>
+              </div>
+            </div>
+            <!-- Match Meta (Venue & Weather) -->
+            <div class="flex justify-between items-center border-t border-white/5 pt-3 mt-1 text-xs text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-secondary-fixed-dim">location_on</span>
+                <span>Lusail Stadium</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-tertiary-fixed-dim">partly_cloudy_day</span>
+                <span>Partly cloudy, 22°C (72°F)</span>
+              </div>
+            </div>
+          </div>
+          <!-- Stadium Overview -->
+          <div id="sector-control-card"
+            class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge cursor-pointer hover:bg-white/5 transition-all">
+            <div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
+              <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Sector Control</h2>
+              <span class="material-symbols-outlined text-secondary-fixed-dim">map</span>
+            </div>
+            <div
+              class="flex-1 rounded-lg overflow-hidden relative min-h-[120px] bg-surface-container-lowest border border-white/5">
+              <div class="absolute inset-0 bg-cover bg-center opacity-70 mix-blend-luminosity"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDidZWpL8m0dYOj_MWF0fDIdkXiU9qUGRzJ977-4xaxEd3mTZhth6v2MFZtmHmzLSF2S0KmdxeLczpsd5S6YkeQwHyjXSwjqgtnkHAZ-hIPZkBiUuSt2R6pCnB3nVSBfYvQsNA3v5HzzopRpHct4YUZvW4f4K7thmaSyr3ivpds9QW5Conf47cGjNMR4mP2HXhY_zm2BSjpNnAkcz7tdinH_TwjoWqZlWr9HcQqEgaE0hfXHZEKTGo9tDZtxEJVn1CgoysoiKXvCFR0')">
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-primary-container to-transparent opacity-80"></div>
+              <div class="absolute bottom-3 left-3">
+                <div class="font-label-md text-label-md text-white">North Stand (Sector 4)</div>
+                <div class="font-body-md text-caption text-secondary-fixed-dim flex items-center gap-1">
+                  <span
+                    class="w-2 h-2 rounded-full bg-secondary-fixed-dim inline-block shadow-[0_0_8px_#00daf3]"></span>
+                  High Activity
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Alerts Feed -->
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white mt-2">
+          <div class="flex justify-between items-center border-b border-white/10 pb-2">
+            <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Active Alerts Feed</h2>
+            <span class="material-symbols-outlined text-secondary-fixed-dim">notifications_active</span>
+          </div>
+          <div id="fan-alert-feed" class="flex flex-col gap-2 overflow-y-auto max-h-48 mt-2 p-2">
+            <p class="text-on-surface-variant opacity-70">No active alerts in the stadium.</p>
+          </div>
+        </div>
+
+        <!-- Quick Taps -->
+        <div class="grid grid-cols-2 gap-4 mt-2">
+          <button class="quick-btn liquid-glass p-3 rounded hover:bg-white/10 text-white" data-query="Find my gate">Find
+            my gate</button>
+          <button class="quick-btn liquid-glass p-3 rounded hover:bg-white/10 text-white"
+            data-query="Nearest food">Nearest food</button>
+          <button class="quick-btn liquid-glass p-3 rounded hover:bg-white/10 text-white"
+            data-query="Transport options">Transport options</button>
+          <button class="quick-btn liquid-glass p-3 rounded hover:bg-white/10 text-white"
+            data-query="Emergency help">Emergency help</button>
+        </div>
+      </div>
+
+      <!-- Right Column: AI Chat Widget -->
+      <div
+        class="col-span-1 lg:col-span-5 flex flex-col h-[500px] lg:h-[calc(100vh-140px)] liquid-glass rounded-xl overflow-hidden border border-tertiary-fixed-dim/20 shadow-[0_0_30px_rgba(233,196,0,0.1)]">
+        <div class="p-md border-b border-white/10 bg-surface-container-lowest/50 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary-fixed-dim to-orange-500 p-[2px] shadow-[0_0_15px_rgba(233,196,0,0.4)]">
+              <div class="w-full h-full bg-surface-dim rounded-full flex items-center justify-center">
+                <span class="material-symbols-outlined text-tertiary-fixed-dim text-lg"
+                  style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-headline-md text-[18px] text-tertiary-fixed-dim font-bold">FAN Ai</h3>
+              <p class="font-label-md text-caption text-on-surface-variant flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Online
+              </p>
+            </div>
+          </div>
+          <button id="report-incident-btn"
+            class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-1 transition-all shadow-[0_0_10px_rgba(220,38,38,0.4)] cursor-pointer">
+            <span class="material-symbols-outlined text-[16px] font-bold">campaign</span> Report Incident
+          </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="flex-1 p-md overflow-y-auto flex flex-col gap-4 scroll-smooth" id="chat-messages">
+          <!-- Default Greeting -->
+          <div class="flex flex-col gap-1 items-start max-w-[85%]">
+            <span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">FAN Ai</span>
+            <div
+              class="bg-surface-container/80 backdrop-blur-md border border-tertiary-fixed-dim/40 rounded-2xl rounded-tl-sm px-4 py-3 text-on-surface font-body-md text-[14px] shadow-sm">
+              Hello! I am your FIFA FanConnect Coach. How can I help you today?
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="chat-loading" class="hidden flex flex-col gap-1 items-start max-w-[85%] p-md">
+          <span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">FAN Ai</span>
+          <div
+            class="bg-surface-container/80 backdrop-blur-md border border-tertiary-fixed-dim/40 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1 h-10">
+            <span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+            <span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <form id="chat-form" class="p-md border-t border-white/10 bg-surface-container-lowest/80 backdrop-blur-xl m-0">
+          <div class="flex items-center gap-2">
+            <div class="flex-1 relative">
+              <input id="chat-input"
+                class="w-full bg-surface-dim/50 border border-white/10 rounded-full py-2 pl-4 pr-10 text-on-surface font-body-md text-[14px] focus:outline-none focus:border-secondary-fixed-dim focus:ring-1 focus:ring-secondary-fixed-dim/50 transition-all placeholder:text-on-surface-variant/50"
+                placeholder="Ask FAN Ai..." type="text" required />
+            </div>
+            <button type="submit" id="send-btn"
+              class="p-2 bg-secondary-fixed-dim text-on-secondary-fixed rounded-full hover:bg-secondary transition-all shadow-[0_0_10px_rgba(0,218,243,0.3)]">
+              <span class="material-symbols-outlined text-[20px]">send</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- VOLUNTEER SCREEN -->
+    <section id="volunteer-screen" class="screen hidden grid-cols-1 lg:grid-cols-2 gap-lg relative">
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge text-white relative">
+        <div class="flex justify-between items-center border-b border-white/5 pb-2">
+          <h2 class="text-2xl font-bold text-secondary-fixed-dim">Volunteer Dashboard</h2>
+          <button id="vol-edit-btn"
+            class="flex items-center gap-1 text-xs bg-white/10 hover:bg-white/20 text-white px-2.5 py-1.5 rounded-lg border border-white/10 transition-colors">
+            <span class="material-symbols-outlined text-[16px]">edit</span> Edit Info
+          </button>
+        </div>
+        <div class="shift-summary mt-2 text-on-surface-variant flex flex-col gap-1.5 text-sm">
+          <p><strong>Name:</strong> <span id="vol-profile-name">Alex Doe</span></p>
+          <p><strong>Zone:</strong> <span id="vol-profile-zone">Zone B (East Concourse)</span></p>
+          <p><strong>Shift:</strong> <span id="vol-profile-shift">14:00 - 22:00</span></p>
+        </div>
+        <div class="flex gap-4 mt-2">
+          <button id="vol-report-btn"
+            class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded shadow-[0_0_15px_rgba(255,0,0,0.3)] text-sm">Report
+            crowd issue</button>
+          <button id="vol-briefing-btn"
+            class="border border-secondary-fixed-dim text-secondary-fixed-dim hover:bg-secondary-fixed-dim/20 px-4 py-2 rounded text-sm transition-colors">Get
+            zone briefing</button>
+        </div>
+        <!-- Dynamic Zone Briefing Container -->
+        <div id="vol-briefing-container"
+          class="hidden mt-4 p-4 rounded-lg bg-surface-container/40 border border-white/5 text-sm">
+          <h4 class="font-bold text-tertiary-fixed-dim mb-2 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[18px]">info</span>
+            Zone Briefing
+          </h4>
+          <div id="vol-briefing-content" class="text-on-surface-variant leading-relaxed whitespace-pre-line"></div>
+        </div>
+      </div>
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+        <h3 class="text-xl font-bold text-tertiary-fixed-dim">Active Alerts Feed</h3>
+        <div id="vol-alert-feed" class="flex flex-col gap-2 overflow-y-auto max-h-64 mt-2 p-2">
+          <p class="text-on-surface-variant opacity-70">No active alerts in your zone.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STAFF SCREEN -->
+    <section id="staff-screen" class="screen hidden grid-cols-1 lg:grid-cols-2 gap-lg relative">
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge text-white">
+        <h2 class="text-2xl font-bold text-secondary-fixed-dim">Operations Center</h2>
+        <div class="flex justify-between items-center mt-4">
+          <div>
+            <h3 class="text-lg">Overall Capacity</h3>
+            <div class="relative w-32 h-32 mt-2">
+              <svg viewBox="0 0 36 36" class="w-full h-full text-secondary-fixed-dim stroke-current">
+                <path class="text-white/10 stroke-current" stroke-width="3" fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path id="staff-capacity-ring" stroke-dasharray="45, 100" stroke-width="3" fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <text id="staff-capacity-text" x="18" y="20.35" text-anchor="middle" fill="white"
+                  font-size="8">45%</text>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 pl-8">
+            <h3 class="text-lg mb-2">Gate Congestion</h3>
+            <div id="gate-bars-container" class="flex flex-col gap-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-lg">
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+          <h3 class="text-xl font-bold text-tertiary-fixed-dim">Broadcast Message</h3>
+          <form id="staff-broadcast-form" class="mt-2 flex flex-col gap-3">
+            <select id="broadcast-type" class="bg-surface-container/60 border border-white/10 p-2 rounded outline-none">
+              <option value="CROWD">CROWD</option>
+              <option value="SECURITY">SECURITY</option>
+              <option value="MEDICAL">MEDICAL</option>
+              <option value="WEATHER">WEATHER</option>
+            </select>
+            <input type="text" id="broadcast-location" placeholder="e.g. Gate A1"
+              class="bg-surface-container/60 border border-white/10 p-2 rounded outline-none" required>
+            <button type="submit"
+              class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded mt-2 shadow-[0_0_15px_rgba(255,0,0,0.3)]">Broadcast
+              PA Message</button>
+          </form>
+        </div>
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+          <h3 class="text-xl font-bold text-tertiary-fixed-dim">AI Recommendations</h3>
+          <div id="staff-recommendations" class="mt-2 text-on-surface-variant max-h-32 overflow-y-auto">
+            <p class="opacity-70">Operations normal. No recommendations at this time.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SQUAD SCREEN -->
+    <section id="squad-screen" class="screen hidden grid-cols-1 lg:grid-cols-2 gap-lg relative">
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white col-span-1 lg:col-span-2 chromatic-edge">
+        <h2 class="text-3xl font-display-md text-secondary-fixed-dim">Live Squad Stats</h2>
+        <p class="text-on-surface-variant">Real-time match data and player performance.</p>
+      </div>
+
+      <!-- Team Comparison -->
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+        <h3 class="text-xl font-bold text-tertiary-fixed-dim border-b border-white/10 pb-2">Match Dominance</h3>
+
+        <!-- Possession -->
+        <div class="mt-2">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Argentina (54%)</span>
+            <span>Possession</span>
+            <span>France (46%)</span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-3 flex overflow-hidden">
+            <div class="bg-secondary-fixed-dim h-3 shadow-[0_0_10px_#00daf3]" style="width: 54%"></div>
+            <div class="bg-error h-3 shadow-[0_0_10px_#ffb4ab]" style="width: 46%"></div>
+          </div>
+        </div>
+
+        <!-- Shots -->
+        <div class="mt-4">
+          <div class="flex justify-between text-sm mb-1">
+            <span>9</span>
+            <span>Shots on Target</span>
+            <span>5</span>
+          </div>
+          <div class="w-full bg-surface-container rounded-full h-3 flex overflow-hidden relative">
+            <div class="bg-secondary-fixed-dim h-3 shadow-[0_0_10px_#00daf3]" style="width: 64%"></div>
+            <div class="bg-surface-container w-1 h-3 z-10 absolute left-[64%]"></div>
+            <div class="bg-error h-3 absolute right-0 shadow-[0_0_10px_#ffb4ab]" style="width: 36%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performers -->
+      <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+        <h3 class="text-xl font-bold text-tertiary-fixed-dim border-b border-white/10 pb-2">Top Performers</h3>
+        <div class="flex flex-col gap-4 mt-2">
+          <div
+            class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+            <div
+              class="w-12 h-12 rounded-full bg-secondary-fixed-dim/20 flex items-center justify-center text-secondary-fixed-dim text-xl font-bold">
+              10</div>
+            <div class="flex-1">
+              <h4 class="font-bold">L. Messi (ARG)</h4>
+              <div class="text-xs text-on-surface-variant flex items-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">sports_soccer</span> 2 Goals, 1 Assist
+              </div>
+            </div>
+            <div class="text-secondary-fixed-dim font-bold">10 Rating</div>
+          </div>
+          <div
+            class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+            <div
+              class="w-12 h-12 rounded-full bg-error/20 flex items-center justify-center text-error text-xl font-bold">
+              10</div>
+            <div class="flex-1">
+              <h4 class="font-bold">K. Mbappé (FRA)</h4>
+              <div class="text-xs text-on-surface-variant flex items-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">sports_soccer</span> 3 Goals (Hat-trick)
+              </div>
+            </div>
+            <div class="text-error font-bold">9.8 Rating</div>
+          </div>
+          <div
+            class="flex items-center gap-4 bg-white/5 p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
+            <div
+              class="w-12 h-12 rounded-full bg-tertiary-fixed-dim/20 flex items-center justify-center text-tertiary-fixed-dim text-xl font-bold">
+              23</div>
+            <div class="flex-1">
+              <h4 class="font-bold">E. Martínez (ARG)</h4>
+              <div class="text-xs text-on-surface-variant flex items-center gap-2">
+                <span class="material-symbols-outlined text-[14px]">shield</span> Key Penalty Saves
+              </div>
+            </div>
+            <div class="text-tertiary-fixed-dim font-bold">9.0 Rating</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STADIUM MAP SCREEN -->
+    <section id="map-screen" class="screen hidden grid-cols-1 gap-lg relative h-full">
+      <div
+        class="liquid-glass rounded-xl p-0 flex flex-col text-white chromatic-edge overflow-hidden border border-white/10 h-full min-h-[600px] relative">
+
+        <!-- Header Overlay -->
+        <div class="absolute top-0 left-0 right-0 p-6 z-10 flex justify-between items-start pointer-events-none">
+          <div>
+            <h2 class="text-2xl font-bold text-white tracking-wide">Interactive Arena Map</h2>
+            <p class="text-on-surface-variant text-sm mt-1">Select Gate or Section nodes to test wayfinding</p>
+          </div>
+          <button id="calculate-route-btn"
+            class="bg-[#00daf3] text-surface-container-lowest w-10 h-10 rounded-lg flex items-center justify-center hover:bg-white transition-colors pointer-events-auto shadow-[0_0_15px_rgba(0,218,243,0.5)]">
+            <span class="material-symbols-outlined font-bold">bolt</span>
+          </button>
+        </div>
+
+        <!-- Interactive SVG Map Area -->
+        <div
+          class="w-full h-auto lg:h-full bg-[#11131e] flex flex-col lg:block items-center justify-center relative min-h-[400px] lg:min-h-[700px] p-4 lg:p-0">
+
+          <svg viewBox="0 0 800 800" class="w-full h-full max-w-2xl lg:max-w-[620px] drop-shadow-2xl px-4 md:px-0">
+            <!-- Background faint rings -->
+            <ellipse cx="400" cy="400" rx="330" ry="250" fill="none" stroke="#ffffff" stroke-opacity="0.03"
+              stroke-width="1" />
+            <ellipse cx="400" cy="400" rx="380" ry="290" fill="none" stroke="#ffffff" stroke-opacity="0.03"
+              stroke-width="1" />
+
+            <!-- Outer border ring -->
+            <ellipse cx="400" cy="400" rx="290" ry="230" fill="none" stroke="#252836" stroke-width="6" />
+
+            <!-- PITCH -->
+            <g opacity="0.8">
+              <rect x="280" y="300" width="240" height="200" rx="8" fill="#151d24" stroke="#2a9d8f" stroke-width="2" />
+              <line x1="400" y1="300" x2="400" y2="500" stroke="#2a9d8f" stroke-width="2" />
+              <circle cx="400" cy="400" r="30" fill="none" stroke="#2a9d8f" stroke-width="2" />
+              <rect x="280" y="340" width="40" height="120" fill="none" stroke="#2a9d8f" stroke-width="2" />
+              <rect x="480" y="340" width="40" height="120" fill="none" stroke="#2a9d8f" stroke-width="2" />
+            </g>
+
+            <!-- STADIUM SECTORS (Thick Arcs) -->
+            <!-- 1. Bottom Right (Red) -->
+            <path d="M 639 415 A 240 180 0 0 1 537 547" fill="none" stroke="#e63946" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#ff4d5a] transition-all"
+              data-name="Sector 1 (Heavy Crowd)" />
+            <!-- 2. Bottom (Green) -->
+            <path d="M 501 563 A 240 180 0 0 1 298 563" fill="none" stroke="#28a745" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#34d058] transition-all"
+              data-name="Sector 2 (Low Crowd)" />
+            <!-- 3. Bottom Left (Green) -->
+            <path d="M 262 547 A 240 180 0 0 1 160 415" fill="none" stroke="#28a745" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#34d058] transition-all"
+              data-name="Sector 3 (Low Crowd)" />
+            <!-- 4. Top Left (Green) -->
+            <path d="M 160 384 A 240 180 0 0 1 262 252" fill="none" stroke="#28a745" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#34d058] transition-all"
+              data-name="Sector 4 (Low Crowd)" />
+            <!-- 5. Top (Green) -->
+            <path d="M 298 236 A 240 180 0 0 1 501 236" fill="none" stroke="#28a745" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#34d058] transition-all"
+              data-name="Sector 5 (Low Crowd)" />
+            <!-- 6. Top Right (Yellow) -->
+            <path d="M 537 252 A 240 180 0 0 1 639 384" fill="none" stroke="#e9c46a" stroke-width="50"
+              stroke-linecap="butt" class="map-interactable cursor-pointer hover:stroke-[#f4d686] transition-all"
+              data-name="Sector 6 (Moderate Crowd)" />
+
+             <!-- GATES -->
+            <g text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold">
+              <!-- Gate A1 -->
+              <circle cx="200" cy="220" r="45" fill="transparent" stroke="transparent"
+                class="map-interactable cursor-pointer" data-name="Gate A1" />
+              <circle id="gate-a1-ring" cx="200" cy="220" r="20" fill="none" stroke="#4ade80" stroke-width="3"
+                class="pointer-events-none transition-all" />
+              <text x="200" y="185" fill="#8d94b5" class="pointer-events-none">GATE A1</text>
+
+              <!-- Gate B1 -->
+              <circle cx="600" cy="220" r="45" fill="transparent" stroke="transparent"
+                class="map-interactable cursor-pointer" data-name="Gate B1" />
+              <circle id="gate-b1-ring" cx="600" cy="220" r="20" fill="none" stroke="#fb923c" stroke-width="3"
+                class="pointer-events-none transition-all" />
+              <text x="600" y="185" fill="#8d94b5" class="pointer-events-none">GATE B1</text>
+
+              <!-- Gate C1 -->
+              <circle cx="600" cy="580" r="45" fill="transparent" stroke="transparent"
+                class="map-interactable cursor-pointer" data-name="Gate C1" />
+              <circle id="gate-c1-ring" cx="600" cy="580" r="20" fill="none" stroke="#f87171" stroke-width="3"
+                class="pointer-events-none transition-all" />
+              <text x="600" y="625" fill="#8d94b5" class="pointer-events-none">GATE C1</text>
+
+              <!-- Gate D1 -->
+              <circle cx="200" cy="580" r="45" fill="transparent" stroke="transparent"
+                class="map-interactable cursor-pointer" data-name="Gate D1" />
+              <circle id="gate-d1-ring" cx="200" cy="580" r="20" fill="none" stroke="#4ade80" stroke-width="3"
+                class="pointer-events-none transition-all" />
+              <text x="200" y="625" fill="#8d94b5" class="pointer-events-none">GATE D1</text>
+
+              <!-- Gate E1 -->
+              <circle cx="400" cy="170" r="45" fill="transparent" stroke="transparent"
+                class="map-interactable cursor-pointer" data-name="Gate E1" />
+              <circle id="gate-e1-ring" cx="400" cy="170" r="20" fill="none" stroke="#fb923c" stroke-width="3"
+                class="pointer-events-none transition-all" />
+              <text x="400" y="135" fill="#8d94b5" class="pointer-events-none">GATE E1</text>
+            </g>
+
+            <!-- ROUTE NODES (Cyan) -->
+            <g id="route-nodes" class="opacity-0 transition-opacity duration-500" fill="none" stroke="#00daf3"
+              stroke-width="6" stroke-linecap="round">
+              <circle cx="340" cy="245" r="8" class="animate-pulse" />
+              <circle cx="460" cy="245" r="8" class="animate-pulse" />
+              <circle cx="340" cy="555" r="8" class="animate-pulse" />
+              <circle cx="460" cy="555" r="8" class="animate-pulse" />
+            </g>
+
+            <!-- Wayfinding Path (Dashed glowing line) -->
+            <path id="wayfinding-path" d="M 200 220 A 250 200 0 0 0 200 580 A 250 200 0 0 0 560 490" fill="none"
+              stroke="#00daf3" stroke-width="8" stroke-dasharray="15, 10"
+              class="opacity-0 transition-opacity duration-500" style="filter: drop-shadow(0 0 10px #00daf3);" />
+
+            <!-- Dynamic Wayfinding Path (Dashed glowing line) -->
+            <path id="wayfinding-path-dynamic" d="" fill="none" stroke="#00daf3" stroke-width="8"
+              stroke-dasharray="15, 10" class="opacity-0 transition-opacity duration-500"
+              style="filter: drop-shadow(0 0 10px #00daf3);" />
+
+            <!-- Cross Markers (Red) -->
+            <g fill="#e63946">
+              <rect x="396" y="166" width="8" height="24" rx="2" />
+              <rect x="388" y="174" width="24" height="8" rx="2" />
+              <rect x="396" y="610" width="8" height="24" rx="2" />
+              <rect x="388" y="618" width="24" height="8" rx="2" />
+            </g>
+
+            <!-- Hand Cursor (Decorative overlay simulating the image) -->
+            <g transform="translate(380, 565) scale(0.6)">
+              <path
+                d="M19.11 41.56c-2.31-2.43-5.26-6.28-7.14-9.35-1.12-1.84-2.8-5-3.23-6.68-.4-1.57-.3-2.3.06-3.24.63-1.6 2.37-2.6 4-2.45 1.5.14 2.8 1.05 4.3 2.65.6.64 1.25 1.5 1.7 2.15.5.7 1.07 1.75 1.26 2.15.35.75-.05 1.95-.7 2.6-.5.48-1.2.98-1.75 1.48-.44.4-.85.8-1.25 1.3-.8.95-.66 2.1.2 3 1.8 1.85 4.8 4 6.95 5.5.8.55 1.7 1.15 2.1 1.2.5.06 1.4-.4 1.9-1 .6-.72 1.3-1.8 1.8-2.65.57-.96.95-1.95 1.15-2.75.52-2.13.97-5.18 1.2-7.2.18-1.52.27-3.95.1-5.46-.14-1.3-.65-3.35-1.07-4.45-.3-.8-.94-2.1-1.44-2.9-.45-.7-.95-1.5-1.2-1.9-.8-1.25-1.24-2.25-1.4-3.4-.28-2.2.14-4.2.98-6 1-2.15 3.3-3.9 5.6-4.3 2.05-.35 4.1.2 5.8 1.45 1.45 1.05 2.45 2.5 3 4.25.35 1.1.55 2.6.6 4.35.05 1.55.05 1.8 0 3.35-.15 4-.46 8.3-1 11.25-.33 1.8-1.2 4.45-2 6.4-.6 1.5-1.5 3.35-2.25 4.7-.55.95-1.4 2.6-1.55 2.9-.2.4-.4 1.2-.4 1.8 0 1.25.4 2.15.9 2.5.8.55 2.1.5 3.1.2 1.45-.4 3-1.6 4-2.9 1-1.3 2.1-3.6 2.4-4.8.3-.9.6-2.5.6-2.5.3-1.5.3-1.6.35-3.2 0-.6 0-1.85-.05-2.75-.05-1.2.15-1.9.45-2.25.4-.45 1.1-.4 1.6-.1.6.35 1.2 1.2 1.5 2.15.3.9.4 2.3.4 3.75.05 1.8.05 1.9-.05 3.35-.1.85-.35 2.55-.55 3.25-.4 1.4-1.15 3.3-1.8 4.65-1.2 2.6-3 5.4-5 7.8-2 2.4-4.85 4.7-7 6.1-2.1 1.4-4.65 2.4-6.85 2.7-2.35.35-5.2-.2-7.3-1.4-1.2-.7-2.9-2.3-3.8-3.5z"
+                fill="#ffffff" stroke="#000000" stroke-width="2" />
+            </g>
+          </svg>
+
+          <!-- Legend Overlay -->
+          <div
+            class="relative w-full mt-4 lg:mt-0 lg:absolute lg:bottom-4 lg:left-6 lg:w-64 bg-[#1a1f2e]/90 border border-white/10 rounded-xl p-4 flex flex-col gap-3 backdrop-blur-md shadow-2xl z-10 pointer-events-auto">
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 rounded bg-[#28a745]"></div>
+              <span class="text-sm text-on-surface font-medium">Low Congestion</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 rounded bg-[#e9c46a]"></div>
+              <span class="text-sm text-on-surface font-medium">Moderate Crowd</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 rounded bg-[#e63946]"></div>
+              <span class="text-sm text-on-surface font-medium">Heavy/Bottleneck</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 rounded bg-[#00daf3] shadow-[0_0_8px_#00daf3]"></div>
+              <span class="text-sm text-on-surface font-medium">GenAI Active Route</span>
+            </div>
+          </div>
+
+          <!-- Route Selection Panel -->
+          <div id="route-panel"
+            class="relative w-full mt-4 lg:mt-0 lg:absolute lg:top-20 lg:right-6 lg:w-80 bg-[#1a1f2e]/90 border border-white/10 rounded-xl p-5 flex flex-col gap-4 backdrop-blur-md shadow-2xl z-20 pointer-events-auto">
+            <h3
+              class="text-lg font-bold text-secondary-fixed-dim border-b border-white/10 pb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-[20px]">explore</span>
+              Route Finder
+            </h3>
+
+            <div class="flex flex-col gap-1">
+              <label for="route-start" class="text-xs text-on-surface-variant font-medium">Current Position /
+                Gate</label>
+              <select id="route-start"
+                class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors">
+                <option value="Gate A1">Gate A1 (North)</option>
+                <option value="Gate B1">Gate B1 (East)</option>
+                <option value="Gate C1">Gate C1 (South)</option>
+                <option value="Gate D1">Gate D1 (West)</option>
+                <option value="Gate E1">Gate E1 (Accessible)</option>
+                <option value="Sector 1">Sector 1</option>
+                <option value="Sector 2">Sector 2</option>
+                <option value="Sector 3">Sector 3</option>
+                <option value="Sector 4">Sector 4</option>
+                <option value="Sector 5">Sector 5</option>
+                <option value="Sector 6">Sector 6</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label for="route-end" class="text-xs text-on-surface-variant font-medium">Destination / Gate</label>
+              <select id="route-end"
+                class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors">
+                <option value="Gate C1">Gate C1 (South)</option>
+                <option value="Gate A1">Gate A1 (North)</option>
+                <option value="Gate B1">Gate B1 (East)</option>
+                <option value="Gate D1">Gate D1 (West)</option>
+                <option value="Gate E1">Gate E1 (Accessible)</option>
+                <option value="Sector 1">Sector 1</option>
+                <option value="Sector 2">Sector 2</option>
+                <option value="Sector 3">Sector 3</option>
+                <option value="Sector 4">Sector 4</option>
+                <option value="Sector 5">Sector 5</option>
+                <option value="Sector 6">Sector 6</option>
+              </select>
+            </div>
+
+            <!-- Accessibility checkbox -->
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="route-accessible"
+                class="w-4 h-4 rounded border-white/10 bg-[#11131e] text-secondary-fixed-dim focus:ring-0 cursor-pointer">
+              <label for="route-accessible"
+                class="text-xs text-on-surface-variant font-medium cursor-pointer">Accessible (Step-free)</label>
+            </div>
+
+            <!-- Route Instructions output container -->
+            <div id="route-instructions"
+              class="hidden flex flex-col gap-2 mt-2 pt-3 border-t border-white/10 max-h-[300px] overflow-y-auto">
+              <div class="flex justify-between items-center text-xs text-secondary-fixed-dim font-bold">
+                <span>ESTIMATED TIME</span>
+                <span id="route-est-time">--</span>
+              </div>
+              <div id="route-steps-container" class="flex flex-col gap-2 text-xs mt-1"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE MATCH CENTER SCREEN -->
+    <section id="live-match-screen" class="screen hidden grid-cols-1 lg:grid-cols-12 gap-lg relative">
+
+      <!-- Header / Scoreboard -->
+      <div class="col-span-1 lg:col-span-12 liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge">
+        <div class="flex justify-between items-center text-white">
+          <div class="flex flex-col items-center flex-1">
+            <div
+              class="w-20 h-20 rounded-full bg-surface-container border-2 border-secondary-container/50 flex items-center justify-center overflow-hidden shadow-[0_0_20px_#00daf3]">
+              <img class="w-full h-full object-cover" src="/images/argentina.png" alt="Argentina" />
+            </div>
+            <span class="font-display-md text-2xl mt-3 font-bold text-secondary-fixed-dim">Argentina</span>
+          </div>
+
+          <div class="flex flex-col items-center flex-1 text-center">
+            <div
+              class="bg-red-500/20 text-red-400 text-xs font-bold px-3 py-1 rounded-full mb-2 border border-red-500/30">
+              FULL-TIME (AET)</div>
+            <div
+              class="text-6xl font-display-lg font-black tracking-widest text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+              3 - 3</div>
+            <div class="text-xs text-on-surface-variant font-medium mt-2">Argentina wins 4-2 on penalties</div>
+          </div>
+
+          <div class="flex flex-col items-center flex-1">
+            <div
+              class="w-20 h-20 rounded-full bg-surface-container border-2 border-error/50 flex items-center justify-center overflow-hidden shadow-[0_0_20px_#ffb4ab]">
+              <img class="w-full h-full object-cover" src="/images/france.png" alt="France" />
+            </div>
+            <span class="font-display-md text-2xl mt-3 font-bold text-error">France</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Match Timeline -->
+      <div class="col-span-1 lg:col-span-7 flex flex-col gap-lg">
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md h-full text-white">
+          <h3 class="text-xl font-bold text-tertiary-fixed-dim border-b border-white/10 pb-2">Match Timeline</h3>
+
+          <div class="relative pl-6 mt-4 border-l-2 border-white/10 flex flex-col gap-6 flex-1">
+            <!-- Penalty Shootout -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-secondary-fixed-dim rounded-full w-4 h-4 shadow-[0_0_10px_#00daf3] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-secondary-fixed-dim">FT</span>
+                <div>
+                  <h4 class="font-bold">Penalty Shootout: ARG 4 - 2 FRA</h4>
+                  <p class="text-sm text-on-surface-variant">Argentina wins the World Cup after a dramatic penalty shootout!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Mbappé -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-error rounded-full w-4 h-4 shadow-[0_0_10px_#ffb4ab] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-error">118'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! France</h4>
+                  <p class="text-sm text-on-surface-variant">K. Mbappé converts the penalty to complete his hat-trick!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Messi -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-secondary-fixed-dim rounded-full w-4 h-4 shadow-[0_0_10px_#00daf3] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-secondary-fixed-dim">108'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! Argentina</h4>
+                  <p class="text-sm text-on-surface-variant">L. Messi scores from close range after a rebound! ARG lead 3-2.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Mbappé -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-error rounded-full w-4 h-4 shadow-[0_0_10px_#ffb4ab] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-error">81'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! France</h4>
+                  <p class="text-sm text-on-surface-variant">K. Mbappé scores a stunning first-time volley to equalize 2-2!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Mbappé -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-error rounded-full w-4 h-4 shadow-[0_0_10px_#ffb4ab] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-error">80'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! France</h4>
+                  <p class="text-sm text-on-surface-variant">K. Mbappé converts the penalty. France is back in the game!</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Di Maria -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-secondary-fixed-dim rounded-full w-4 h-4 shadow-[0_0_10px_#00daf3] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-secondary-fixed-dim">36'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! Argentina</h4>
+                  <p class="text-sm text-on-surface-variant">A. Di María finishes a breathtaking team counter-attack! ARG lead 2-0.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Goal Messi -->
+            <div class="relative">
+              <div
+                class="absolute -left-[31px] bg-secondary-fixed-dim rounded-full w-4 h-4 shadow-[0_0_10px_#00daf3] border-2 border-surface-dim">
+              </div>
+              <div class="flex gap-4 items-start">
+                <span class="font-bold text-secondary-fixed-dim">23'</span>
+                <div>
+                  <h4 class="font-bold">GOAL! Argentina</h4>
+                  <p class="text-sm text-on-surface-variant">L. Messi scores from the penalty spot to give ARG the lead.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Zones / Mini Map -->
+      <div class="col-span-1 lg:col-span-5 flex flex-col gap-lg">
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white h-full">
+          <h3 class="text-xl font-bold text-tertiary-fixed-dim border-b border-white/10 pb-2">Live Action Zone</h3>
+          <div
+            class="relative flex-1 w-full bg-surface-container-lowest border border-white/10 rounded-xl overflow-hidden min-h-[300px]">
+            <!-- Pitch background -->
+            <div class="absolute inset-0 bg-green-900/40 opacity-80"
+              style="background-image: repeating-linear-gradient(0deg, transparent, transparent 10%, rgba(255,255,255,0.03) 10%, rgba(255,255,255,0.03) 20%);">
+            </div>
+            <!-- Pitch lines -->
+            <div class="absolute inset-4 border border-white/30 rounded"></div>
+            <div class="absolute top-1/2 left-4 right-4 h-px bg-white/30"></div>
+            <div
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-white/30">
+            </div>
+
+            <!-- Action Heatmap (Glowing blobs) -->
+            <div
+              class="absolute top-[20%] left-[30%] w-32 h-32 bg-secondary-fixed-dim/40 rounded-full blur-2xl animate-pulse">
+            </div>
+            <div class="absolute top-[35%] left-[25%] w-24 h-24 bg-error/30 rounded-full blur-xl animate-pulse"></div>
+
+            <div class="absolute bottom-4 right-4 text-xs font-bold text-white/50">ATTACKING DIRECTION &uarr;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BottomNavBar (Mobile) Removed as per user request to use Sidebar instead -->
+
+
+
+  <!-- Report Stadium Incident Modal Overlay -->
+  <div id="incident-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md">
+    <div
+      class="w-[90%] max-w-md bg-[#1a1e2e]/95 border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-4 relative">
+
+      <!-- Header -->
+      <div class="flex justify-between items-center pb-2 border-b border-white/10">
+        <div class="flex items-center gap-2 text-red-500">
+          <span class="material-symbols-outlined font-bold">warning</span>
+          <span class="text-lg font-bold">Report Stadium Incident</span>
+        </div>
+        <button id="close-incident-modal"
+          class="text-on-surface-variant hover:text-white bg-white/5 hover:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+          <span class="material-symbols-outlined text-[20px] font-bold">close</span>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="incident-form" class="flex flex-col gap-4 m-0">
+        <!-- Category -->
+        <div class="flex flex-col gap-1">
+          <label for="incident-category" class="text-xs text-on-surface-variant font-medium">Incident Category</label>
+          <select id="incident-category"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-3 text-white text-sm outline-none focus:border-red-500 transition-colors"
+            required>
+            <option value="MEDICAL">Medical Alert (Heat/Injury)</option>
+            <option value="SECURITY">Security Issue (Crowding/Fight)</option>
+            <option value="GENERAL">General Inquiry / Restroom Cleaning / Other</option>
+          </select>
+        </div>
+
+        <!-- Location -->
+        <div class="flex flex-col gap-1">
+          <label for="incident-location" class="text-xs text-on-surface-variant font-medium">Select Location</label>
+          <select id="incident-location"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-3 text-white text-sm outline-none focus:border-red-500 transition-colors"
+            required>
+            <option value="Gate A (North)">Gate A (North)</option>
+            <option value="Gate B (East)">Gate B (East)</option>
+            <option value="Gate C (South)">Gate C (South)</option>
+            <option value="Gate D (West)">Gate D (West)</option>
+            <option value="Section 101">Section 101</option>
+            <option value="Section 104">Section 104</option>
+            <option value="Section 108">Section 108</option>
+            <option value="Section 112">Section 112</option>
+            <option value="Section 116">Section 116</option>
+            <option value="Section 120">Section 120</option>
+            <option value="Section 124">Section 124</option>
+            <option value="Section 128">Section 128</option>
+            <option value="Concession Hub 1">Concession Hub 1</option>
+            <option value="Concession Hub 2">Concession Hub 2</option>
+            <option value="EcoHub A">EcoHub A</option>
+            <option value="EcoHub B">EcoHub B</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="flex flex-col gap-1">
+          <label for="incident-desc" class="text-xs text-on-surface-variant font-medium">Detailed Description</label>
+          <textarea id="incident-desc" rows="3"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-3 text-white text-sm outline-none focus:border-red-500 transition-colors placeholder:text-on-surface-variant/40 resize-none"
+            placeholder="Describe the issue in detail (e.g. wet floor, scanner malfunction)..." required></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+          class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg mt-2 shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all">
+          Submit Emergency Alert
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Volunteer Edit Info Modal -->
+  <div id="vol-edit-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+    <div
+      class="liquid-glass w-full max-w-md p-lg rounded-xl border border-white/10 text-white flex flex-col gap-md relative">
+      <h3 class="text-xl font-bold text-secondary-fixed-dim flex items-center gap-2">
+        <span class="material-symbols-outlined">edit</span> Edit Volunteer Profile
+      </h3>
+      <form id="vol-edit-form" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1">
+          <label for="vol-edit-name" class="text-xs text-on-surface-variant font-medium">Name</label>
+          <input type="text" id="vol-edit-name"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors"
+            required>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="vol-edit-zone" class="text-xs text-on-surface-variant font-medium">Zone</label>
+          <input type="text" id="vol-edit-zone"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors"
+            required>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="vol-edit-shift" class="text-xs text-on-surface-variant font-medium">Shift</label>
+          <input type="text" id="vol-edit-shift"
+            class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors"
+            required>
+        </div>
+        <div class="flex justify-end gap-2 mt-2">
+          <button type="button" id="vol-edit-cancel"
+            class="px-4 py-2 border border-white/10 rounded text-sm hover:bg-white/5 transition-colors">Cancel</button>
+          <button type="submit"
+            class="px-4 py-2 bg-secondary-fixed-dim text-on-secondary-fixed rounded text-sm font-bold hover:bg-secondary transition-colors">Save
+            Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+
+</html>

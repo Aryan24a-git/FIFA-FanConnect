@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.DS_Store
+.env
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+coverage
+tests/
+scratch/
+stitch_liquid_glass_fanconnect/
+*.txt
+.eslintrc.json
+.prettierrc
+
