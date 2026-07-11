@@ -1,7 +1,8 @@
 # 🏟️ FIFA FanConnect — Smart Stadium AI Assistant
 
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://stadium-saathi-run-env.a.run.app)
-[![GitHub](https://img.shields.io/badge/github-repo-blue.svg)](https://github.com/google-build-with-ai/stadium-saathi)
+[![GitHub](https://img.shields.io/badge/github-FIFA--FanConnect-blue.svg)](https://github.com/Aryan24a-git/FIFA-FanConnect)
+[![AI Provider](https://img.shields.io/badge/AI-Groq%20%7C%20Gemma%202-orange.svg)](https://console.groq.com/)
 
 ## 1. Problem Statement
 The FIFA World Cup 2026 presents a massive logistical challenge across 16 US host cities, hosting 48 teams and welcoming over 1.5 million international fans. Managing crowd flow, answering high volumes of multilingual questions, directing stadium navigation, ensuring accessibility, and maintaining real-time safety coordination for fans, volunteers, and staff is critical.
@@ -48,16 +49,14 @@ JSON Response → Frontend
 ---
 
 ## 5. AI Integration
-- **Model:** `gemini-2.0-flash` (configured centrally in [constants.js](file:///c:/projects/challange%204/stadium-saathi/server/utils/constants.js)).
-- **Gemini Roles:**
-  - Explains real-time crowd congestion scenarios to fans and volunteers.
-  - Translates detailed routing directions and instructions dynamically.
-  - Answers complex fan queries in the fan's selected language.
-- **Fallback:** Gracefully cascades to [faqDatabase.js](file:///c:/projects/challange%204/stadium-saathi/server/data/faqDatabase.js) searches or static instructions if Gemini is offline or unavailable.
-- **Multi-Provider Auto-Detection (including Groq):** Automatically detects the LLM provider based on the prefix of the configured `GEMINI_API_KEY`.
-  - **Google Gemini SDK** (default for keys starting with `AIzaSy...`).
-  - **Groq Cloud API** (auto-configured for keys starting with `gsk_...` utilizing the `Gemma-2` model for high-efficiency, low-latency explanations).
-  - **OpenRouter** (supported for keys starting with `sk-or-...`).
+- **Provider:** [Groq](https://console.groq.com/) — accessed via the `GEMINI_API_KEY` environment variable set to a Groq API key (prefixed `gsk_`).
+- **Model:** `gemma2-9b-it` (Google Gemma 2 9B Instruct, served through Groq's ultra-fast inference API)
+- **AI Roles:**
+  - Explains real-time crowd congestion scenarios to fans and volunteers in plain language.
+  - Translates detailed routing directions into the fan's selected language.
+  - Answers complex fan queries with contextual, conversational responses.
+- **Fallback:** Gracefully cascades to [faqDatabase.js](file:///c:/projects/challange%204/stadium-saathi/server/data/faqDatabase.js) keyword searches or static English instructions if the Groq API is unavailable.
+- **Multi-Provider Auto-Detection:** The `GEMINI_API_KEY` environment variable prefix drives provider selection automatically — `gsk_` routes to Groq, `sk-or-` routes to OpenRouter, and an `AIzaSy` prefix uses the Google Gemini SDK directly.
 
 ---
 
@@ -110,11 +109,11 @@ JSON Response → Frontend
 ## 10. Local Setup
 1. Clone the repository.
 2. Run `npm install`.
-3. Create a `.env` file containing your API credentials:
-   - For Google Gemini: `GEMINI_API_KEY=AIzaSy...`
-   - For Groq Cloud: `GEMINI_API_KEY=gsk_...`
-   - Define custom port if needed (defaults to `PORT=8080`).
-4. Run `npm start` (or `npm run dev` to start in watch mode).
+3. Create a `.env` file with your API key and `PORT=8080`. Three options are supported:
+   - **Groq** (used in this project): `GEMINI_API_KEY=gsk_...` (get a free key at [console.groq.com](https://console.groq.com/))
+   - **OpenRouter** (alternative): `GEMINI_API_KEY=sk-or-...`
+   - **Google Gemini SDK** (alternative): `GEMINI_API_KEY=AIzaSy...`
+4. Run `npm start`.
 5. Access `http://localhost:8080` in your browser.
 
 ---
