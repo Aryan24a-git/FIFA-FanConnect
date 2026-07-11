@@ -48,13 +48,16 @@ JSON Response → Frontend
 ---
 
 ## 5. AI Integration
-- **Model:** `gemini-2.0-flash` (configured centrally in [constants.js](file:///c:/projects/challange%204/stadium-saathi/server/utils/constants.js))
+- **Model:** `gemini-2.0-flash` (configured centrally in [constants.js](file:///c:/projects/challange%204/stadium-saathi/server/utils/constants.js)).
 - **Gemini Roles:**
   - Explains real-time crowd congestion scenarios to fans and volunteers.
   - Translates detailed routing directions and instructions dynamically.
   - Answers complex fan queries in the fan's selected language.
 - **Fallback:** Gracefully cascades to [faqDatabase.js](file:///c:/projects/challange%204/stadium-saathi/server/data/faqDatabase.js) searches or static instructions if Gemini is offline or unavailable.
-- **Multi-Provider Auto-Detection:** Automatically routes requests using Gemini SDK, OpenRouter, or Groq based on the prefix of the configured `GEMINI_API_KEY` (e.g. `gsk_`, `sk-or-`).
+- **Multi-Provider Auto-Detection (including Groq):** Automatically detects the LLM provider based on the prefix of the configured `GEMINI_API_KEY`.
+  - **Google Gemini SDK** (default for keys starting with `AIzaSy...`).
+  - **Groq Cloud API** (auto-configured for keys starting with `gsk_...` utilizing the `Gemma-2` model for high-efficiency, low-latency explanations).
+  - **OpenRouter** (supported for keys starting with `sk-or-...`).
 
 ---
 
@@ -107,8 +110,11 @@ JSON Response → Frontend
 ## 10. Local Setup
 1. Clone the repository.
 2. Run `npm install`.
-3. Create a `.env` file with `GEMINI_API_KEY=your_key` and `PORT=8080`.
-4. Run `npm start` (or `npm run dev` to start with watch mode).
+3. Create a `.env` file containing your API credentials:
+   - For Google Gemini: `GEMINI_API_KEY=AIzaSy...`
+   - For Groq Cloud: `GEMINI_API_KEY=gsk_...`
+   - Define custom port if needed (defaults to `PORT=8080`).
+4. Run `npm start` (or `npm run dev` to start in watch mode).
 5. Access `http://localhost:8080` in your browser.
 
 ---
