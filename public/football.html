@@ -1,0 +1,639 @@
+﻿<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FIFA FanConnect Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;family=Outfit:wght@600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-dim": "#131315",
+                      "tertiary-fixed-dim": "#e9c400",
+                      "secondary-container": "#00e3fd",
+                      "tertiary": "#e9c400",
+                      "surface-container-lowest": "#0e0e10",
+                      "on-tertiary-fixed": "#221b00",
+                      "on-secondary-fixed": "#001f24",
+                      "surface-tint": "#bfc5e4",
+                      "surface-container-high": "#2a2a2c",
+                      "on-surface": "#e5e2e4",
+                      "surface-bright": "#39393b",
+                      "on-error": "#690005",
+                      "on-tertiary": "#3a3000",
+                      "surface-container": "#1f1f21",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "primary-fixed-dim": "#bfc5e4",
+                      "on-secondary-container": "#00616d",
+                      "inverse-primary": "#575d78",
+                      "inverse-on-surface": "#303032",
+                      "on-background": "#e5e2e4",
+                      "background": "#131315",
+                      "on-primary-container": "#767c99",
+                      "on-tertiary-fixed-variant": "#544600",
+                      "on-secondary": "#00363d",
+                      "surface-variant": "#353436",
+                      "surface": "#131315",
+                      "on-secondary-fixed-variant": "#004f58",
+                      "surface-container-highest": "#353436",
+                      "secondary-fixed": "#9cf0ff",
+                      "on-primary-fixed": "#141a32",
+                      "on-primary-fixed-variant": "#3f465f",
+                      "inverse-surface": "#e5e2e4",
+                      "tertiary-fixed": "#ffe16d",
+                      "outline-variant": "#46464d",
+                      "surface-container-low": "#1b1b1d",
+                      "primary": "#bfc5e4",
+                      "secondary-fixed-dim": "#00daf3",
+                      "secondary": "#bdf4ff",
+                      "outline": "#909098",
+                      "on-primary": "#292f48",
+                      "on-tertiary-container": "#4c3f00",
+                      "on-surface-variant": "#c6c6ce",
+                      "primary-fixed": "#dce1ff",
+                      "primary-container": "#0a1128",
+                      "tertiary-container": "#c9a900",
+                      "on-error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "unit": "4px",
+                      "margin-desktop": "48px",
+                      "xxl": "64px",
+                      "gutter": "20px",
+                      "xs": "4px",
+                      "sm": "8px",
+                      "xl": "40px"
+              },
+              "fontFamily": {
+                      "display-md": ["Outfit"],
+                      "headline-lg-mobile": ["Outfit"],
+                      "label-md": ["Inter"],
+                      "display-lg": ["Outfit"],
+                      "caption": ["Inter"],
+                      "headline-md": ["Outfit"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Outfit"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "display-md": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: #0A1128; }
+        .liquid-glass {
+            background: rgba(10, 17, 40, 0.4);
+            backdrop-filter: blur(24px) saturate(150%);
+            border-top: 1px solid rgba(0, 229, 255, 0.2);
+            border-left: 1px solid rgba(0, 229, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-sm { box-shadow: 0 0 15px rgba(0, 218, 243, 0.3); }
+        .neon-glow-effect { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px #00daf3, 0 0 10px #00daf3; }
+            50% { box-shadow: 0 0 20px #00daf3, 0 0 30px #00daf3; }
+            100% { box-shadow: 0 0 5px #00daf3, 0 0 10px #00daf3; }
+        }
+        .chromatic-edge { position: relative; }
+        .chromatic-edge::before {
+            content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px;
+            background: linear-gradient(45deg, rgba(255,0,0,0.5), transparent, rgba(0,255,255,0.5));
+            z-index: -1; border-radius: inherit; opacity: 0.5;
+        }
+        .typing-dot { animation: typingBounce 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        /* Custom scrollbar for chat */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 218, 243, 0.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface font-body-md antialiased min-h-screen relative overflow-x-hidden">
+<!-- Background Layers -->
+<div class="fixed inset-0 z-[-2]">
+<img alt="" class="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHLntuB_RrKKFmPmy9HrfqjPJdi7wiQkAakt3JlMsUx8gW3icLa0JOqZv23FuPGWks-o4ZGb3LvLu99-8OK5dtGybvBNEvH373OcDA42pnJH-jQ7FernqsRBMJGGrlzXp6SrfpPVv8S8vxOQtiKPu1A1qRuh1u7aiZIkmJcdtJdInsYwCU3UpItrHzgqEkei_EY3xmOGxbKFK1C_cWh_6-OtwZhERjbGqfVES-j0g_hEAcoSGEW83dl494hb-RZtqtKWAl3fYlzP78"/>
+</div>
+<div class="fixed inset-0 z-[-1] pointer-events-none">
+<!-- STITCH_SHADER_START:ANIMATION_4 class="absolute inset-0 w-full h-full" -->
+<div class="absolute inset-0 w-full h-full" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_4" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_4');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `
+precision highp float;
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_mouse;
+varying vec2 v_texCoord;
+
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+void main() {
+    vec2 uv = v_texCoord;
+    vec3 color = vec3(0.04, 0.06, 0.15); // Deep Midnight Blue base
+    
+    // Floating "Dust" Particles
+    for(float i = 0.0; i < 40.0; i++) {
+        vec2 pos = vec2(hash(vec2(i, 1.0)), hash(vec2(i, 2.0)));
+        pos.y = fract(pos.y + u_time * 0.02 * (0.5 + hash(vec2(i, 3.0))));
+        float size = 0.001 + 0.002 * hash(vec2(i, 4.0));
+        float dist = length(uv - pos);
+        float glow = smoothstep(size * 4.0, 0.0, dist);
+        color += vec3(0.0, 0.9, 1.0) * glow * 0.3; // Cyan glow
+    }
+    
+    // Soft Light Flares
+    vec2 flarePos = vec2(0.2, 0.8) + vec2(sin(u_time * 0.5), cos(u_time * 0.3)) * 0.05;
+    float flare = smoothstep(0.4, 0.0, length(uv - flarePos));
+    color += vec3(1.0, 0.84, 0.0) * flare * 0.15; // Trophy Gold flare
+    
+    gl_FragColor = vec4(color, 0.4); // Transparent to layer over stadium image
+}
+`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_4 -->
+</div>
+<!-- TopNavBar -->
+<nav class="flex justify-between items-center w-full px-lg max-w-full fixed top-0 z-50 bg-background/40 backdrop-blur-xl border-b border-secondary-container/20 shadow-[0_4px_30px_rgba(0,0,0,0.5)] h-20">
+<div class="flex items-center gap-xl">
+<span class="font-display-md text-display-md font-black tracking-tighter text-secondary-fixed-dim">FIFA FanConnect</span>
+<div class="hidden md:flex gap-lg">
+<a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md" href="#">All Stadiums</a>
+<a class="text-secondary-fixed-dim border-b-2 border-secondary-fixed-dim pb-2 font-label-md text-label-md" href="#">Live Heatmaps</a>
+<a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md" href="#">Global Chat</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<!-- Crowd Status Badge -->
+<div class="hidden md:flex items-center gap-sm bg-surface-container/60 px-4 py-2 rounded-full border border-secondary-container/30" id="crowd-status-badge">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="font-label-md text-label-md text-on-surface mr-2">Crowd:</span>
+<span class="px-2 py-1 rounded bg-green-500/20 text-green-400 font-label-md text-caption border border-green-500/30">LOW</span>
+<!--
+                <span class="px-2 py-1 rounded bg-yellow-500/20 text-yellow-400 font-label-md text-caption border border-yellow-500/30">MOD</span>
+                <span class="px-2 py-1 rounded bg-orange-500/20 text-orange-400 font-label-md text-caption border border-orange-500/30">HIGH</span>
+                <span class="px-2 py-1 rounded bg-red-500/20 text-red-400 font-label-md text-caption border border-red-500/30 neon-glow-effect">CRIT</span>
+                -->
+</div>
+<button class="bg-secondary-container/10 border border-secondary-container text-secondary-fixed-dim px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-secondary-container/20 transition-all" id="stadium-select">
+                Stadium Selector
+            </button>
+<button class="bg-secondary-fixed-dim text-on-secondary-fixed px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-secondary transition-all shadow-[0_0_15px_rgba(0,218,243,0.3)]">
+                Crowd Status
+            </button>
+<div class="flex gap-sm">
+<button class="p-2 rounded-full hover:bg-white/10 text-secondary-fixed-dim transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-white/10 text-secondary-fixed-dim transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex flex-col h-full fixed left-0 top-0 z-40 bg-surface-container/60 backdrop-blur-3xl border-r border-secondary-container/20 shadow-[0_0_40px_rgba(0,227,253,0.15)] saturate-150 w-64 pt-24 pb-lg justify-between">
+<div class="flex flex-col gap-2 px-md">
+<a class="flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">sports_soccer</span>
+                Pitch Feed
+            </a>
+<a class="flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+                Squad Stats
+            </a>
+<a class="flex items-center gap-md p-3 rounded-lg text-secondary-fixed-dim bg-secondary-container/10 border-r-4 border-secondary-fixed-dim font-bold font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stadium</span>
+                Stadium Map
+            </a>
+<a class="flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Fan Zone
+            </a>
+<a class="flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">event</span>
+                Match Day
+            </a>
+</div>
+<div class="px-md flex flex-col gap-4">
+<button class="w-full bg-secondary-fixed-dim text-on-secondary-fixed py-3 rounded-lg font-label-md text-label-md shadow-[0_0_15px_rgba(0,218,243,0.3)] hover:bg-secondary transition-all">
+                Live Match Center
+            </button>
+<div class="flex flex-col gap-2 border-t border-secondary-container/20 pt-4">
+<a class="flex items-center gap-md p-2 rounded-lg text-on-surface-variant/70 hover:text-on-surface font-label-md text-caption" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+                    Settings
+                </a>
+<a class="flex items-center gap-md p-2 rounded-lg text-on-surface-variant/70 hover:text-on-surface font-label-md text-caption" href="#">
+<span class="material-symbols-outlined text-sm">contact_support</span>
+                    Support
+                </a>
+</div>
+<div class="flex items-center gap-3 mt-2">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden border border-secondary-container/30">
+<img alt="Fan Profile" class="w-full h-full object-cover" data-alt="A futuristic, neon-lit avatar of a football fan wearing high-tech VR goggles and a glowing jersey, set against a dark stadium backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBYTp_N1qqLsXWU3RVmSisjk-pPP22jQ81U_EzD60uVrsu-eDpIXKaQr0gqXjzyuqrb52yPeWwNAq2JA5I3KL-6vgAY8JpoahFQ9flGHJ9rfaSbjM2EEd26elVP4YCJfSeYrxdo91QKvVng0J_mkkeCrO-JpIWCo2RvOxIFppSYUYJgBCFkNoxj0aAvO0x8aE4pSPRs14eVILJI-0aDZLoOvj0hS38SygADdxUxnDy2bhwLhb08dazB3lUmphAMYN2PuLEjKk-G3Z9"/>
+</div>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Alex Mercer</div>
+<div class="font-label-md text-caption text-tertiary-fixed-dim">Elite Supporter Status</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-24 md:pl-72 md:pr-lg min-h-screen grid grid-cols-1 md:grid-cols-12 gap-lg relative">
+<!-- Left Column: Dashboard Cards -->
+<div class="col-span-1 md:col-span-7 flex flex-col gap-lg">
+<!-- Hero / 3D Element Container -->
+<div class="liquid-glass rounded-xl h-64 w-full relative overflow-hidden flex items-center justify-between p-lg chromatic-edge">
+<div class="z-10 max-w-md">
+<h1 class="font-display-lg text-display-lg md:text-[48px] text-white mb-2 shadow-black drop-shadow-lg">FIFA FanConnect</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 shadow-black drop-shadow-md">Immerse yourself in the live stadium pulse. Real-time stats, crowd energy, and tactical heatmaps.</p>
+<button class="bg-secondary-fixed-dim text-on-secondary-fixed px-6 py-3 rounded-lg font-label-md text-label-md shadow-[0_0_20px_rgba(0,218,243,0.5)] hover:bg-secondary transition-all">
+                        Enter Live View
+                    </button>
+</div>
+<!-- 3D Football Asset -->
+<div class="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none opacity-80 mix-blend-screen">
+<!-- STITCH_THREEJS_START:ANIMATION_3 class="w-full h-full" -->
+<div class="w-full h-full" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_3" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_3');
+  if(container) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    container.appendChild(renderer.domElement);
+
+    // Football Geometry (Subdivided Icosahedron)
+    let geometry = new THREE.IcosahedronGeometry(2, 1);
+    geometry = geometry.toNonIndexed(); // Split vertices to color faces independently
+
+    const positionAttribute = geometry.getAttribute('position');
+    const colors = [];
+
+    // The 12 vertices of a regular icosahedron (pentagon centers)
+    const t = (1 + Math.sqrt(5)) / 2;
+    const pentagonCenters = [
+      new THREE.Vector3(-1, t, 0).normalize(),
+      new THREE.Vector3(1, t, 0).normalize(),
+      new THREE.Vector3(-1, -t, 0).normalize(),
+      new THREE.Vector3(1, -t, 0).normalize(),
+      new THREE.Vector3(0, -1, t).normalize(),
+      new THREE.Vector3(0, 1, t).normalize(),
+      new THREE.Vector3(0, -1, -t).normalize(),
+      new THREE.Vector3(0, 1, -t).normalize(),
+      new THREE.Vector3(-t, 0, -1).normalize(),
+      new THREE.Vector3(-t, 0, 1).normalize(),
+      new THREE.Vector3(t, 0, -1).normalize(),
+      new THREE.Vector3(t, 0, 1).normalize()
+    ];
+
+    const faceCenter = new THREE.Vector3();
+
+    for (let i = 0; i < positionAttribute.count; i += 3) {
+      const v1 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
+      const v2 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 1);
+      const v3 = new THREE.Vector3().fromBufferAttribute(positionAttribute, i + 2);
+
+      // Face center normalized
+      faceCenter.copy(v1).add(v2).add(v3).divideScalar(3).normalize();
+
+      let minDst = Infinity;
+      for (let j = 0; j < pentagonCenters.length; j++) {
+        const dst = faceCenter.distanceTo(pentagonCenters[j]);
+        if (dst < minDst) minDst = dst;
+      }
+
+      // If close to one of the 12 vertices, it's part of a pentagon
+      const isPentagon = minDst < 0.55;
+
+      // Dark graphite/black for pentagons, white/light blue for hexagons
+      const color = isPentagon ? new THREE.Color(0x151821) : new THREE.Color(0xd1f8ff);
+
+      colors.push(color.r, color.g, color.b);
+      colors.push(color.r, color.g, color.b);
+      colors.push(color.r, color.g, color.b);
+    }
+
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    // Material that supports vertex colors and shininess
+    const material = new THREE.MeshPhongMaterial({
+      vertexColors: true,
+      flatShading: true,
+      shininess: 80,
+      specular: 0x00E5FF
+    });
+
+    const footballGroup = new THREE.Group();
+    scene.add(footballGroup);
+
+    const ball = new THREE.Mesh(geometry, material);
+    footballGroup.add(ball);
+
+    // Glowing cyan seams / edges
+    const wireGeom = new THREE.IcosahedronGeometry(2.01, 1);
+    const wireMat = new THREE.MeshBasicMaterial({
+      color: 0x00E5FF,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.4
+    });
+    const wireframe = new THREE.Mesh(wireGeom, wireMat);
+    footballGroup.add(wireframe);
+
+    scene.add(new THREE.AmbientLight(0x404040, 2.5));
+    const pl = new THREE.PointLight(0xFFD700, 3, 50); pl.position.set(5, 5, 5); scene.add(pl);
+    const bl = new THREE.PointLight(0x00E5FF, 3, 50); bl.position.set(-5, -5, 5); scene.add(bl);
+    camera.position.z = 8;
+
+    // Interactive Rotation Variables
+    let targetRotationX = 0;
+    let targetRotationY = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    const baseSpeed = 0.005;
+
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
+      mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // Auto rotation
+      footballGroup.rotation.y += baseSpeed;
+      footballGroup.rotation.x += baseSpeed * 0.5;
+
+      // Mouse influence
+      targetRotationY = mouseX * 2.5;
+      targetRotationX = mouseY * 2.5;
+
+      footballGroup.rotation.y += (targetRotationY - footballGroup.rotation.y) * 0.05;
+      footballGroup.rotation.x += (targetRotationX - footballGroup.rotation.x) * 0.05;
+
+      // Float effect
+      footballGroup.position.y = Math.sin(Date.now() * 0.002) * 0.15;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    });
+  }
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_3 -->
+</div>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Match Schedule -->
+<div class="liquid-glass rounded-xl p-lg flex flex-col gap-md">
+<div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
+<h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Next Fixture</h2>
+<span class="px-2 py-1 rounded bg-tertiary-fixed-dim/20 text-tertiary-fixed-dim border border-tertiary-fixed-dim/30 font-label-md text-caption uppercase tracking-wider">Premium</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<div class="flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-surface-container border-2 border-secondary-container/50 flex items-center justify-center p-2">
+<img class="max-w-full h-auto" data-alt="A sleek, minimalist logo of a modern football club featuring a geometric eagle in neon blue, against a dark metallic texture background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRtMZXLvSL-NhjARCpobTjKmuiqFGcilRuvMB1rqQsCqAM2E_7dZgVUIkCkxXn_KwwgbANv0vn_eONlQ8WBM_ePO2BS_ve-ZK2UPTxD_P5PijxTPgfP6DvE8aDsDLHfFSgkQGQ6I-dawdrUxscPkQ1Hc3LBYjT6OFhwDtbRzk76Q5hGFUUDOEl8Hz8cMYsEzwpx4vBgYLykMEDGYqogCz-bc-PdslRHEgKVosDjg4LViCTQL7uZJetRam5SYmSjP4n_cej4Z89C19t"/>
+</div>
+<span class="font-label-md text-label-md mt-2">City FC</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-display-md text-display-md text-white">20:45</span>
+<span class="font-label-md text-caption text-on-surface-variant">Tonight</span>
+</div>
+<div class="flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-surface-container border-2 border-error/50 flex items-center justify-center p-2">
+<img class="max-w-full h-auto" data-alt="A sleek, minimalist logo of a modern football club featuring a geometric lion in bright neon red, set against a dark metallic texture background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2KD2y-7TtebfzvP9qV16frblPkwEBapwMaMRxj7NmXLDmf2--vrd1cEGroWDICTBnFFDyqEA2zHouuHljZSaaeHqo1vUFSzXwSnnkIxfdWU6lihWrGQfKAsgleFyPjN8RY4gynPFFLLeyyYuNYxTSQLUFptRIwQpv8jftviZjA5mBnUG0NrpaDyuYPwUHzoliZMBm6efdYqrLVWV4EVCtw9vTHq1zyUf4ADWWII6fIQ2Hu2BghwY20SPYol2pkdk9b9nWXb2oobtY"/>
+</div>
+<span class="font-label-md text-label-md mt-2">United SC</span>
+</div>
+</div>
+</div>
+<!-- Stadium Overview -->
+<div class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge">
+<div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
+<h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Sector Control</h2>
+<span class="material-symbols-outlined text-secondary-fixed-dim">map</span>
+</div>
+<div class="flex-1 rounded-lg overflow-hidden relative min-h-[120px] bg-surface-container-lowest border border-white/5">
+<div class="absolute inset-0 bg-cover bg-center opacity-70 mix-blend-luminosity" data-alt="A stylized, top-down isometric view of a futuristic football stadium glowing with neon blue and cyan lights, highlighting different seating sectors in various colors to indicate crowd density." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDidZWpL8m0dYOj_MWF0fDIdkXiU9qUGRzJ977-4xaxEd3mTZhth6v2MFZtmHmzLSF2S0KmdxeLczpsd5S6YkeQwHyjXSwjqgtnkHAZ-hIPZkBiUuSt2R6pCnB3nVSBfYvQsNA3v5HzzopRpHct4YUZvW4f4K7thmaSyr3ivpds9QW5Conf47cGjNMR4mP2HXhY_zm2BSjpNnAkcz7tdinH_TwjoWqZlWr9HcQqEgaE0hfXHZEKTGo9tDZtxEJVn1CgoysoiKXvCFR0')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container to-transparent opacity-80"></div>
+<div class="absolute bottom-3 left-3">
+<div class="font-label-md text-label-md text-white">North Stand (Sector 4)</div>
+<div class="font-body-md text-caption text-secondary-fixed-dim flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim inline-block shadow-[0_0_8px_#00daf3]"></span> High Activity
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: AI Chat Widget -->
+<div class="col-span-1 md:col-span-5 flex flex-col h-[calc(100vh-140px)] liquid-glass rounded-xl overflow-hidden border border-tertiary-fixed-dim/20 shadow-[0_0_30px_rgba(233,196,0,0.1)]">
+<!-- Chat Header -->
+<div class="p-md border-b border-white/10 bg-surface-container-lowest/50 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gradient-to-br from-tertiary-fixed-dim to-orange-500 p-[2px] shadow-[0_0_15px_rgba(233,196,0,0.4)]">
+<div class="w-full h-full bg-surface-dim rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-lg" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-md text-[18px] text-tertiary-fixed-dim font-bold">Stadium AI</h3>
+<p class="font-label-md text-caption text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Online
+                        </p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Chat Messages -->
+<div class="flex-1 p-md overflow-y-auto flex flex-col gap-4 scroll-smooth" id="chat-messages">
+<!-- AI Message -->
+<div class="flex flex-col gap-1 items-start max-w-[85%]">
+<span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">Stadium AI</span>
+<div class="bg-surface-container/80 backdrop-blur-md border border-tertiary-fixed-dim/40 rounded-2xl rounded-tl-sm px-4 py-3 text-on-surface font-body-md text-[14px] shadow-sm">
+                        Welcome to the match! The North Stand is currently filling up fast. Would you like me to find the quickest route to your seat in Sector 4?
+                    </div>
+</div>
+<!-- User Message -->
+<div class="flex flex-col gap-1 items-end self-end max-w-[85%]">
+<span class="font-label-md text-[10px] text-on-surface-variant mr-2">You</span>
+<div class="bg-secondary-fixed-dim/20 backdrop-blur-md border border-secondary-fixed-dim/30 rounded-2xl rounded-tr-sm px-4 py-3 text-white font-body-md text-[14px] shadow-sm">
+                        Yes, please. Also, what's the wait time for the concessions near section 402?
+                    </div>
+</div>
+<!-- AI Message (Typing) -->
+<div class="flex flex-col gap-1 items-start max-w-[85%]">
+<span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">Stadium AI</span>
+<div class="bg-surface-container/80 backdrop-blur-md border border-tertiary-fixed-dim/40 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1 h-10">
+<span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+<span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+<span class="w-2 h-2 bg-tertiary-fixed-dim rounded-full typing-dot"></span>
+</div>
+</div>
+</div>
+<!-- Chat Input -->
+<div class="p-md border-t border-white/10 bg-surface-container-lowest/80 backdrop-blur-xl">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-secondary-fixed-dim transition-colors rounded-full hover:bg-white/5">
+<span class="material-symbols-outlined">add_circle</span>
+</button>
+<div class="flex-1 relative">
+<input class="w-full bg-surface-dim/50 border border-white/10 rounded-full py-2 pl-4 pr-10 text-on-surface font-body-md text-[14px] focus:outline-none focus:border-secondary-fixed-dim focus:ring-1 focus:ring-secondary-fixed-dim/50 transition-all placeholder:text-on-surface-variant/50" placeholder="Ask Stadium AI..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-secondary-fixed-dim transition-colors">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+</div>
+<button class="p-2 bg-secondary-fixed-dim text-on-secondary-fixed rounded-full hover:bg-secondary transition-all shadow-[0_0_10px_rgba(0,218,243,0.3)]" id="send-btn">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-dim/80 backdrop-blur-2xl border-t border-secondary-container/30 shadow-[0_-10px_40px_rgba(0,0,0,0.8)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 scale-110 duration-200 p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md-mobile mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 scale-110 duration-200 p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined">sports_soccer</span>
+<span class="font-label-md text-label-md-mobile mt-1">Matches</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container/20 text-secondary-fixed-dim rounded-xl px-4 py-1 scale-110 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-md text-label-md-mobile mt-1 font-bold">Stadium</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/5 scale-110 duration-200 p-2 rounded-lg" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-md text-label-md-mobile mt-1">Chat</span>
+</a>
+</nav>
+</body></html>
