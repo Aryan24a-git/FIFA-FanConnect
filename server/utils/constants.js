@@ -110,7 +110,7 @@ const VALID_PERSONAS = Object.freeze(['fan', 'volunteer', 'staff']);
  * @readonly
  * @type {readonly [string, ...string[]]}
  */
-const SUPPORTED_LANGUAGES = Object.freeze(['en', 'es', 'fr', 'ar', 'pt', 'de', 'ja', 'hi', 'zh']);
+const SUPPORTED_LANGUAGES = Object.freeze(['en', 'es', 'fr', 'ar', 'pt', 'de', 'ja', 'hi', 'zh', 'it', 'ko']);
 
 /**
  * Maximum length for any user-submitted message or query.

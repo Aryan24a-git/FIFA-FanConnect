@@ -139,6 +139,14 @@ router.post('/', async (req, res, next) => {
         response = GEMINI.FALLBACK_MESSAGE;
         source = 'fallback';
       }
+
+      if (language !== 'en' && isModelReady()) {
+        try {
+          response = await translateToLanguage(response, language);
+        } catch (transErr) {
+          logger.warn({ event: 'fallback_translation_failed', reason: transErr.message });
+        }
+      }
     }
 
     return res.status(HTTP.OK).json({

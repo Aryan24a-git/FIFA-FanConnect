@@ -108,7 +108,7 @@ function callOpenRouter(systemPrompt, userPrompt) {
 function callGroq(systemPrompt, userPrompt) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
-      model: process.env.GROQ_MODEL || 'groq/compound',
+      model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
