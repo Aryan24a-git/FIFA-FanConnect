@@ -131,6 +131,18 @@ app.use('/api/alert', geminiLimiter, alertRouter);
 app.use('/api/navigate', geminiLimiter, navigateRouter);
 app.use('/api/translate', geminiLimiter, translateRouter);
 
+// ─── FOOTBALL PAGES (relaxed CSP for Stitch-generated standalone pages) ────────
+const footballPages = ['football.html', 'football_shader.html', 'football_threejs.html'];
+footballPages.forEach((page) => {
+  app.get(`/${page}`, (req, res) => {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+    );
+    res.sendFile(path.join(__dirname, `../public/${page}`));
+  });
+});
+
 // ─── CATCH-ALL SPA ────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
