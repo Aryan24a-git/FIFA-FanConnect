@@ -63,11 +63,20 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
   : ['http://localhost:8080'];
 
-app.use(
+app.use((req, res, next) => {
+  const origin = req.header('Origin');
+  const host = req.header('Host');
+  const protocol = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
+  const sameOrigin = origin && (origin === `${protocol}://${host}`);
+
   cors({
-    origin: function (origin, callback) {
-      // Allow server-to-server requests (no origin) and listed origins
-      if (!origin || allowedOrigins.includes(origin)) {
+    origin: function (requestOrigin, callback) {
+      if (
+        !requestOrigin ||
+        sameOrigin ||
+        allowedOrigins.includes(requestOrigin) ||
+        (process.env.VERCEL && requestOrigin.endsWith('.vercel.app'))
+      ) {
         callback(null, true);
       } else {
         callback(new AppError('Not allowed by CORS', HTTP.FORBIDDEN, 'CORS_BLOCKED'));
@@ -75,8 +84,8 @@ app.use(
     },
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-  })
-);
+  })(req, res, next);
+});
 
 // ─── BODY PARSER ──────────────────────────────────────────────────────────────
 app.use(express.json({ limit: '10kb' }));
