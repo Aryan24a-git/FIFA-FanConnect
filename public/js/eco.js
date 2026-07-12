@@ -75,12 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
       calculateEcoBtn.disabled = true;
       calculateEcoBtn.textContent = 'Calculating...';
 
+      let stadiumId = window.AppState?.stadiumId || 'metlife';
+      if (!['metlife', 'atandt', 'sofi'].includes(stadiumId)) {
+        stadiumId = 'metlife';
+      }
+
       try {
         const res = await fetch('/api/sustainability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            stadiumId: window.AppState?.stadiumId || 'metlife',
+            stadiumId,
             transportMode: mode,
             distanceKm,
             language: window.AppState?.language || 'en'
@@ -136,12 +141,17 @@ document.addEventListener('DOMContentLoaded', () => {
       calculateTransportBtn.disabled = true;
       calculateTransportBtn.textContent = 'Planning...';
 
+      let stadiumId = window.AppState?.stadiumId || 'metlife';
+      if (!['metlife', 'atandt', 'sofi'].includes(stadiumId)) {
+        stadiumId = 'metlife';
+      }
+
       try {
         const res = await fetch('/api/transport', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            stadiumId: window.AppState?.stadiumId || 'metlife',
+            stadiumId,
             destination,
             time: departureWindow,
             language: window.AppState?.language || 'en'

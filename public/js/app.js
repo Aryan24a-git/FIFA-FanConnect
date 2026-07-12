@@ -10,9 +10,10 @@
  * Global application state object.
  * @type {{ currentPersona: string, stadiumId: string, language: string }}
  */
+const savedStadium = localStorage.getItem('fc_stadium');
 const AppState = {
   currentPersona: 'fan',
-  stadiumId: localStorage.getItem('fc_stadium') || 'metlife',
+  stadiumId: (savedStadium && ['metlife', 'atandt', 'sofi'].includes(savedStadium)) ? savedStadium : 'metlife',
   language: localStorage.getItem('fc_lang') || 'en'
 };
 
