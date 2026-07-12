@@ -1,6 +1,6 @@
 # 🏟️ FIFA FanConnect — Smart Stadium AI Assistant
 
-[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://stadium-saathi-run-env.a.run.app)
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://fifa-fan-connect.vercel.app/)
 [![GitHub](https://img.shields.io/badge/github-FIFA--FanConnect-blue.svg)](https://github.com/Aryan24a-git/FIFA-FanConnect)
 [![AI Provider](https://img.shields.io/badge/AI-Groq%20%7C%20Gemma%202-orange.svg)](https://console.groq.com/)
 
