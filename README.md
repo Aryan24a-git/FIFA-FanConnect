@@ -12,7 +12,7 @@ The FIFA World Cup 2026 presents a massive logistical challenge across 16 US hos
 ---
 
 ## 2. Architecture Rationale
-"FIFA FanConnect separates deterministic crowd analysis, routing, and alert logic from generative AI explanations. This architecture ensures reliable, hallucination-free operational decisions for safety-critical stadium scenarios while Gemini provides personalized, multilingual communication."
+"FIFA FanConnect separates deterministic crowd analysis, routing, and alert logic from generative AI explanations. This architecture ensures reliable, hallucination-free operational decisions for safety-critical stadium scenarios while Groq AI provides personalized, multilingual communication."
 
 ---
 
@@ -29,9 +29,9 @@ Zod Validation Layer
 ↓
 Deterministic Engines (crowdEngine → alertEngine → routingEngine)
 ↓
-Gemini AI Service (explanation + translation ONLY — never decides)
+Groq AI Service (explanation + translation ONLY — never decides)
 ↓
-Fallback (faqDatabase + static alert messages if Gemini fails)
+Fallback (faqDatabase + static alert messages if Groq fails)
 ↓
 JSON Response → Frontend
 ```
@@ -64,7 +64,7 @@ JSON Response → Frontend
 - **Helmet.js with Strict CSP:** No `unsafe-inline` or `unsafe-eval` in `scriptSrc`. External scripts (Tailwind CDN, Three.js) are whitelisted by domain. All inline scripts fully extracted to [init.js](file:///c:/projects/challange%204/stadium-saathi/public/js/init.js).
 - **DOMPurify v3.4:** Bundled client-side for all `innerHTML` operations to prevent XSS.
 - **Zod Schema Validation:** Strict types and bounds checking on all 4 API endpoint payloads.
-- **Two-Tier Rate Limiting:** Global endpoint limit of 100 requests per 15 minutes, with a stricter limit of 20 requests per minute on Gemini-backed paths.
+- **Two-Tier Rate Limiting:** Global endpoint limit of 100 requests per 15 minutes, with a stricter limit of 20 requests per minute on Groq-backed paths.
 - **CORS Lock:** Strictly origin-locked to `ALLOWED_ORIGINS` environment variable to prevent cross-site execution.
 - **Non-Root Container:** Runs on `node:20-alpine` as a non-privileged `appuser`.
 - **Secret Manager Integration:** `GEMINI_API_KEY` injected securely via Cloud Build `--set-secrets` (never baked into Docker image).
@@ -95,7 +95,7 @@ FIFA FanConnect implements a **Safety-First AI Pattern**:
          └─────────────┬──────────────┘
                        │ Structured decision object
          ┌─────────────▼──────────────┐
-         │  Gemini AI Service         │ ← Explanation ONLY
+         │  Groq AI Service           │ ← Explanation ONLY
          │  - answerFanQuestion()     │   Never decides
          │  - translateToLanguage()   │   8s timeout
          │  - explainSituation()      │   3 providers:
@@ -110,7 +110,7 @@ FIFA FanConnect implements a **Safety-First AI Pattern**:
               JSON Response → Client (DOMPurify sanitized)
 ```
 
-**Why this matters:** Stadium operations are safety-critical. Crowd gate closures, medical alerts, and evacuation routes CANNOT be decided by non-deterministic AI. Gemini's role is purely communication — translating precise engine outputs into clear, multilingual human language.
+**Why this matters:** Stadium operations are safety-critical. Crowd gate closures, medical alerts, and evacuation routes CANNOT be decided by non-deterministic AI. Groq's role is purely communication — translating precise engine outputs into clear, multilingual human language.
 
 ---
 
@@ -122,7 +122,7 @@ FIFA FanConnect implements a **Safety-First AI Pattern**:
   - [navigate.test.js](file:///c:/projects/challange%204/stadium-saathi/tests/navigate.test.js) (API navigation / step translation)
   - [translate.test.js](file:///c:/projects/challange%204/stadium-saathi/tests/translate.test.js) (API translation helper)
   - [utils.test.js](file:///c:/projects/challange%204/stadium-saathi/tests/utils.test.js) (Engines, validators, health routes, and rate-limiting)
-- **Offline Reliability:** Fully mocked Gemini SDK to simulate normal operations and handle failure fallback behavior using distinct search strings (e.g. `xqz999zzz`).
+- **Offline Reliability:** Fully mocked Groq/Gemini service to simulate normal operations and handle failure fallback behavior using distinct search strings (e.g. `xqz999zzz`).
 
 ---
 
