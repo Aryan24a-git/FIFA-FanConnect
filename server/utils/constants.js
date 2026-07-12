@@ -210,6 +210,27 @@ const HTTP = Object.freeze({
   SERVICE_UNAVAILABLE: 503,
 });
 
+// ─── SUSTAINABILITY & TRANSPORTATION ──────────────────────────────────────────
+
+/**
+ * Valid modes of transport for sustainability and routing analysis.
+ * @readonly
+ * @type {readonly [string, ...string[]]}
+ */
+const VALID_TRANSPORT_MODES = Object.freeze(['metro', 'bus', 'parking', 'rideshare']);
+
+/**
+ * CO2 emissions in grams per passenger-kilometer for various transit modes.
+ * Source: Representative average figures for event logistics.
+ * @readonly
+ */
+const ECO_METRICS = Object.freeze({
+  metro: 28,      // 28g CO2e per km
+  bus: 68,        // 68g CO2e per km
+  rideshare: 171, // 171g CO2e per km (split/pooled)
+  parking: 220,   // 220g CO2e per km (single passenger car)
+});
+
 module.exports = {
   CROWD_LEVELS,
   CROWD_THRESHOLDS,
@@ -228,4 +249,6 @@ module.exports = {
   VALID_STADIUM_IDS,
   VALID_ZONES,
   HTTP,
+  VALID_TRANSPORT_MODES,
+  ECO_METRICS,
 };

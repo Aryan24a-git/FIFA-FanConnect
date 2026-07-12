@@ -1,18 +1,6 @@
 process.env.GEMINI_API_KEY = 'test-key';
 
-jest.mock('@google/generative-ai', () => {
-  return {
-    GoogleGenerativeAI: jest.fn().mockImplementation(() => {
-      return {
-        getGenerativeModel: jest.fn().mockReturnValue({
-          generateContent: jest.fn().mockImplementation(async () => {
-            return { response: { text: () => 'Mocked Response' } };
-          })
-        })
-      };
-    })
-  };
-});
+jest.mock('@google/generative-ai', () => require('./helpers/mockGemini'));
 
 const request = require('supertest');
 const app = require('../server/index');

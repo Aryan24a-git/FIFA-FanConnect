@@ -10,7 +10,7 @@ const express = require('express');
 const router = express.Router();
 
 const { validateAlert } = require('../utils/validators');
-const { generateAlert } = require('../engines/alertEngine');
+const { generateAlert } = require('../engines');
 const { explainSituation, isModelReady } = require('../services/gemini');
 const { getStadiumById } = require('../data/stadiumData');
 const AppError = require('../utils/AppError');

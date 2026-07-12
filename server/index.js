@@ -18,6 +18,8 @@ const assistRouter = require('./routes/assist');
 const alertRouter = require('./routes/alert');
 const navigateRouter = require('./routes/navigate');
 const translateRouter = require('./routes/translate');
+const sustainabilityRouter = require('./routes/sustainability');
+const transportRouter = require('./routes/transport');
 
 const app = express();
 
@@ -161,6 +163,8 @@ app.use('/api/assist', geminiLimiter, assistRouter);
 app.use('/api/alert', geminiLimiter, alertRouter);
 app.use('/api/navigate', geminiLimiter, navigateRouter);
 app.use('/api/translate', geminiLimiter, translateRouter);
+app.use('/api/sustainability', geminiLimiter, sustainabilityRouter);
+app.use('/api/transport', geminiLimiter, transportRouter);
 
 // ─── FOOTBALL PAGES (relaxed CSP for Stitch-generated standalone pages) ────────
 const footballPages = ['football.html', 'football_shader.html', 'football_threejs.html'];

@@ -1,7 +1,9 @@
 'use strict';
 
 /**
- * Fan chat interface, quick-tap handlers, and crowd status polling.
+ * @fileoverview Fan persona controller. Handles chat messages, quick queries,
+ * crowd status polling, and reporting safety incidents.
+ * @module public/js/fan
  */
 
 const chatWindow = document.getElementById('chat-messages');
@@ -12,6 +14,8 @@ const crowdPill = document.getElementById('fan-crowd-pill');
 
 /**
  * Appends a message to the chat window safely.
+ * @param {string} text - The raw text content of the message.
+ * @param {string} [sender='user'] - The message sender ('user' | 'ai').
  */
 function appendMessage(text, sender = 'user') {
   const safeText = DOMPurify.sanitize(text);
@@ -42,10 +46,12 @@ function appendMessage(text, sender = 'user') {
 }
 
 /**
- * Sends a query to the Assist API
+ * Sends a query to the Assist API and updates the UI with the AI response.
+ * @param {string} query - The search query or question.
+ * @returns {Promise<void>}
  */
 async function sendAssistQuery(query) {
-  if (!query.trim()) return;
+  if (!query.trim()) {return;}
   
   appendMessage(query, 'user');
   chatInput.value = '';
@@ -95,10 +101,11 @@ document.querySelectorAll('.quick-btn').forEach(btn => {
 });
 
 /**
- * Polls crowd status every 30 seconds
+ * Polls crowd status every 30 seconds silently.
+ * @returns {Promise<void>}
  */
 async function pollCrowdStatus() {
-  if(AppState.currentPersona !== 'fan') return; // Only poll heavily if on fan screen (optimization)
+  if(AppState.currentPersona !== 'fan') {return;} // Only poll heavily if on fan screen (optimization)
   
   try {
     // Use the assist route silently to check "crowd status"
@@ -155,7 +162,7 @@ if (reportBtn && incidentModal && closeBtn) {
       const firstFocusable = incidentModal.querySelector(
         'button, select, textarea, input'
       );
-      if (firstFocusable) firstFocusable.focus();
+      if (firstFocusable) {firstFocusable.focus();}
     }, 50);
   });
 
@@ -271,7 +278,12 @@ setTimeout(() => {
 
 /**
  * Build an alert card DOM node from an alert object.
- * Called independently for each feed container so the nodes don't share parents.
+ * @param {Object} alertObj - The alert data object.
+ * @param {string} alertObj.severity - Severity level (CRITICAL|HIGH|MEDIUM|LOW).
+ * @param {string} alertObj.location - Affected location in stadium.
+ * @param {string} alertObj.message - Details of the alert.
+ * @param {string} alertObj.timestamp - Alert timestamp.
+ * @returns {HTMLDivElement} The built alert card element.
  */
 function buildAlertCard(alertObj) {
   let bgClass = 'bg-surface-container/60';
@@ -297,9 +309,10 @@ function buildAlertCard(alertObj) {
 
 /**
  * Re-renders a feed container from the full SharedAlertStore.
+ * @param {HTMLElement|null} feedEl - The feed container element.
  */
 function renderFeed(feedEl) {
-  if (!feedEl) return;
+  if (!feedEl) {return;}
   feedEl.innerHTML = '';
   if (SharedAlertStore.length === 0) {
     const p = document.createElement('p');
@@ -316,7 +329,7 @@ function renderFeed(feedEl) {
 
 /**
  * Push an alert to the shared store and refresh all feeds.
- * This is the single public API used by all scripts.
+ * @param {Object} alertObj - The alert object to add.
  */
 function addFanAlertToFeed(alertObj) {
   SharedAlertStore.push(alertObj);
@@ -341,6 +354,10 @@ document.addEventListener('click', (e) => {
   }
 });
 
+/**
+ * Scans user query for keywords and triggers an automatic incident alert report if detected.
+ * @param {string} query - The raw user chat input query.
+ */
 function checkAndLogChatIncident(query) {
   const q = query.toLowerCase();
   const isReport = q.includes('report') || q.includes('emergency') || q.includes('incident') || q.includes('medical') || q.includes('security') || q.includes('fire') || q.includes('injury');

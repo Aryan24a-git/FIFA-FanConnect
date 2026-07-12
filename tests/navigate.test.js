@@ -1,29 +1,6 @@
 process.env.GEMINI_API_KEY = 'test-key-for-jest';
 
-jest.mock('@google/generative-ai', () => {
-  return {
-    GoogleGenerativeAI: jest.fn().mockImplementation(() => {
-      return {
-        getGenerativeModel: jest.fn().mockReturnValue({
-          generateContent: jest.fn().mockImplementation(async (prompt) => {
-            let promptStr = typeof prompt === 'string' ? prompt : JSON.stringify(prompt);
-            if (promptStr.includes('xqz999zzz')) {
-              throw new Error('Mock Gemini failure');
-            }
-            // Mock a translated output.
-            // Split line parser in navigate.js expects:
-            // "Step 1: instruction\nStep 2: instruction"
-            return {
-              response: {
-                text: () => 'Step 1: Ingrese por la puerta asignada y escanee su boleto.\nStep 2: Siga los letreros de la zona de color.'
-              }
-            };
-          })
-        })
-      };
-    })
-  };
-});
+jest.mock('@google/generative-ai', () => require('./helpers/mockGemini'));
 
 const request = require('supertest');
 const app = require('../server/index');

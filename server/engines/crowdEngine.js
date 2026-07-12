@@ -20,7 +20,7 @@ const {
  * @returns {number} Percentage utilisation (0–100+).
  */
 function calcUtilisation(current, max) {
-  if (max <= 0) return 0;
+  if (max <= 0) {return 0;}
   return Math.round((current / max) * 100);
 }
 
@@ -30,9 +30,9 @@ function calcUtilisation(current, max) {
  * @returns {string} Crowd level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL'.
  */
 function classifyLevel(pct) {
-  if (pct > CROWD_THRESHOLDS.CRITICAL) return CROWD_LEVELS.CRITICAL;
-  if (pct > CROWD_THRESHOLDS.HIGH) return CROWD_LEVELS.HIGH;
-  if (pct > CROWD_THRESHOLDS.MODERATE) return CROWD_LEVELS.MODERATE;
+  if (pct > CROWD_THRESHOLDS.CRITICAL) {return CROWD_LEVELS.CRITICAL;}
+  if (pct > CROWD_THRESHOLDS.HIGH) {return CROWD_LEVELS.HIGH;}
+  if (pct > CROWD_THRESHOLDS.MODERATE) {return CROWD_LEVELS.MODERATE;}
   return CROWD_LEVELS.LOW;
 }
 

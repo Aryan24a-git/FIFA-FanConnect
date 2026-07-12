@@ -141,15 +141,15 @@ const ROUTE_MAP = {
  */
 function normalizeLocation(location) {
   const loc = location.toLowerCase().trim();
-  if (loc.includes('seat') || loc.includes('section') || loc.includes('stand')) return 'seat';
-  if (loc.includes('gate') || loc.includes('entrance') || loc.includes('entry') || loc.includes('enter')) return 'entrance';
-  if (loc.includes('food') || loc.includes('eat') || loc.includes('restaurant') || loc.includes('concession') || loc.includes('drink')) return 'food';
-  if (loc.includes('toilet') || loc.includes('restroom') || loc.includes('bathroom') || loc.includes('wc')) return 'toilet';
-  if (loc.includes('medical') || loc.includes('first aid') || loc.includes('doctor') || loc.includes('health')) return 'medical';
-  if (loc.includes('exit') || loc.includes('leave') || loc.includes('out')) return 'exit';
-  if (loc.includes('parking') || loc.includes('car') || loc.includes('park')) return 'parking';
-  if (loc.includes('metro') || loc.includes('train') || loc.includes('subway') || loc.includes('transit') || loc.includes('bus')) return 'metro';
-  if (loc.includes('info') || loc.includes('help') || loc.includes('desk') || loc.includes('service')) return 'info_desk';
+  if (loc.includes('seat') || loc.includes('section') || loc.includes('stand')) {return 'seat';}
+  if (loc.includes('gate') || loc.includes('entrance') || loc.includes('entry') || loc.includes('enter')) {return 'entrance';}
+  if (loc.includes('food') || loc.includes('eat') || loc.includes('restaurant') || loc.includes('concession') || loc.includes('drink')) {return 'food';}
+  if (loc.includes('toilet') || loc.includes('restroom') || loc.includes('bathroom') || loc.includes('wc')) {return 'toilet';}
+  if (loc.includes('medical') || loc.includes('first aid') || loc.includes('doctor') || loc.includes('health')) {return 'medical';}
+  if (loc.includes('exit') || loc.includes('leave') || loc.includes('out')) {return 'exit';}
+  if (loc.includes('parking') || loc.includes('car') || loc.includes('park')) {return 'parking';}
+  if (loc.includes('metro') || loc.includes('train') || loc.includes('subway') || loc.includes('transit') || loc.includes('bus')) {return 'metro';}
+  if (loc.includes('info') || loc.includes('help') || loc.includes('desk') || loc.includes('service')) {return 'info_desk';}
   return loc;
 }
 

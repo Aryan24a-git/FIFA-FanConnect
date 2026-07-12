@@ -1,7 +1,9 @@
 'use strict';
 
 /**
- * Staff operations interface: capacity rings, gate bars, broadcasts.
+ * @fileoverview Staff operations controller. Updates capacity widgets,
+ * gate congestion status bars, and sends stadium-wide broadcasts.
+ * @module public/js/staff
  */
 
 // Staff form submission for broadcasts
@@ -10,7 +12,7 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
   const type = document.getElementById('broadcast-type').value;
   const location = document.getElementById('broadcast-location').value;
   
-  if(!location) return;
+  if(!location) {return;}
 
   try {
     const res = await fetch('/api/alert', {
@@ -61,39 +63,41 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
 });
 
 /**
- * Updates the SVG capacity ring visually
+ * Updates the SVG capacity ring visually based on the occupancy percentage.
+ * @param {number} percentage - The overall capacity utilization percentage (0-100).
  */
 function updateCapacityRing(percentage) {
   const ring = document.getElementById('staff-capacity-ring');
   const text = document.getElementById('staff-capacity-text');
   
-  if(!ring || !text) return;
+  if(!ring || !text) {return;}
   
   ring.setAttribute('stroke-dasharray', `${percentage}, 100`);
   text.textContent = `${percentage}%`;
   
   // Color code based on capacity
-  if (percentage >= 90) ring.style.stroke = '#f87171';
-  else if (percentage >= 75) ring.style.stroke = '#fb923c';
-  else if (percentage >= 50) ring.style.stroke = '#facc15';
-  else ring.style.stroke = '#4ade80';
+  if (percentage >= 90) {ring.style.stroke = '#f87171';}
+  else if (percentage >= 75) {ring.style.stroke = '#fb923c';}
+  else if (percentage >= 50) {ring.style.stroke = '#facc15';}
+  else {ring.style.stroke = '#4ade80';}
 }
 
 /**
- * Renders gate congestion bars
+ * Renders gate congestion bars and occupancy metrics in the sidebar container.
+ * @param {Array<{ gateId: string, utilisation: number, waitTime: string }>} gateData - Array of gate objects.
  */
 function renderGateBars(gateData) {
   const container = document.getElementById('gate-bars-container');
-  if(!container) return;
+  if(!container) {return;}
   
   container.innerHTML = '';
   
   gateData.forEach(gate => {
     // Determine color
     let fillClass = '#4ade80';
-    if (gate.utilisation >= 90) fillClass = '#f87171';
-    else if (gate.utilisation >= 75) fillClass = '#fb923c';
-    else if (gate.utilisation >= 50) fillClass = '#facc15';
+    if (gate.utilisation >= 90) {fillClass = '#f87171';}
+    else if (gate.utilisation >= 75) {fillClass = '#fb923c';}
+    else if (gate.utilisation >= 50) {fillClass = '#facc15';}
     
     const safeGateId = DOMPurify.sanitize(gate.gateId);
     const safeWaitTime = DOMPurify.sanitize(gate.waitTime || '--');

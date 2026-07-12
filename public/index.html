@@ -21,6 +21,7 @@
   <script src="/js/fan.js" defer></script>
   <script src="/js/volunteer.js" defer></script>
   <script src="/js/staff.js" defer></script>
+  <script src="/js/eco.js" defer></script>
 </head>
 
 
@@ -147,6 +148,10 @@
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
         data-target="staff-screen">
         <span class="material-symbols-outlined">event</span> <span id="sidebar-match-day">Match Day</span>
+      </a>
+      <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
+        data-target="eco-screen">
+        <span class="material-symbols-outlined">eco</span> <span id="sidebar-eco-hub">Eco & Transport</span>
       </a>
     </div>
     <div class="px-md flex flex-col gap-4">
@@ -918,6 +923,120 @@
             <div class="absolute top-[35%] left-[25%] w-24 h-24 bg-error/30 rounded-full blur-xl animate-pulse"></div>
 
             <div class="absolute bottom-4 right-4 text-xs font-bold text-white/50">ATTACKING DIRECTION &uarr;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECO & TRANSPORT SCREEN -->
+    <section id="eco-screen" class="screen hidden grid grid-cols-1 lg:grid-cols-12 gap-lg relative">
+      <!-- Left Column: Eco Recommendations -->
+      <div class="col-span-1 lg:col-span-6 flex flex-col gap-lg">
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white chromatic-edge">
+          <h2 class="text-2xl font-bold text-secondary-fixed-dim flex items-center gap-2">
+            <span class="material-symbols-outlined text-green-400">eco</span>
+            Sustainability Hub
+          </h2>
+          <p class="text-on-surface-variant text-sm">FIFA World Cup 2026 is committed to green operations. Select a transport mode to check carbon emissions offset calculations.</p>
+          
+          <div class="flex flex-col gap-2 mt-2">
+            <label for="eco-transport-select" class="text-xs text-on-surface-variant font-medium">Select Commute Mode</label>
+            <select id="eco-transport-select" aria-label="Select mode of transport for carbon analysis"
+              class="bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-secondary-fixed-dim transition-all">
+              <option value="">-- Choose Mode --</option>
+              <option value="metro">Metro (Train)</option>
+              <option value="bus">Shuttle Bus</option>
+              <option value="rideshare">Rideshare / Carpool</option>
+              <option value="parking">Personal Car (Parking)</option>
+            </select>
+          </div>
+
+          <button id="calculate-eco-btn"
+            class="bg-secondary-fixed-dim text-on-secondary-fixed py-2.5 rounded-lg font-bold hover:bg-secondary transition-all shadow-[0_0_15px_rgba(0,218,243,0.3)] mt-2 cursor-pointer">
+            Calculate Carbon Footprint
+          </button>
+
+          <!-- Eco Results -->
+          <div id="eco-results" class="hidden mt-4 p-4 rounded-lg bg-surface-container/40 border border-white/5 flex flex-col gap-3">
+            <div class="flex justify-between items-center border-b border-white/10 pb-2">
+              <span class="text-sm font-bold text-tertiary-fixed-dim">Carbon Footprint (15km trip)</span>
+              <span id="eco-carbon-value" class="text-lg font-black text-white">--</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Offset Comparisons</span>
+              <ul id="eco-comparison-list" class="list-disc pl-4 text-xs text-on-surface-variant flex flex-col gap-1.5">
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Water Stations & Sorting -->
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
+          <h3 class="text-lg font-bold text-tertiary-fixed-dim flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-blue-400">local_drink</span>
+            Water Stations & Waste Management
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div>
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Water Refill Stations</span>
+              <div id="water-stations-list" class="flex flex-col gap-2 mt-2">
+              </div>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Waste Sorting Instructions</span>
+              <div id="waste-sorting-list" class="flex flex-col gap-2 mt-2">
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 rounded bg-green-500/10 border border-green-500/20 text-xs text-green-400 font-medium hidden" id="eco-tip-text">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Transport Options & Delay Status -->
+      <div class="col-span-1 lg:col-span-6 flex flex-col gap-lg">
+        <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white chromatic-edge">
+          <h2 class="text-2xl font-bold text-secondary-fixed-dim flex items-center gap-2">
+            <span class="material-symbols-outlined text-orange-400">directions_bus</span>
+            Transport Planner
+          </h2>
+          <p class="text-on-surface-variant text-sm">Calculate wait times and find the most efficient transit modes post-match.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+            <div class="flex flex-col gap-1">
+              <label for="transport-dest-select" class="text-xs text-on-surface-variant font-medium">Destination</label>
+              <select id="transport-dest-select" aria-label="Select destination"
+                class="bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-secondary-fixed-dim transition-all">
+                <option value="Airport">Airport (DFW / LAX / Newark)</option>
+                <option value="Downtown">Downtown / City Center</option>
+                <option value="Hotel Zone">Hotel / Fan Zone</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="transport-time-select" class="text-xs text-on-surface-variant font-medium">Departure Window</label>
+              <select id="transport-time-select" aria-label="Select departure window"
+                class="bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white outline-none focus:border-secondary-fixed-dim transition-all">
+                <option value="post-match">Post-match (High congestion)</option>
+                <option value="mid-match">Mid-match (Low congestion)</option>
+                <option value="pre-match">Pre-match (Entering stadium)</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="calculate-transport-btn"
+            class="bg-secondary-fixed-dim text-on-secondary-fixed py-2.5 rounded-lg font-bold hover:bg-secondary transition-all shadow-[0_0_15px_rgba(0,218,243,0.3)] mt-2 cursor-pointer">
+            Find Optimal Route
+          </button>
+
+          <!-- Transit Rankings -->
+          <div id="transport-results" class="hidden flex flex-col gap-4 mt-4">
+            <div id="transport-advice" class="p-3 rounded bg-orange-500/10 border border-orange-500/20 text-xs text-orange-400 font-medium">
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Ranked Transit Options</span>
+              <div id="transport-ranking-list" class="flex flex-col gap-3">
+              </div>
+            </div>
           </div>
         </div>
       </div>

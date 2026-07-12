@@ -32,9 +32,9 @@ function generateAlertId(type) {
  * @returns {string} Priority label.
  */
 function resolvePriority(severity) {
-  if (severity === ALERT_SEVERITIES.CRITICAL) return ALERT_PRIORITIES.P1;
-  if (severity === ALERT_SEVERITIES.HIGH) return ALERT_PRIORITIES.P2;
-  if (severity === ALERT_SEVERITIES.MEDIUM) return ALERT_PRIORITIES.P3;
+  if (severity === ALERT_SEVERITIES.CRITICAL) {return ALERT_PRIORITIES.P1;}
+  if (severity === ALERT_SEVERITIES.HIGH) {return ALERT_PRIORITIES.P2;}
+  if (severity === ALERT_SEVERITIES.MEDIUM) {return ALERT_PRIORITIES.P3;}
   return ALERT_PRIORITIES.P4;
 }
 
@@ -48,14 +48,14 @@ function resolveAffectedZones(location, type) {
   const loc = location.toLowerCase();
 
   // Map known sections/areas to zones
-  if (loc.includes('gate a') || loc.includes('north')) return ['Zone A', 'North Concourse'];
-  if (loc.includes('gate b') || loc.includes('east')) return ['Zone B', 'East Concourse'];
-  if (loc.includes('gate c') || loc.includes('south')) return ['Zone C', 'South Concourse'];
-  if (loc.includes('gate d') || loc.includes('west')) return ['Zone D', 'West Concourse'];
-  if (loc.includes('gate e') || loc.includes('gate f')) return ['Zone E', 'Zone F', 'Accessible Areas'];
-  if (loc.includes('field') || loc.includes('pitch')) return ['Field Level', 'All Lower Sections'];
-  if (type === ALERT_TYPES.WEATHER) return ['All Zones', 'Entire Stadium'];
-  if (type === ALERT_TYPES.SECURITY) return ['All Zones', 'All Concourses'];
+  if (loc.includes('gate a') || loc.includes('north')) {return ['Zone A', 'North Concourse'];}
+  if (loc.includes('gate b') || loc.includes('east')) {return ['Zone B', 'East Concourse'];}
+  if (loc.includes('gate c') || loc.includes('south')) {return ['Zone C', 'South Concourse'];}
+  if (loc.includes('gate d') || loc.includes('west')) {return ['Zone D', 'West Concourse'];}
+  if (loc.includes('gate e') || loc.includes('gate f')) {return ['Zone E', 'Zone F', 'Accessible Areas'];}
+  if (loc.includes('field') || loc.includes('pitch')) {return ['Field Level', 'All Lower Sections'];}
+  if (type === ALERT_TYPES.WEATHER) {return ['All Zones', 'Entire Stadium'];}
+  if (type === ALERT_TYPES.SECURITY) {return ['All Zones', 'All Concourses'];}
 
   return ['All Zones'];
 }

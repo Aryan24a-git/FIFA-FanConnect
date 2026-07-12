@@ -423,7 +423,23 @@ const faqs = [
     category: 'general',
     question: 'How does the FIFA FanConnect assistant work?',
     answer:
-      'FIFA FanConnect is an AI-powered smart stadium assistant. You can ask about gates, routes, crowd levels, food, transport, and safety. The assistant uses real-time stadium data for routing and crowd decisions, and Gemini AI to explain answers in your language clearly.',
+      'FIFA FanConnect is an AI-powered smart stadium assistant. You can ask about gates, routes, crowd levels, food, transport, and safety. The assistant uses real-time stadium data for routing and crowd decisions, and Groq AI to explain answers in your language clearly.',
+    languages: ['en'],
+  },
+  {
+    id: 'faq_051',
+    category: 'sustainability',
+    question: 'How is FIFA World Cup 2026 addressing sustainability and climate impact?',
+    answer:
+      'FIFA is committed to reducing stadium waste and carbon footprints. All venues offer water refill stations for reusable bottles under 500ml, 100% compostable and recyclable packaging at food stalls, and partnerships with local green transit networks.',
+    languages: ['en'],
+  },
+  {
+    id: 'faq_052',
+    category: 'sustainability',
+    question: 'Can I bring reusable water bottles to the stadium?',
+    answer:
+      'Yes! Fans can bring empty, clear, reusable plastic water bottles (up to 500ml) into the stadium. Water refill stations are located at all major entrances (Gate A1, C1) and concessions areas.',
     languages: ['en'],
   },
 ];

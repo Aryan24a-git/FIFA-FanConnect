@@ -11,7 +11,7 @@ const express = require('express');
 const router = express.Router();
 
 const { validateNavigate } = require('../utils/validators');
-const { getRoute } = require('../engines/routingEngine');
+const { getRoute } = require('../engines');
 const { translateToLanguage, isModelReady } = require('../services/gemini');
 const { getStadiumById } = require('../data/stadiumData');
 const AppError = require('../utils/AppError');

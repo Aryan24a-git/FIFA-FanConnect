@@ -1,9 +1,15 @@
 'use strict';
 
 /**
- * Main coordinator, state management, and navigation for FIFA FanConnect.
+ * @fileoverview Main coordinator, state management, and navigation for FIFA FanConnect.
+ * Manages active persona, language selector, UI localization, and route visualizers.
+ * @module public/js/app
  */
 
+/**
+ * Global application state object.
+ * @type {{ currentPersona: string, stadiumId: string, language: string }}
+ */
 const AppState = {
   currentPersona: 'fan',
   stadiumId: localStorage.getItem('fc_stadium') || 'metlife',
@@ -43,7 +49,7 @@ const UI_STRINGS = {
     highActivity: 'High Activity', historicFinal: 'HISTORIC FINAL',
     selectLang: 'Select Language', langUpdated: 'Language updated',
     stadiumUpdated: 'Stadium updated', sendBtn: 'Send',
-    volunteerTitle: 'Volunteer Hub', staffTitle: 'Operations Dashboard',
+    volunteerTitle: 'Volunteer Hub', staffTitle: 'Operations Dashboard', ecoHub: 'Eco & Transport',
   },
   ja: {
     navAllStadiums: '全スタジアム', navLiveHeatmaps: 'ライヒートマップ', navGlobalChat: 'グローバルチャット',
@@ -57,7 +63,7 @@ const UI_STRINGS = {
     highActivity: '高活動', historicFinal: '歴史的決勝',
     selectLang: '言語を選択', langUpdated: '言語が更新されました',
     stadiumUpdated: 'スタジアムが更新されました', sendBtn: '送信',
-    volunteerTitle: 'ボランティアハブ', staffTitle: '運営ダッシュボード',
+    volunteerTitle: 'ボランティアハブ', staffTitle: '運営ダッシュボード', ecoHub: '環境と交通',
   },
   es: {
     navAllStadiums: 'Todos los Estadios', navLiveHeatmaps: 'Mapas de Calor', navGlobalChat: 'Chat Global',
@@ -71,7 +77,7 @@ const UI_STRINGS = {
     highActivity: 'Alta Actividad', historicFinal: 'FINAL HISTÓRICA',
     selectLang: 'Seleccionar Idioma', langUpdated: 'Idioma actualizado',
     stadiumUpdated: 'Estadio actualizado', sendBtn: 'Enviar',
-    volunteerTitle: 'Centro de Voluntarios', staffTitle: 'Panel de Operaciones',
+    volunteerTitle: 'Centro de Voluntarios', staffTitle: 'Panel de Operaciones', ecoHub: 'Eco y Transporte',
   },
   it: {
     navAllStadiums: 'Tutti gli Stadi', navLiveHeatmaps: 'Mappe di Calore', navGlobalChat: 'Chat Globale',
@@ -85,7 +91,7 @@ const UI_STRINGS = {
     highActivity: 'Alta Attività', historicFinal: 'FINALE STORICA',
     selectLang: 'Seleziona Lingua', langUpdated: 'Lingua aggiornata',
     stadiumUpdated: 'Stadio aggiornato', sendBtn: 'Invia',
-    volunteerTitle: 'Hub Volontari', staffTitle: 'Pannello Operativo',
+    volunteerTitle: 'Hub Volontari', staffTitle: 'Pannello Operativo', ecoHub: 'Eco e Trasporti',
   },
   pt: {
     navAllStadiums: 'Todos os Estádios', navLiveHeatmaps: 'Mapas de Calor', navGlobalChat: 'Chat Global',
@@ -99,7 +105,7 @@ const UI_STRINGS = {
     highActivity: 'Alta Atividade', historicFinal: 'FINAL HISTÓRICA',
     selectLang: 'Selecionar Idioma', langUpdated: 'Idioma atualizado',
     stadiumUpdated: 'Estádio atualizado', sendBtn: 'Enviar',
-    volunteerTitle: 'Hub de Voluntários', staffTitle: 'Painel de Operações',
+    volunteerTitle: 'Hub de Voluntários', staffTitle: 'Painel de Operações', ecoHub: 'Eco e Transporte',
   },
   ar: {
     navAllStadiums: 'جميع الملاعب', navLiveHeatmaps: 'خرائط الكثافة', navGlobalChat: 'الدردشة العالمية',
@@ -113,7 +119,7 @@ const UI_STRINGS = {
     highActivity: 'نشاط عالٍ', historicFinal: 'نهائي تاريخي',
     selectLang: 'اختر اللغة', langUpdated: 'تم تحديث اللغة',
     stadiumUpdated: 'تم تحديث الملعب', sendBtn: 'إرسال',
-    volunteerTitle: 'مركز المتطوعين', staffTitle: 'لوحة العمليات',
+    volunteerTitle: 'مركز المتطوعين', staffTitle: 'لوحة العمليات', ecoHub: 'البيئة والنقل',
   },
   ko: {
     navAllStadiums: '모든 경기장', navLiveHeatmaps: '실시간 히트맵', navGlobalChat: '글로벌 채팅',
@@ -127,7 +133,7 @@ const UI_STRINGS = {
     highActivity: '높은 활동', historicFinal: '역사적 결승',
     selectLang: '언어 선택', langUpdated: '언어가 업데이트되었습니다',
     stadiumUpdated: '경기장이 업데이트되었습니다', sendBtn: '전송',
-    volunteerTitle: '자원봉사자 허브', staffTitle: '운영 대시보드',
+    volunteerTitle: '자원봉사자 허브', staffTitle: '운영 대시보드', ecoHub: '에코 및 교통',
   },
   fr: {
     navAllStadiums: 'Tous les Stades', navLiveHeatmaps: 'Cartes de Chaleur', navGlobalChat: 'Chat Mondial',
@@ -141,7 +147,7 @@ const UI_STRINGS = {
     highActivity: 'Haute Activité', historicFinal: 'FINALE HISTORIQUE',
     selectLang: 'Choisir la Langue', langUpdated: 'Langue mise à jour',
     stadiumUpdated: 'Stade mis à jour', sendBtn: 'Envoyer',
-    volunteerTitle: 'Hub des Bénévoles', staffTitle: 'Tableau de Bord Opérationnel',
+    volunteerTitle: 'Hub des Bénévoles', staffTitle: 'Tableau de Bord Opérationnel', ecoHub: 'Éco & Transport',
   },
   de: {
     navAllStadiums: 'Alle Stadien', navLiveHeatmaps: 'Live-Heatmaps', navGlobalChat: 'Globaler Chat',
@@ -155,7 +161,7 @@ const UI_STRINGS = {
     highActivity: 'Hohe Aktivität', historicFinal: 'HISTORISCHES FINALE',
     selectLang: 'Sprache auswählen', langUpdated: 'Sprache aktualisiert',
     stadiumUpdated: 'Stadion aktualisiert', sendBtn: 'Senden',
-    volunteerTitle: 'Freiwilligen-Hub', staffTitle: 'Betriebsdashboard',
+    volunteerTitle: 'Freiwilligen-Hub', staffTitle: 'Betriebsdashboard', ecoHub: 'Öko & Transport',
   },
 };
 
@@ -198,25 +204,25 @@ function applyUILanguage(langCode) {
     'send-fan-ai-btn': 'sendBtn',
     'volunteer-hub-title': 'volunteerTitle',
     'staff-dashboard-title': 'staffTitle',
+    'sidebar-eco-hub': 'ecoHub',
   };
 
   Object.entries(map).forEach(([id, key]) => {
     const el = document.getElementById(id);
-    if (!el || !key) return;
+    if (!el || !key) {return;}
     el.textContent = strings[key];
   });
 
   // Placeholder for chat input
   const input = document.getElementById('chat-input');
-  if (input) input.setAttribute('placeholder', strings.askFanAi || 'Ask FAN Ai...');
+  if (input) {input.setAttribute('placeholder', strings.askFanAi || 'Ask FAN Ai...');}
 
   // Update lang picker button display
-  const activeLang = LANGUAGES.find(l => l.code === langCode && l.label);
   const selectedLang = LANGUAGES.find(l => l.code === langCode);
   const flagEl = document.getElementById('lang-flag-display');
   const labelEl = document.getElementById('lang-label-display');
-  if (selectedLang && flagEl) flagEl.textContent = selectedLang.flag;
-  if (labelEl) labelEl.textContent = langCode.toUpperCase();
+  if (selectedLang && flagEl) {flagEl.textContent = selectedLang.flag;}
+  if (labelEl) {labelEl.textContent = langCode.toUpperCase();}
 }
 
 
@@ -236,12 +242,13 @@ function showToast(msg, type = 'info') {
   container.appendChild(toast);
   setTimeout(() => {
     toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
+    setTimeout(() => {toast.remove();}, 300);
   }, 3000);
 }
 
 /**
- * Switch persona screens
+ * Switch active persona screen and update navigation button state.
+ * @param {string} targetId - ID of the target screen element to display (e.g. 'fan-screen').
  */
 function switchScreen(targetId) {
   // Update UI screens
@@ -327,10 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Build radio-style language options from LANGUAGES config
   if (langOptionsList) {
     LANGUAGES.forEach((lang, idx) => {
-      const isSelected = (AppState.language === lang.code &&
-        // For the default selection, pick the first match by label
-        (AppState.language !== 'en' || idx === 0));
-
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.role = 'option';
@@ -370,13 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Apply state
         AppState.language = newCode;
         localStorage.setItem('fc_lang', newCode);
-        if (langSelect) langSelect.value = newCode;
+        if (langSelect) {langSelect.value = newCode;}
 
         // Update flag/label in button
         const flagEl  = document.getElementById('lang-flag-display');
         const labelEl = document.getElementById('lang-label-display');
-        if (flagEl)  flagEl.textContent  = lang.flag;
-        if (labelEl) labelEl.textContent = lang.label.substring(0, 3).toUpperCase();
+        if (flagEl)  {flagEl.textContent  = lang.flag;}
+        if (labelEl) {labelEl.textContent = lang.label.substring(0, 3).toUpperCase();}
 
         // Apply full UI translation
         applyUILanguage(newCode);
@@ -442,6 +445,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeStartRing = null;
   let activeEndRing = null;
 
+  /**
+   * Resets and clears all visual route highlights, rings, and paths on the SVG map.
+   */
   function clearMapHighlights() {
     if (activeStartRing) {
       activeStartRing.style.stroke = '';

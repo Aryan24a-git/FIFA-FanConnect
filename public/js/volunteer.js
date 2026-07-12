@@ -1,11 +1,13 @@
 'use strict';
 
 /**
- * Volunteer interface: Alert feed, report generation, and briefings.
+ * @fileoverview Volunteer dashboard controller. Manages shift/profile editing,
+ * dynamic zone briefings, and volunteer incident report dispatches.
+ * @module public/js/volunteer
  */
 
 document.getElementById('vol-report-btn').addEventListener('click', async () => {
-  if(!confirm("Report a high crowd issue in Zone B?")) return;
+  if(!confirm("Report a high crowd issue in Zone B?")) {return;}
   
   try {
     const res = await fetch('/api/alert', {
@@ -79,7 +81,7 @@ document.getElementById('vol-briefing-btn').addEventListener('click', async () =
   const briefingContainer = document.getElementById('vol-briefing-container');
   const briefingContent = document.getElementById('vol-briefing-content');
 
-  if (!briefingContainer || !briefingContent) return;
+  if (!briefingContainer || !briefingContent) {return;}
 
   briefingContent.textContent = '';
   const span = document.createElement('span');
@@ -112,6 +114,10 @@ document.getElementById('vol-briefing-btn').addEventListener('click', async () =
   }
 });
 
+/**
+ * Helper function to delegate adding an alert to the global shared alert store.
+ * @param {Object} alertObj - The alert object to add to the feed.
+ */
 function addAlertToFeed(alertObj) {
   if (window.addFanAlertToFeed) {
     window.addFanAlertToFeed(alertObj);

@@ -11,9 +11,7 @@ const express = require('express');
 const router = express.Router();
 
 const { validateAssist } = require('../utils/validators');
-const { analyzeCrowd } = require('../engines/crowdEngine');
-const { getRoute } = require('../engines/routingEngine');
-const { generateAlert } = require('../engines/alertEngine');
+const { analyzeCrowd, getRoute, generateAlert } = require('../engines');
 const { searchFaqs } = require('../data/faqDatabase');
 const { getStadiumById } = require('../data/stadiumData');
 const { answerFanQuestion, isModelReady, translateToLanguage } = require('../services/gemini');

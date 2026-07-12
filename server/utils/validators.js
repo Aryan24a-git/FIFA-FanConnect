@@ -14,6 +14,7 @@ const {
   ALERT_SEVERITIES,
   VALID_PERSONAS,
   INPUT_LIMITS,
+  VALID_TRANSPORT_MODES,
 } = require('./constants');
 
 /**
@@ -23,7 +24,7 @@ const {
  * @returns {string} String with all HTML tags removed.
  */
 function stripHtml(str) {
-  if (typeof str !== 'string') return '';
+  if (typeof str !== 'string') {return '';}
   return str.replace(/<[^>]*>/g, '').trim();
 }
 
@@ -123,6 +124,45 @@ const translateSchema = z.object({
     .transform((v) => (v ? stripHtml(v) : undefined)),
 });
 
+/**
+ * Zod schema for POST /api/sustainability
+ * @type {import('zod').ZodObject}
+ */
+const sustainabilitySchema = z.object({
+  stadiumId: z.enum(VALID_STADIUM_IDS, {
+    errorMap: () => ({ message: `stadiumId must be one of: ${VALID_STADIUM_IDS.join(', ')}` }),
+  }),
+  transportMode: z.enum(VALID_TRANSPORT_MODES, {
+    errorMap: () => ({ message: `transportMode must be one of: ${VALID_TRANSPORT_MODES.join(', ')}` }),
+  }).optional(),
+  language: z.enum(SUPPORTED_LANGUAGES, {
+    errorMap: () => ({ message: `language must be one of: ${SUPPORTED_LANGUAGES.join(', ')}` }),
+  }).default('en'),
+});
+
+/**
+ * Zod schema for POST /api/transport
+ * @type {import('zod').ZodObject}
+ */
+const transportSchema = z.object({
+  stadiumId: z.enum(VALID_STADIUM_IDS, {
+    errorMap: () => ({ message: `stadiumId must be one of: ${VALID_STADIUM_IDS.join(', ')}` }),
+  }),
+  destination: z
+    .string()
+    .min(1, 'destination must not be empty')
+    .max(100)
+    .transform(stripHtml),
+  time: z
+    .string()
+    .max(50)
+    .optional()
+    .transform((v) => (v ? stripHtml(v) : undefined)),
+  language: z.enum(SUPPORTED_LANGUAGES, {
+    errorMap: () => ({ message: `language must be one of: ${SUPPORTED_LANGUAGES.join(', ')}` }),
+  }).default('en'),
+});
+
 // ─── VALIDATION FUNCTIONS ──────────────────────────────────────────────────────
 
 /**
@@ -177,10 +217,38 @@ function validateTranslate(data) {
   return { success: true, data: result.data };
 }
 
+/**
+ * Validates POST /api/sustainability request body.
+ * @param {unknown} data - Raw request body.
+ * @returns {{ success: boolean, data?: object, errors?: string[] }} Validation result.
+ */
+function validateSustainability(data) {
+  const result = sustainabilitySchema.safeParse(data);
+  if (!result.success) {
+    return { success: false, errors: result.error.errors.map((e) => e.message) };
+  }
+  return { success: true, data: result.data };
+}
+
+/**
+ * Validates POST /api/transport request body.
+ * @param {unknown} data - Raw request body.
+ * @returns {{ success: boolean, data?: object, errors?: string[] }} Validation result.
+ */
+function validateTransport(data) {
+  const result = transportSchema.safeParse(data);
+  if (!result.success) {
+    return { success: false, errors: result.error.errors.map((e) => e.message) };
+  }
+  return { success: true, data: result.data };
+}
+
 module.exports = {
   stripHtml,
   validateAssist,
   validateAlert,
   validateNavigate,
   validateTranslate,
+  validateSustainability,
+  validateTransport,
 };

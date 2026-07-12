@@ -17,7 +17,12 @@
     "THREE": "readonly"
   },
   "rules": {
-    "no-unused-vars": "warn",
-    "no-console": "off"
+    "no-unused-vars": "error",
+    "no-console": "off",
+    "no-var": "error",
+    "prefer-const": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": "error",
+    "no-throw-literal": "error"
   }
 }

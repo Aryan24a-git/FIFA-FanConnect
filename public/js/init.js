@@ -112,7 +112,7 @@ tailwind.config = {
 
     // Football Geometry (Subdivided Icosahedron)
     const radius = 2;
-    let geometry = new THREE.IcosahedronGeometry(radius, 2).toNonIndexed();
+    const geometry = new THREE.IcosahedronGeometry(radius, 2).toNonIndexed();
     const positionAttribute = geometry.getAttribute('position');
     const colors = [];
 
