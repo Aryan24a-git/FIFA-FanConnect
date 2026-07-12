@@ -52,13 +52,14 @@
         class="font-display-md text-[20px] md:text-display-md font-black tracking-tighter text-secondary-fixed-dim hidden sm:block">FIFA
         FanConnect</span>
       <div class="hidden md:flex gap-lg">
-        <a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
+        <a id="nav-all-stadiums" class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
           href="#">All Stadiums</a>
-        <a class="text-secondary-fixed-dim border-b-2 border-secondary-fixed-dim pb-2 font-label-md text-label-md"
+        <a id="nav-live-heatmaps" class="text-secondary-fixed-dim border-b-2 border-secondary-fixed-dim pb-2 font-label-md text-label-md"
           href="#">Live Heatmaps</a>
-        <a class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
+        <a id="nav-global-chat" class="text-on-surface-variant hover:text-secondary-fixed-dim hover:glow-sm transition-all font-label-md text-label-md"
           href="#">Global Chat</a>
       </div>
+
     </div>
     <div class="flex items-center gap-md">
       <select id="fan-stadium"
@@ -67,29 +68,52 @@
         <option value="atandt">AT&T Stadium</option>
         <option value="sofi">SoFi Stadium</option>
       </select>
-      <select id="fan-language"
-        class="hidden lg:block bg-surface-container/60 text-white rounded border border-secondary-container/30 px-2 py-1 outline-none text-sm">
+      <select id="fan-language" class="sr-only" aria-label="Language selector" aria-hidden="true">
         <option value="en">EN</option>
         <option value="es">ES</option>
         <option value="fr">FR</option>
         <option value="ar">AR</option>
         <option value="pt">PT</option>
+        <option value="ja">JA</option>
+        <option value="it">IT</option>
+        <option value="de">DE</option>
+        <option value="ko">KO</option>
       </select>
 
-      <!-- Crowd Status Badge -->
+      <!-- Language Picker Button -->
+      <div class="relative" id="lang-picker-wrapper">
+        <button id="lang-picker-btn"
+          aria-haspopup="true" aria-expanded="false"
+          class="flex items-center gap-2 bg-surface-container/60 hover:bg-secondary-container/30 border border-secondary-container/40 px-3 py-2 rounded-xl transition-all duration-200 group shadow-[0_0_12px_rgba(0,218,243,0.15)]">
+          <span class="text-lg" id="lang-flag-display">🌐</span>
+          <span class="text-secondary-fixed-dim font-label-md text-sm" id="lang-label-display">EN</span>
+          <span class="material-symbols-outlined text-secondary-fixed-dim/70 text-sm group-hover:text-secondary-fixed-dim transition-all" style="font-size:16px">expand_more</span>
+        </button>
+
+        <!-- Language Dropdown Panel -->
+        <div id="lang-picker-panel"
+          role="listbox" aria-label="Select Language"
+          class="hidden absolute right-0 top-[calc(100%+10px)] z-[200] w-72 bg-surface-container/95 backdrop-blur-2xl border border-secondary-container/30 rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.6)] p-3 overflow-y-auto max-h-[80vh]">
+          <div id="lang-panel-heading" class="text-xs font-bold text-on-surface-variant/70 uppercase tracking-widest px-2 pb-2">Select Language</div>
+          <div id="lang-options-list" class="flex flex-col gap-1"></div>
+        </div>
+      </div>
+
+
       <div
         class="hidden lg:flex items-center gap-sm bg-surface-container/60 px-4 py-2 rounded-full border border-secondary-container/30"
         id="crowd-status-badge">
         <span class="material-symbols-outlined text-tertiary-fixed-dim text-sm"
           style="font-variation-settings: 'FILL' 1;">groups</span>
-        <span class="font-label-md text-label-md text-on-surface mr-2">Crowd:</span>
+        <span id="crowd-label-text" class="font-label-md text-label-md text-on-surface mr-2">Crowd:</span>
         <span id="fan-crowd-pill"
           class="px-2 py-1 rounded bg-green-500/20 text-green-400 font-label-md text-caption border border-green-500/30">LOW</span>
       </div>
-      <button
+      <button id="crowd-status-btn"
         class="bg-secondary-fixed-dim text-on-secondary-fixed px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-secondary transition-all shadow-[0_0_15px_rgba(0,218,243,0.3)] hidden lg:block">
         Crowd Status
       </button>
+
     </div>
   </nav>
 
@@ -99,33 +123,34 @@
     <div class="flex flex-col gap-2 px-md" id="nav-tabs-container">
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-secondary-fixed-dim bg-secondary-container/10 border-r-4 border-secondary-fixed-dim font-bold font-label-md text-label-md cursor-pointer transition-all duration-300"
         data-target="fan-screen">
-        <span class="material-symbols-outlined">sports_soccer</span> Pitch Feed
+        <span class="material-symbols-outlined">sports_soccer</span> <span id="sidebar-pitch-feed">Pitch Feed</span>
       </a>
       <div class="h-px bg-white/10 my-2"></div>
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
         data-target="squad-screen">
-        <span class="material-symbols-outlined">leaderboard</span> Squad Stats
+        <span class="material-symbols-outlined">leaderboard</span> <span id="sidebar-squad-stats">Squad Stats</span>
       </a>
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
         data-target="map-screen">
-        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stadium</span> Stadium Map
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">stadium</span> <span id="sidebar-stadium-map">Stadium Map</span>
       </a>
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
         data-target="volunteer-screen">
-        <span class="material-symbols-outlined">groups</span> Fan Zone
+        <span class="material-symbols-outlined">groups</span> <span id="sidebar-fan-zone">Fan Zone</span>
       </a>
       <a class="nav-btn flex items-center gap-md p-3 rounded-lg text-on-surface-variant/70 hover:text-on-surface hover:bg-secondary-container/5 hover:backdrop-blur-md transition-all duration-300 font-label-md text-label-md cursor-pointer"
         data-target="staff-screen">
-        <span class="material-symbols-outlined">event</span> Match Day
+        <span class="material-symbols-outlined">event</span> <span id="sidebar-match-day">Match Day</span>
       </a>
     </div>
     <div class="px-md flex flex-col gap-4">
       <button
         class="nav-btn w-full bg-secondary-fixed-dim text-on-secondary-fixed py-3 rounded-lg font-label-md text-label-md shadow-[0_0_15px_rgba(0,218,243,0.3)] hover:bg-secondary transition-all cursor-pointer"
         data-target="live-match-screen">
-        Live Match Center
+        <span id="sidebar-live-match">Live Match Center</span>
       </button>
     </div>
+
   </aside>
 
   <div id="toast-container" class="toast-container"></div>
@@ -141,13 +166,14 @@
         <div
           class="liquid-glass rounded-xl h-64 w-full relative overflow-hidden flex items-center justify-between p-lg chromatic-edge">
           <div class="z-10 max-w-[50%] sm:max-w-md">
-            <h1
+            <h1 id="hero-title"
               class="font-display-lg text-headline-lg-mobile lg:text-display-lg text-white mb-2 shadow-black drop-shadow-lg">
               FIFA FanConnect</h1>
-            <p
+            <p id="hero-subtitle"
               class="font-body-lg text-body-md lg:text-body-lg text-on-surface-variant mb-4 lg:mb-6 shadow-black drop-shadow-md">
               Immerse yourself in the live stadium pulse.<br />Ask FAN Ai for real-time routing.</p>
           </div>
+
           <!-- 3D Football Asset -->
           <div
             class="absolute right-0 top-0 bottom-0 w-[40%] sm:w-[45%] lg:w-1/2 pointer-events-none opacity-80 mix-blend-screen">
@@ -163,10 +189,11 @@
           <div
             class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge">
             <div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
-              <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Match Details</h2>
-              <span
+              <h2 id="match-details-label" class="font-headline-md text-headline-md text-secondary-fixed-dim">Match Details</h2>
+              <span id="match-historic-badge"
                 class="px-2 py-1 rounded bg-tertiary-fixed-dim/20 text-tertiary-fixed-dim border border-tertiary-fixed-dim/30 font-label-md text-caption uppercase tracking-wider">Historic Final</span>
             </div>
+
              <div class="flex items-center justify-between mt-2">
               <div class="flex flex-col items-center">
                 <div
@@ -203,7 +230,7 @@
           <div id="sector-control-card"
             class="liquid-glass rounded-xl p-lg flex flex-col gap-md chromatic-edge cursor-pointer hover:bg-white/5 transition-all">
             <div class="flex justify-between items-center border-b border-secondary-container/20 pb-2">
-              <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Sector Control</h2>
+              <h2 id="sector-control-label" class="font-headline-md text-headline-md text-secondary-fixed-dim">Sector Control</h2>
               <span class="material-symbols-outlined text-secondary-fixed-dim">map</span>
             </div>
             <div
@@ -217,7 +244,7 @@
                 <div class="font-body-md text-caption text-secondary-fixed-dim flex items-center gap-1">
                   <span
                     class="w-2 h-2 rounded-full bg-secondary-fixed-dim inline-block shadow-[0_0_8px_#00daf3]"></span>
-                  High Activity
+                  <span id="sector-activity-label">High Activity</span>
                 </div>
               </div>
             </div>
@@ -227,7 +254,7 @@
         <!-- Active Alerts Feed -->
         <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white mt-2">
           <div class="flex justify-between items-center border-b border-white/10 pb-2">
-            <h2 class="font-headline-md text-headline-md text-secondary-fixed-dim">Active Alerts Feed</h2>
+            <h2 id="active-alerts-label" class="font-headline-md text-headline-md text-secondary-fixed-dim">Active Alerts Feed</h2>
             <span class="material-symbols-outlined text-secondary-fixed-dim">notifications_active</span>
           </div>
           <div id="fan-alert-feed" class="flex flex-col gap-2 overflow-y-auto max-h-48 mt-2 p-2">
@@ -261,15 +288,15 @@
               </div>
             </div>
             <div>
-              <h3 class="font-headline-md text-[18px] text-tertiary-fixed-dim font-bold">FAN Ai</h3>
+              <h3 id="fan-ai-name" class="font-headline-md text-[18px] text-tertiary-fixed-dim font-bold">FAN Ai</h3>
               <p class="font-label-md text-caption text-on-surface-variant flex items-center gap-1">
-                <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Online
+                <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> <span id="fan-ai-status">Online</span>
               </p>
             </div>
           </div>
           <button id="report-incident-btn"
             class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs py-2 px-3 rounded-lg flex items-center gap-1 transition-all shadow-[0_0_10px_rgba(220,38,38,0.4)] cursor-pointer">
-            <span class="material-symbols-outlined text-[16px] font-bold">campaign</span> Report Incident
+            <span class="material-symbols-outlined text-[16px] font-bold">campaign</span> <span id="report-incident-text">Report Incident</span>
           </button>
         </div>
 
@@ -278,7 +305,7 @@
           <!-- Default Greeting -->
           <div class="flex flex-col gap-1 items-start max-w-[85%]">
             <span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">FAN Ai</span>
-            <div
+            <div id="fan-ai-greeting"
               class="bg-surface-container/80 backdrop-blur-md border border-tertiary-fixed-dim/40 rounded-2xl rounded-tl-sm px-4 py-3 text-on-surface font-body-md text-[14px] shadow-sm">
               Hello! I am your FIFA FanConnect Coach. How can I help you today?
             </div>
