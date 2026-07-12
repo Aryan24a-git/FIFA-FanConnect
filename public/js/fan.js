@@ -150,6 +150,13 @@ const incidentForm = document.getElementById('incident-form');
 if (reportBtn && incidentModal && closeBtn) {
   reportBtn.addEventListener('click', () => {
     incidentModal.classList.remove('hidden');
+    // Focus trap: move focus into the modal for accessibility
+    setTimeout(() => {
+      const firstFocusable = incidentModal.querySelector(
+        'button, select, textarea, input'
+      );
+      if (firstFocusable) firstFocusable.focus();
+    }, 50);
   });
 
   closeBtn.addEventListener('click', () => {

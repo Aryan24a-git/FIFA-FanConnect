@@ -61,14 +61,56 @@ JSON Response → Frontend
 ---
 
 ## 6. Security Measures
-- **Helmet.js with Strict CSP:** Removed `'unsafe-inline'` and `'unsafe-eval'` from `scriptSrc` entirely. Inline scripts are fully extracted to [init.js](file:///c:/projects/challange%204/stadium-saathi/public/js/init.js).
-- **DOMPurify:** Enforced client-side to sanitize all dynamic HTML injection points.
-- **Zod Validation:** Strict types and bounds checking on all incoming API route payloads.
+- **Helmet.js with Strict CSP:** No `unsafe-inline` or `unsafe-eval` in `scriptSrc`. External scripts (Tailwind CDN, Three.js) are whitelisted by domain. All inline scripts fully extracted to [init.js](file:///c:/projects/challange%204/stadium-saathi/public/js/init.js).
+- **DOMPurify v3.4:** Bundled client-side for all `innerHTML` operations to prevent XSS.
+- **Zod Schema Validation:** Strict types and bounds checking on all 4 API endpoint payloads.
 - **Two-Tier Rate Limiting:** Global endpoint limit of 100 requests per 15 minutes, with a stricter limit of 20 requests per minute on Gemini-backed paths.
-- **CORS Lock:** Strictly origin-locked to prevent cross-site execution.
+- **CORS Lock:** Strictly origin-locked to `ALLOWED_ORIGINS` environment variable to prevent cross-site execution.
 - **Non-Root Container:** Runs on `node:20-alpine` as a non-privileged `appuser`.
-- **Secret Manager Integration:** Injects API keys securely in production without disk storage.
-- **Timeout Protection:** 8-second absolute timeouts enforced on all outbound AI connection streams.
+- **Secret Manager Integration:** `GEMINI_API_KEY` injected securely via Cloud Build `--set-secrets` (never baked into Docker image).
+- **8-second AbortController Timeout:** Enforced on all outbound AI calls (Gemini SDK, Groq HTTPS, OpenRouter HTTPS).
+- **Referrer-Policy:** `strict-origin-when-cross-origin` configured via Helmet.
+- **Permissions-Policy:** `camera=(), microphone=(), geolocation=()` — explicitly disabled.
+
+---
+
+## 🧠 GenAI Architecture
+
+FIFA FanConnect implements a **Safety-First AI Pattern**:
+
+```text
+┌─────────────────────────────────────────────────────┐
+│  User Query (Fan / Volunteer / Staff)               │
+└──────────────────────┬──────────────────────────────┘
+                       │
+              ┌────────▼────────┐
+              │  Zod Validator  │ ← Rejects malformed input
+              └────────┬────────┘
+                       │
+         ┌─────────────▼──────────────┐
+         │  Deterministic Engines     │ ← ALL decisions made here
+         │  crowdEngine  (IF/ELSE)    │
+         │  routingEngine (ROUTE_MAP) │
+         │  alertEngine  (IF/ELSE)    │
+         └─────────────┬──────────────┘
+                       │ Structured decision object
+         ┌─────────────▼──────────────┐
+         │  Gemini AI Service         │ ← Explanation ONLY
+         │  - answerFanQuestion()     │   Never decides
+         │  - translateToLanguage()   │   8s timeout
+         │  - explainSituation()      │   3 providers:
+         │                            │   Gemini/Groq/OpenRouter
+         └─────────────┬──────────────┘
+                       │ Fails? ↓
+         ┌─────────────▼──────────────┐
+         │  FAQ Database Fallback     │ ← Always available offline
+         │  50 entries, keyword match │
+         └─────────────┬──────────────┘
+                       │
+              JSON Response → Client (DOMPurify sanitized)
+```
+
+**Why this matters:** Stadium operations are safety-critical. Crowd gate closures, medical alerts, and evacuation routes CANNOT be decided by non-deterministic AI. Gemini's role is purely communication — translating precise engine outputs into clear, multilingual human language.
 
 ---
 

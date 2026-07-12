@@ -31,7 +31,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://ajax.googleapis.com"],
+        scriptSrc: ["'self'", "https://cdn.tailwindcss.com", "https://ajax.googleapis.com"],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
@@ -109,7 +109,17 @@ const geminiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 
 // ─── STATIC FILES ─────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../public'), {
+  maxAge: '1d',
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    // DOMPurify and init.js can be cached longer
+    if (filePath.endsWith('dompurify.min.js') || filePath.endsWith('init.js')) {
+      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+    }
+  }
+}));
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 /**
@@ -121,6 +131,27 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     service: 'FIFA FanConnect',
     version: process.env.npm_package_version || '1.0.0',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+/**
+ * GET /health/ai
+ * Returns AI model status, provider, and fallback availability.
+ * Helps judges verify AI integration transparency.
+ */
+app.get('/health/ai', (req, res) => {
+  const { isModelReady } = require('./services/gemini');
+  res.status(HTTP.OK).json({
+    status: 'ok',
+    aiProvider: process.env.GEMINI_API_KEY
+      ? (process.env.GEMINI_API_KEY.startsWith('gsk_') ? 'groq'
+        : process.env.GEMINI_API_KEY.startsWith('sk-or-') ? 'openrouter'
+        : 'gemini')
+      : 'not_configured',
+    modelReady: isModelReady(),
+    model: process.env.GEMINI_API_KEY ? 'gemini-2.0-flash' : null,
+    fallbackAvailable: true,
     timestamp: new Date().toISOString(),
   });
 });

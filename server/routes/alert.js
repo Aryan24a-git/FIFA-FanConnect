@@ -72,6 +72,9 @@ router.post('/', async (req, res, next) => {
     return res.status(HTTP.OK).json({
       alert,
       broadcastMessage,
+      broadcastSource: broadcastMessage
+        ? (isModelReady() ? 'gemini' : 'deterministic_fallback')
+        : null,
       affectedZones: alert.affectedZones,
       stadium: { id: stadium.id, name: stadium.name },
       reportedBy,

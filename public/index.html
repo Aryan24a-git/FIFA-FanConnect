@@ -257,7 +257,7 @@
             <h2 id="active-alerts-label" class="font-headline-md text-headline-md text-secondary-fixed-dim">Active Alerts Feed</h2>
             <span class="material-symbols-outlined text-secondary-fixed-dim">notifications_active</span>
           </div>
-          <div id="fan-alert-feed" class="flex flex-col gap-2 overflow-y-auto max-h-48 mt-2 p-2">
+          <div id="fan-alert-feed" role="log" aria-live="polite" class="flex flex-col gap-2 overflow-y-auto max-h-48 mt-2 p-2">
             <p class="text-on-surface-variant opacity-70">No active alerts in the stadium.</p>
           </div>
         </div>
@@ -301,7 +301,7 @@
         </div>
 
         <!-- Chat Messages -->
-        <div class="flex-1 p-md overflow-y-auto flex flex-col gap-4 scroll-smooth" id="chat-messages">
+        <div class="flex-1 p-md overflow-y-auto flex flex-col gap-4 scroll-smooth" id="chat-messages" role="log" aria-live="polite">
           <!-- Default Greeting -->
           <div class="flex flex-col gap-1 items-start max-w-[85%]">
             <span class="font-label-md text-[10px] text-tertiary-fixed-dim ml-2">FAN Ai</span>
@@ -329,7 +329,7 @@
             <div class="flex-1 relative">
               <input id="chat-input"
                 class="w-full bg-surface-dim/50 border border-white/10 rounded-full py-2 pl-4 pr-10 text-on-surface font-body-md text-[14px] focus:outline-none focus:border-secondary-fixed-dim focus:ring-1 focus:ring-secondary-fixed-dim/50 transition-all placeholder:text-on-surface-variant/50"
-                placeholder="Ask FAN Ai..." type="text" required />
+                placeholder="Ask FAN Ai..." type="text" required aria-label="Ask FAN Ai a question" />
             </div>
             <button type="submit" id="send-btn"
               class="p-2 bg-secondary-fixed-dim text-on-secondary-fixed rounded-full hover:bg-secondary transition-all shadow-[0_0_10px_rgba(0,218,243,0.3)]">
@@ -375,7 +375,7 @@
       </div>
       <div class="liquid-glass rounded-xl p-lg flex flex-col gap-md text-white">
         <h3 class="text-xl font-bold text-tertiary-fixed-dim">Active Alerts Feed</h3>
-        <div id="vol-alert-feed" class="flex flex-col gap-2 overflow-y-auto max-h-64 mt-2 p-2">
+        <div id="vol-alert-feed" role="log" aria-live="polite" class="flex flex-col gap-2 overflow-y-auto max-h-64 mt-2 p-2">
           <p class="text-on-surface-variant opacity-70">No active alerts in your zone.</p>
         </div>
       </div>
@@ -690,7 +690,7 @@
             <div class="flex flex-col gap-1">
               <label for="route-start" class="text-xs text-on-surface-variant font-medium">Current Position /
                 Gate</label>
-              <select id="route-start"
+              <select id="route-start" aria-label="Select starting location"
                 class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors">
                 <option value="Gate A1">Gate A1 (North)</option>
                 <option value="Gate B1">Gate B1 (East)</option>
@@ -708,7 +708,7 @@
 
             <div class="flex flex-col gap-1">
               <label for="route-end" class="text-xs text-on-surface-variant font-medium">Destination / Gate</label>
-              <select id="route-end"
+              <select id="route-end" aria-label="Select destination"
                 class="w-full bg-[#11131e] border border-white/10 rounded-lg p-2.5 text-white text-sm outline-none focus:border-secondary-fixed-dim transition-colors">
                 <option value="Gate C1">Gate C1 (South)</option>
                 <option value="Gate A1">Gate A1 (North)</option>
@@ -726,7 +726,7 @@
 
             <!-- Accessibility checkbox -->
             <div class="flex items-center gap-2">
-              <input type="checkbox" id="route-accessible"
+              <input type="checkbox" id="route-accessible" aria-label="Enable accessible step-free route"
                 class="w-4 h-4 rounded border-white/10 bg-[#11131e] text-secondary-fixed-dim focus:ring-0 cursor-pointer">
               <label for="route-accessible"
                 class="text-xs text-on-surface-variant font-medium cursor-pointer">Accessible (Step-free)</label>
@@ -985,7 +985,8 @@
           <label for="incident-desc" class="text-xs text-on-surface-variant font-medium">Detailed Description</label>
           <textarea id="incident-desc" rows="3"
             class="w-full bg-[#11131e] border border-white/10 rounded-lg p-3 text-white text-sm outline-none focus:border-red-500 transition-colors placeholder:text-on-surface-variant/40 resize-none"
-            placeholder="Describe the issue in detail (e.g. wet floor, scanner malfunction)..." required></textarea>
+            placeholder="Describe the issue in detail (e.g. wet floor, scanner malfunction)..." required
+            aria-label="Describe the incident in detail"></textarea>
         </div>
 
         <!-- Submit Button -->

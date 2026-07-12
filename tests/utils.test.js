@@ -79,21 +79,55 @@ describe('Utils & Engines', () => {
     expect(res.text).toContain('<!DOCTYPE html>');
   });
 
-  it('Rate limiter triggers on 21st request with x-test-rate-limit header', async () => {
-    // Send 20 requests to hit the limit
-    for (let i = 0; i < 20; i++) {
-      await request(app)
-        .post('/api/assist')
-        .set('X-Forwarded-For', '127.0.0.99')
-        .send({ persona: 'fan', query: 'hello', language: 'en', stadiumId: 'metlife' });
+  it('Rate limiter returns 429 after exceeding gemini limit', async () => {
+    const uniqueIP = '10.0.99.1';
+    const requests = [];
+
+    // Fire 21 concurrent requests from same IP
+    for (let i = 0; i <= 20; i++) {
+      requests.push(
+        request(app)
+          .post('/api/assist')
+          .set('X-Forwarded-For', uniqueIP)
+          .send({
+            persona: 'fan',
+            query: 'test query',
+            language: 'en',
+            stadiumId: 'metlife'
+          })
+      );
     }
-    
-    // 21st request should be blocked
-    const res = await request(app)
-        .post('/api/assist')
-        .set('X-Forwarded-For', '127.0.0.99')
-        .send({ persona: 'fan', query: 'hello', language: 'en', stadiumId: 'metlife' });
-        
-    expect(res.status).toBe(429);
+
+    const responses = await Promise.all(requests);
+    const statuses = responses.map(r => r.status);
+
+    // At least one should be 429
+    expect(statuses).toContain(429);
+  });
+
+  it('analyzeCrowd with empty gate array returns LOW level', () => {
+    const result = analyzeCrowd('metlife', []);
+    expect(result.overallLevel).toBe('LOW');
+    expect(result.gateBreakdown).toHaveLength(0);
+  });
+
+  it('generateAlert with unknown type returns safe fallback', () => {
+    const alert = generateAlert('UNKNOWN_TYPE', 'HIGH', 'Gate X');
+    expect(alert.message).toContain('STADIUM NOTICE');
+    expect(alert.instructions).toBeDefined();
+  });
+
+  it('getRoute with unrecognized locations returns Info Desk fallback', () => {
+    const route = getRoute('xyzlocation', 'abcdunknown', false);
+    expect(route.steps[0].instruction).toContain('Fan Information Desk');
+    expect(route.note).toContain('not pre-mapped');
+  });
+
+  it('/health/ai -> 200, has aiProvider and modelReady fields', async () => {
+    const res = await request(app).get('/health/ai');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('aiProvider');
+    expect(res.body).toHaveProperty('modelReady');
+    expect(res.body.fallbackAvailable).toBe(true);
   });
 });

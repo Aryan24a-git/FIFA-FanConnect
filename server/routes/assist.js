@@ -154,6 +154,7 @@ router.post('/', async (req, res, next) => {
       decision: engineResult,
       engineUsed: engineName,
       source,
+      aiModel: isModelReady() ? GEMINI.MODEL : 'offline',
       persona,
       stadiumId,
       timestamp: new Date().toISOString(),
