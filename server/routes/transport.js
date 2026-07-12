@@ -11,7 +11,7 @@ const router = express.Router();
 
 const { validateTransport } = require('../utils/validators');
 const { getTransportRecommendation } = require('../engines');
-const { translateToLanguage, isModelReady } = require('../services/gemini');
+const { explainSituation, isModelReady } = require('../services/gemini');
 const AppError = require('../utils/AppError');
 const { HTTP } = require('../utils/constants');
 const logger = require('../utils/logger');
@@ -46,12 +46,29 @@ router.post('/', async (req, res, next) => {
     let explainedAdvice = recommendation.generalAdvice;
     let translationSource = 'none';
 
-    if (language && language !== 'en' && isModelReady()) {
+    if (isModelReady()) {
       try {
-        explainedAdvice = await translateToLanguage(recommendation.generalAdvice, language);
-        translationSource = 'gemini';
+        const optionsSummary = recommendation.recommendations.map(r => 
+          `- ${r.mode} (${r.name}): Wait ${r.baseWaitMinutes}m, Cost ${r.costEstimate}, Status: ${r.statusMessage}`
+        ).join('\n');
+        
+        const prompt = `Stadium: ${recommendation.stadiumName}
+Destination: ${destination}
+Departure Window: ${time}
+Ranked Options:\n${optionsSummary}
+
+Provide a short, 2-3 sentence travel guide explaining the best options, safety tips, and route recommendations in a helpful, friendly manner for a fan leaving the stadium.`;
+
+        if (language && language !== 'en') {
+          const promptWithLang = `${prompt}\nRespond ONLY in the language corresponding to code: ${language}.`;
+          explainedAdvice = await explainSituation(promptWithLang);
+          translationSource = 'gemini';
+        } else {
+          explainedAdvice = await explainSituation(prompt);
+          translationSource = 'gemini';
+        }
       } catch (err) {
-        logger.warn('transport_translation_failed', { reason: err.message });
+        logger.warn('transport_ai_guidance_failed', { reason: err.message });
       }
     }
 

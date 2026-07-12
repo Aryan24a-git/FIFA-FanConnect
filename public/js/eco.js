@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Elements for Sustainability
   const calculateEcoBtn = document.getElementById('calculate-eco-btn');
   const ecoTransportSelect = document.getElementById('eco-transport-select');
+  const ecoDistanceInput = document.getElementById('eco-distance-input');
+  const ecoDistanceValDisplay = document.getElementById('eco-distance-val-display');
   const ecoResults = document.getElementById('eco-results');
   const ecoCarbonValue = document.getElementById('eco-carbon-value');
   const ecoComparisonList = document.getElementById('eco-comparison-list');
@@ -68,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      const distanceKm = parseFloat(ecoDistanceInput ? ecoDistanceInput.value : '15') || 15;
+
       calculateEcoBtn.disabled = true;
       calculateEcoBtn.textContent = 'Calculating...';
 
@@ -75,22 +79,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await fetch('/api/sustainability', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode, distanceKm: 15 })
+          body: JSON.stringify({
+            stadiumId: window.AppState?.stadiumId || 'metlife',
+            transportMode: mode,
+            distanceKm,
+            language: window.AppState?.language || 'en'
+          })
         });
         const data = await res.json();
 
         if (res.ok && data.success) {
-          ecoCarbonValue.textContent = `${data.emissionsKg.toFixed(2)} kg CO2`;
+          const rec = data.recommendation;
+          const emissionsKg = rec.carbonFootprintGrams / 1000;
+          ecoCarbonValue.textContent = `${emissionsKg.toFixed(2)} kg CO2`;
           
+          if (ecoDistanceValDisplay) {
+            ecoDistanceValDisplay.textContent = distanceKm;
+          }
+
           let listHtml = '';
-          if (data.comparison) {
-            listHtml += `<li><b>Alternative comparison:</b> ${DOMPurify.sanitize(data.comparison.carComparison)}</li>`;
-            listHtml += `<li><b>Absorption equivalent:</b> ${DOMPurify.sanitize(data.comparison.forestComparison)}</li>`;
+          if (rec.comparison && rec.comparison.length > 0) {
+            rec.comparison.forEach(item => {
+              listHtml += `<li>${DOMPurify.sanitize(item)}</li>`;
+            });
           }
           ecoComparisonList.innerHTML = listHtml;
 
-          if (data.tips && data.tips.length > 0) {
-            ecoTipText.textContent = `💡 Eco Tip: ${data.tips[0]}`;
+          if (rec.ecoTip) {
+            ecoTipText.textContent = `💡 Eco Tip: ${rec.ecoTip}`;
             ecoTipText.classList.remove('hidden');
           } else {
             ecoTipText.classList.add('hidden');
@@ -127,24 +143,26 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({
             stadiumId: window.AppState?.stadiumId || 'metlife',
             destination,
-            departureWindow
+            time: departureWindow,
+            language: window.AppState?.language || 'en'
           })
         });
         const data = await res.json();
 
         if (res.ok && data.success) {
-          transportAdvice.innerHTML = DOMPurify.sanitize(`💡 <b>Advisor:</b> ${data.advice}`);
+          const rec = data.recommendation;
+          transportAdvice.innerHTML = DOMPurify.sanitize(`🤖 <b>AI Route Guide:</b> ${rec.generalAdvice}`);
           
-          if (data.options && data.options.length > 0) {
-            transportRankingList.innerHTML = data.options.map((opt) => {
+          if (rec.recommendations && rec.recommendations.length > 0) {
+            transportRankingList.innerHTML = rec.recommendations.map((opt) => {
               let congestionBg = 'bg-green-500/20 text-green-400 border-green-500/30';
-              if (opt.congestion === 'HIGH') {
+              if (opt.status === 'GRIDLOCK' || opt.status === 'HEAVY_CONGESTION') {
                 congestionBg = 'bg-red-500/20 text-red-400 border-red-500/30';
-              } else if (opt.congestion === 'MEDIUM') {
+              } else if (opt.status === 'MODERATE_DELAYS' || opt.status === 'CONGESTED_BUT_FAST') {
                 congestionBg = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
               }
 
-              const recBadge = opt.recommendation === 'High' 
+              const recBadge = opt.efficiencyScore >= 80
                 ? `<span class="bg-[#00daf3]/20 text-[#00daf3] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#00daf3]/30">RECOMMENDED</span>`
                 : '';
 
@@ -167,14 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div>
                       <h4 class="font-bold text-sm text-white flex items-center gap-1.5 capitalize">
-                        ${opt.mode}
+                        ${opt.mode} (${opt.name})
                         ${recBadge}
                       </h4>
-                      <p class="text-xs text-on-surface-variant">Est. Cost: $${opt.cost} | Peak Delay: ${opt.etaMinutes} mins</p>
+                      <p class="text-xs text-on-surface-variant">${opt.statusMessage}</p>
+                      <p class="text-[10px] text-on-surface-variant/70 mt-0.5">Est. Cost: ${opt.costEstimate} | Wait time: ~${opt.baseWaitMinutes} mins</p>
                     </div>
                   </div>
                   <div class="text-right">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${congestionBg}">${opt.congestion}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${congestionBg}">${opt.status}</span>
                   </div>
                 </div>
               `;

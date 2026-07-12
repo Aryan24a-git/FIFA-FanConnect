@@ -47,4 +47,13 @@ describe('POST /api/sustainability', () => {
       .send({ stadiumId: 'metlife', transportMode: 'hoverboard' });
     expect(res.status).toBe(400);
   });
+
+  it('should calculate carbon emissions using distanceKm when provided', async () => {
+    const res = await request(app)
+      .post('/api/sustainability')
+      .send({ stadiumId: 'metlife', transportMode: 'metro', distanceKm: 50 });
+    expect(res.status).toBe(200);
+    expect(res.body.recommendation.carbonFootprintGrams).toBe(1400); // 28 * 50
+    expect(res.body.recommendation.averageDistanceKm).toBe(50);
+  });
 });

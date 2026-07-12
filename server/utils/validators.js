@@ -135,6 +135,11 @@ const sustainabilitySchema = z.object({
   transportMode: z.enum(VALID_TRANSPORT_MODES, {
     errorMap: () => ({ message: `transportMode must be one of: ${VALID_TRANSPORT_MODES.join(', ')}` }),
   }).optional(),
+  distanceKm: z.preprocess((val) => {
+    if (val === undefined || val === '') {return undefined;}
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  }, z.number().min(0.1).max(1000).default(15)),
   language: z.enum(SUPPORTED_LANGUAGES, {
     errorMap: () => ({ message: `language must be one of: ${SUPPORTED_LANGUAGES.join(', ')}` }),
   }).default('en'),

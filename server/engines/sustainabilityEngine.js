@@ -15,7 +15,7 @@ const { getStadiumById } = require('../data/stadiumData');
  * @param {string} [transportMode] - Mode of transport selected by the user.
  * @returns {Object} Deterministic sustainability recommendations and metrics.
  */
-function getEcoRecommendation(stadiumId, transportMode) {
+function getEcoRecommendation(stadiumId, transportMode, distanceKm = 15) {
   const stadium = getStadiumById(stadiumId);
   const stadiumName = stadium ? stadium.name : 'the stadium';
 
@@ -42,8 +42,8 @@ function getEcoRecommendation(stadiumId, transportMode) {
     { name: 'Standard Water Station', location: 'Main Concourse', section: 'A' }
   ];
 
-  // Base trip distance assumption (e.g. 15 km average commute)
-  const averageDistanceKm = 15;
+  // Dynamic trip distance
+  const averageDistanceKm = distanceKm;
   const carbonFootprint = transportMode ? (ECO_METRICS[transportMode] * averageDistanceKm) : null;
 
   // Compare selected transport with others
@@ -54,9 +54,11 @@ function getEcoRecommendation(stadiumId, transportMode) {
       if (mode !== transportMode) {
         const diff = (ECO_METRICS[mode] - selectedEmissions) * averageDistanceKm;
         if (diff > 0) {
-          comparison.push(`Choosing ${transportMode} instead of ${mode} saves ${Math.round(diff)}g of CO2 for this trip.`);
+          const formatted = diff >= 1000 ? `${(diff / 1000).toFixed(2)} kg` : `${Math.round(diff)}g`;
+          comparison.push(`Choosing ${transportMode} instead of ${mode} saves ${formatted} of CO2 for this trip.`);
         } else if (diff < 0) {
-          comparison.push(`Choosing ${mode} instead of ${transportMode} would save ${Math.round(Math.abs(diff))}g of CO2.`);
+          const formatted = Math.abs(diff) >= 1000 ? `${(Math.abs(diff) / 1000).toFixed(2)} kg` : `${Math.round(Math.abs(diff))}g`;
+          comparison.push(`Choosing ${mode} instead of ${transportMode} would save ${formatted} of CO2.`);
         }
       }
     });

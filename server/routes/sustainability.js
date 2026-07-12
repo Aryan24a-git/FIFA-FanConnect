@@ -37,10 +37,10 @@ router.post('/', async (req, res, next) => {
       );
     }
 
-    const { stadiumId, transportMode, language } = valResult.data;
-    logger.info('sustainability_request', { stadiumId, transportMode, language });
+    const { stadiumId, transportMode, distanceKm, language } = valResult.data;
+    logger.info('sustainability_request', { stadiumId, transportMode, distanceKm, language });
 
-    const recommendation = getEcoRecommendation(stadiumId, transportMode);
+    const recommendation = getEcoRecommendation(stadiumId, transportMode, distanceKm);
 
     let explainedTip = recommendation.ecoTip;
     let translationSource = 'none';
