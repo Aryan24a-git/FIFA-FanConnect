@@ -209,7 +209,7 @@ tailwind.config = {
     });
 
     const footballGroup = new THREE.Group();
-    footballGroup.position.x = 0; // Centered in the right-half container
+    footballGroup.position.x = 0.8; // Shifted slightly to the right side
     scene.add(footballGroup);
 
     const ball = new THREE.Mesh(geometry, material);
@@ -348,7 +348,7 @@ void main() {
     vec2 uv = v_texCoord; vec3 color = vec3(0.04, 0.06, 0.15);
     for(float i = 0.0; i < 40.0; i++) {
         vec2 pos = vec2(hash(vec2(i, 1.0)), hash(vec2(i, 2.0)));
-        pos.y = fract(pos.y + u_time * 0.02 * (0.5 + hash(vec2(i, 3.0))));
+        pos.y = fract(pos.y + u_time * 0.026 * (0.5 + hash(vec2(i, 3.0))));
         float size = 0.001 + 0.002 * hash(vec2(i, 4.0));
         float dist = length(uv - pos);
         float glow = smoothstep(size * 4.0, 0.0, dist);
