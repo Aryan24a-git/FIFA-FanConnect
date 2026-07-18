@@ -72,25 +72,25 @@ JSON Response → Frontend (DOMPurify sanitized)
               │  Zod Validator  │ ← Rejects malformed input
               └────────┬────────┘
                        │
-         ┌─────────────▼──────────────┐
-         │  Deterministic Engines     │ ← ALL decisions made here
-         │  crowdEngine  (IF/ELSE)    │
-         │  routingEngine (ROUTE_MAP) │
-         │  alertEngine  (IF/ELSE)    │
-         └─────────────┬──────────────┘
+          ┌─────────────▼──────────────┐
+          │  Deterministic Engines     │ ← ALL decisions made here
+          │  crowdEngine  (IF/ELSE)    │
+          │  routingEngine (ROUTE_MAP) │
+          │  alertEngine  (IF/ELSE)    │
+          └─────────────┬──────────────┘
                        │ Structured decision object
-         ┌─────────────▼──────────────┐
-         │  Groq AI Service           │ ← Explanation ONLY
-         │  - answerFanQuestion()     │   Never decides
-         │  - translateToLanguage()   │   8s timeout
-         │  - explainSituation()      │   3 providers:
-         │                            │   Gemini/Groq/OpenRouter
-         └─────────────┬──────────────┘
+          ┌─────────────▼──────────────┐
+          │  Groq AI Service           │ ← Explanation ONLY
+          │  - answerFanQuestion()     │   Never decides
+          │  - translateToLanguage()   │   8s timeout
+          │  - explainSituation()      │   3 providers:
+          │                            │   Gemini/Groq/OpenRouter
+          └─────────────┬──────────────┘
                        │ Fails? ↓
-         ┌─────────────▼──────────────┐
-         │  FAQ Database Fallback     │ ← Always available offline
-         │  50 entries, keyword match │
-         └─────────────┬──────────────┘
+          ┌─────────────▼──────────────┐
+          │  FAQ Database Fallback     │ ← Always available offline
+          │  50 entries, keyword match │
+          └─────────────┬──────────────┘
                        │
               JSON Response → Client (DOMPurify sanitized)
 ```
@@ -122,6 +122,9 @@ JSON Response → Frontend (DOMPurify sanitized)
 
 ## 9. Security Measures
 
+- **Strict CORS Validation (Patched):** Explicit `===` exact origin matching validation for production domains (replacing the insecure `.endsWith('.vercel.app')` wildcard pattern) to prevent malicious cross-origin access and subdomain hijack bypasses.
+- **HTML Sanitization (Patched):** Added server-side `/[<>]/g` regex angle-bracket stripping combined with DOMPurify on the client side, completely blocking space-padded HTML/XSS payloads.
+- **Infinite Payload / OOM Protection (Patched):** Implemented an aggressive 1MB memory-bound byte counter limit on all streaming outbound HTTP AI connections (`callOpenRouter` and `callGroq`). If a response exceeds 1MB, the stream is aborted (`req.destroy`), successfully neutralizing potential DoS-via-infinite-payload vectors.
 - **Helmet.js with Strict CSP:** `scriptSrc` includes `'unsafe-eval'` as a documented, intentional exception — required by Three.js r125 for WebGL shader compilation at runtime. This is not a security oversight; Three.js dynamically constructs and compiles GLSL shaders which require `eval`-like capabilities. All other script sources are whitelisted by domain (Tailwind CDN, Google AJAX). All inline scripts are fully extracted to `init.js`.
 - **DOMPurify v3.4:** Bundled client-side for all `innerHTML` operations to prevent XSS.
 - **Zod Schema Validation:** Strict types and bounds checking on all 6 API endpoint payloads.
@@ -217,3 +220,18 @@ This project is configured for continuous deployment to Google Cloud Run using C
 - Real-time turnstile data would be streamed to the backend (mocked in `stadiumData.js`).
 - The application is served on a modern browser that supports ES6 and CSS Variables.
 - Multilingual translations are requested primarily by fans, while operations are handled in standard locales.
+
+---
+
+## 17. Future Production Scope (Enterprise Readiness)
+
+As the application moves past Phase 1 and scales to handle millions of fans, the following enterprise-grade architecture enhancements are planned:
+
+- **Centralized State Management (Split-Brain Prevention):** The current queue counters and dynamic crowd thresholds in `stadiumData.js` run as module-level, in-memory state. In a load-balanced, multi-instance production environment (such as Google Cloud Run or Kubernetes), this causes a "Split-Brain" issue where instances have desynced queue states. We plan to migrate this state to a centralized Redis (Google Cloud Memorystore) cluster to guarantee atomic, synced queue states across all instances.
+- **AI Translation Caching (Quota Protection):** Repeated multilingual queries (e.g., "Where is Gate A?" or "How do I reach the parking lot?") translated on the fly can quickly exhaust API rate limits and quotas. Implementing an LRU cache or Redis layer keyed by a hash of `(text + targetLanguage)` will serve translations instantly from cache, saving AI compute, latency, and costs.
+
+---
+
+## 18. License
+
+This project is licensed under the MIT License. *(Note: As this is a hackathon submission for Google PromptWars, the code is open-source and intended for evaluation purposes).*
