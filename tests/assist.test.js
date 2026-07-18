@@ -18,7 +18,12 @@ describe('POST /api/assist', () => {
   it('should handle volunteer persona successfully', async () => {
     const res = await request(app)
       .post('/api/assist')
-      .send({ persona: 'volunteer', query: 'How to report issue?', language: 'en', stadiumId: 'sofi' });
+      .send({
+        persona: 'volunteer',
+        query: 'How to report issue?',
+        language: 'en',
+        stadiumId: 'sofi',
+      });
     expect(res.status).toBe(200);
     expect(res.body.persona).toBe('volunteer');
   });

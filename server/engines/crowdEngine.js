@@ -7,11 +7,7 @@
  * @module engines/crowdEngine
  */
 
-const {
-  CROWD_LEVELS,
-  CROWD_THRESHOLDS,
-  CROWD_ACTIONS,
-} = require('../utils/constants');
+const { CROWD_LEVELS, CROWD_THRESHOLDS, CROWD_ACTIONS } = require('../utils/constants');
 
 /**
  * Calculates the percentage utilisation of a gate.
@@ -20,7 +16,9 @@ const {
  * @returns {number} Percentage utilisation (0–100+).
  */
 function calcUtilisation(current, max) {
-  if (max <= 0) {return 0;}
+  if (max <= 0) {
+    return 0;
+  }
   return Math.round((current / max) * 100);
 }
 
@@ -30,9 +28,15 @@ function calcUtilisation(current, max) {
  * @returns {string} Crowd level: 'LOW' | 'MODERATE' | 'HIGH' | 'CRITICAL'.
  */
 function classifyLevel(pct) {
-  if (pct > CROWD_THRESHOLDS.CRITICAL) {return CROWD_LEVELS.CRITICAL;}
-  if (pct > CROWD_THRESHOLDS.HIGH) {return CROWD_LEVELS.HIGH;}
-  if (pct > CROWD_THRESHOLDS.MODERATE) {return CROWD_LEVELS.MODERATE;}
+  if (pct > CROWD_THRESHOLDS.CRITICAL) {
+    return CROWD_LEVELS.CRITICAL;
+  }
+  if (pct > CROWD_THRESHOLDS.HIGH) {
+    return CROWD_LEVELS.HIGH;
+  }
+  if (pct > CROWD_THRESHOLDS.MODERATE) {
+    return CROWD_LEVELS.MODERATE;
+  }
   return CROWD_LEVELS.LOW;
 }
 
@@ -70,10 +74,7 @@ function getActionsForLevel(crowdLevel, gateId) {
   if (crowdLevel === CROWD_LEVELS.MODERATE) {
     return {
       priority: 'NORMAL',
-      actions: [
-        CROWD_ACTIONS.MODERATE.MONITOR,
-        CROWD_ACTIONS.MODERATE.INCREASE_STAFF,
-      ],
+      actions: [CROWD_ACTIONS.MODERATE.MONITOR, CROWD_ACTIONS.MODERATE.INCREASE_STAFF],
     };
   }
 
@@ -173,9 +174,7 @@ function getGateRecommendation(section, gateData) {
   }
 
   // Gates matching the requested section
-  const sectionGates = gateData.filter(
-    (g) => g.section.toUpperCase() === section.toUpperCase()
-  );
+  const sectionGates = gateData.filter((g) => g.section.toUpperCase() === section.toUpperCase());
 
   // Fallback: if no gates for section, use all gates
   const candidateGates = sectionGates.length > 0 ? sectionGates : gateData;
@@ -214,4 +213,10 @@ function getGateRecommendation(section, gateData) {
   };
 }
 
+/**
+ * Exports:
+ * - analyzeCrowd: Used by the /api/assist route (fan query keyword detection triggers crowd analysis).
+ * - getGateRecommendation: Exposed for direct gate recommendation queries and future API expansion.
+ *   Not a dead export — intentionally public for stadium operations integration.
+ */
 module.exports = { analyzeCrowd, getGateRecommendation };

@@ -7,9 +7,7 @@ const app = require('../server/index');
 
 describe('POST /api/sustainability', () => {
   it('should return eco recommendations for a valid stadium', async () => {
-    const res = await request(app)
-      .post('/api/sustainability')
-      .send({ stadiumId: 'sofi' });
+    const res = await request(app).post('/api/sustainability').send({ stadiumId: 'sofi' });
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.recommendation.stadiumName).toContain('SoFi Stadium');

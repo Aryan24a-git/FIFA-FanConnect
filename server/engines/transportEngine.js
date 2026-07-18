@@ -24,23 +24,39 @@ function getTransportRecommendation(stadiumId, destination, time = 'post-match')
   const options = [
     {
       mode: 'metro',
-      name: (transitConfig && transitConfig.metro && transitConfig.metro[0]) ? transitConfig.metro[0].name : 'Local Train Station',
-      detail: (transitConfig && transitConfig.metro && transitConfig.metro[0]) ? transitConfig.metro[0].line : 'Stadium Line',
+      name:
+        transitConfig && transitConfig.metro && transitConfig.metro[0]
+          ? transitConfig.metro[0].name
+          : 'Local Train Station',
+      detail:
+        transitConfig && transitConfig.metro && transitConfig.metro[0]
+          ? transitConfig.metro[0].line
+          : 'Stadium Line',
       baseWaitMinutes: isPostMatch ? 15 : 5,
       costEstimate: '$2.75 - $5.00',
       efficiencyScore: 95, // Metro is highly efficient post-match
       status: isPostMatch ? 'CONGESTED_BUT_FAST' : 'NORMAL',
-      statusMessage: isPostMatch ? 'High frequency trains running. Expected boarding within 15 mins.' : 'On schedule.'
+      statusMessage: isPostMatch
+        ? 'High frequency trains running. Expected boarding within 15 mins.'
+        : 'On schedule.',
     },
     {
       mode: 'bus',
-      name: (transitConfig && transitConfig.bus && transitConfig.bus[0]) ? transitConfig.bus[0].name : 'Express Shuttle Bus',
-      detail: (transitConfig && transitConfig.bus && transitConfig.bus[0]) ? transitConfig.bus[0].route : 'Express Route',
+      name:
+        transitConfig && transitConfig.bus && transitConfig.bus[0]
+          ? transitConfig.bus[0].name
+          : 'Express Shuttle Bus',
+      detail:
+        transitConfig && transitConfig.bus && transitConfig.bus[0]
+          ? transitConfig.bus[0].route
+          : 'Express Route',
       baseWaitMinutes: isPostMatch ? 20 : 10,
       costEstimate: '$5.00 - $8.00',
       efficiencyScore: 80,
       status: isPostMatch ? 'MODERATE_DELAYS' : 'NORMAL',
-      statusMessage: isPostMatch ? 'Dedicated event lanes active, but minor highway delays expected.' : 'On schedule.'
+      statusMessage: isPostMatch
+        ? 'Dedicated event lanes active, but minor highway delays expected.'
+        : 'On schedule.',
     },
     {
       mode: 'rideshare',
@@ -50,23 +66,30 @@ function getTransportRecommendation(stadiumId, destination, time = 'post-match')
       costEstimate: isPostMatch ? '$45.00+ (Surge)' : '$15.00 - $25.00',
       efficiencyScore: 40, // Low efficiency post-match due to gridlock
       status: isPostMatch ? 'HEAVY_CONGESTION' : 'NORMAL',
-      statusMessage: isPostMatch ? 'Surge pricing active and heavy vehicle queue in the rideshare lot.' : 'Normal demand.'
+      statusMessage: isPostMatch
+        ? 'Surge pricing active and heavy vehicle queue in the rideshare lot.'
+        : 'Normal demand.',
     },
     {
       mode: 'parking',
-      name: (transitConfig && transitConfig.parking && transitConfig.parking[0]) ? transitConfig.parking[0].name : 'General Parking Lot',
+      name:
+        transitConfig && transitConfig.parking && transitConfig.parking[0]
+          ? transitConfig.parking[0].name
+          : 'General Parking Lot',
       detail: 'Stadium Parking Access Gates',
       baseWaitMinutes: isPostMatch ? 50 : 20,
       costEstimate: 'Pre-paid ticket required',
       efficiencyScore: 35, // High exit gridlock
       status: isPostMatch ? 'GRIDLOCK' : 'NORMAL',
-      statusMessage: isPostMatch ? 'Expected exit queue from lots is 45-60 minutes. Stewards directing traffic.' : 'Gate flow is normal.'
-    }
+      statusMessage: isPostMatch
+        ? 'Expected exit queue from lots is 45-60 minutes. Stewards directing traffic.'
+        : 'Gate flow is normal.',
+    },
   ];
 
   // If no direct rail, adjust metro score downward
   if (stadiumId === 'atandt') {
-    const metroOpt = options.find(o => o.mode === 'metro');
+    const metroOpt = options.find((o) => o.mode === 'metro');
     if (metroOpt) {
       metroOpt.efficiencyScore = 30;
       metroOpt.status = 'NOT_RECOMMENDED';
@@ -85,7 +108,7 @@ function getTransportRecommendation(stadiumId, destination, time = 'post-match')
     recommendations: rankedOptions,
     generalAdvice: isPostMatch
       ? 'We highly advise using Metro or pre-booked Shuttle Buses to leave the stadium area. Rideshare and personal vehicle exits will face significant delay.'
-      : 'All access gates are open. Standard traffic plans apply.'
+      : 'All access gates are open. Standard traffic plans apply.',
   };
 }
 

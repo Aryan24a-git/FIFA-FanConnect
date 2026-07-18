@@ -21,7 +21,7 @@ describe('POST /api/transport', () => {
       .post('/api/transport')
       .send({ stadiumId: 'atandt', destination: 'Downtown' });
     expect(res.status).toBe(200);
-    const metro = res.body.recommendation.recommendations.find(r => r.mode === 'metro');
+    const metro = res.body.recommendation.recommendations.find((r) => r.mode === 'metro');
     expect(metro.status).toBe('NOT_RECOMMENDED');
   });
 
@@ -34,9 +34,7 @@ describe('POST /api/transport', () => {
   });
 
   it('should return 400 for missing destination', async () => {
-    const res = await request(app)
-      .post('/api/transport')
-      .send({ stadiumId: 'metlife' });
+    const res = await request(app).post('/api/transport').send({ stadiumId: 'metlife' });
     expect(res.status).toBe(400);
   });
 

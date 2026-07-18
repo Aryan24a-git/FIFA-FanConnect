@@ -11,8 +11,10 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
   e.preventDefault();
   const type = document.getElementById('broadcast-type').value;
   const location = document.getElementById('broadcast-location').value;
-  
-  if(!location) {return;}
+
+  if (!location) {
+    return;
+  }
 
   try {
     const res = await fetch('/api/alert', {
@@ -23,10 +25,10 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
         type: type,
         severity: 'CRITICAL',
         location: location,
-        reportedBy: 'Staff Ops Center'
-      })
+        reportedBy: 'Staff Ops Center',
+      }),
     });
-    
+
     const data = await res.json();
     if (res.ok) {
       window.showToast('Broadcast PA message sent!', 'success');
@@ -35,10 +37,10 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
           severity: 'CRITICAL',
           location: location,
           message: `BROADCAST: ${data.broadcastMessage || data.alert.message}`,
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
         });
       }
-      
+
       // Update recommendations panel mock
       const recs = document.getElementById('staff-recommendations');
       recs.innerHTML = DOMPurify.sanitize(`
@@ -48,11 +50,11 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
           <hr class="my-2 border-red-500/30">
           <strong class="text-red-400">Actions taken:</strong>
           <ul class="list-disc pl-4 mt-1">
-            ${data.alert.instructions.map(i => `<li>${i}</li>`).join('')}
+            ${data.alert.instructions.map((i) => `<li>${i}</li>`).join('')}
           </ul>
         </div>
       `);
-      
+
       document.getElementById('broadcast-location').value = '';
     } else {
       window.showToast(data.message || 'Broadcast failed', 'error');
@@ -69,17 +71,24 @@ document.getElementById('staff-broadcast-form').addEventListener('submit', async
 function updateCapacityRing(percentage) {
   const ring = document.getElementById('staff-capacity-ring');
   const text = document.getElementById('staff-capacity-text');
-  
-  if(!ring || !text) {return;}
-  
+
+  if (!ring || !text) {
+    return;
+  }
+
   ring.setAttribute('stroke-dasharray', `${percentage}, 100`);
   text.textContent = `${percentage}%`;
-  
+
   // Color code based on capacity
-  if (percentage >= 90) {ring.style.stroke = '#f87171';}
-  else if (percentage >= 75) {ring.style.stroke = '#fb923c';}
-  else if (percentage >= 50) {ring.style.stroke = '#facc15';}
-  else {ring.style.stroke = '#4ade80';}
+  if (percentage >= 90) {
+    ring.style.stroke = '#f87171';
+  } else if (percentage >= 75) {
+    ring.style.stroke = '#fb923c';
+  } else if (percentage >= 50) {
+    ring.style.stroke = '#facc15';
+  } else {
+    ring.style.stroke = '#4ade80';
+  }
 }
 
 /**
@@ -88,25 +97,34 @@ function updateCapacityRing(percentage) {
  */
 function renderGateBars(gateData) {
   const container = document.getElementById('gate-bars-container');
-  if(!container) {return;}
-  
+  if (!container) {
+    return;
+  }
+
   container.innerHTML = '';
-  
-  gateData.forEach(gate => {
+
+  gateData.forEach((gate) => {
     // Determine color
     let fillClass = '#4ade80';
-    if (gate.utilisation >= 90) {fillClass = '#f87171';}
-    else if (gate.utilisation >= 75) {fillClass = '#fb923c';}
-    else if (gate.utilisation >= 50) {fillClass = '#facc15';}
-    
+    if (gate.utilisation >= 90) {
+      fillClass = '#f87171';
+    } else if (gate.utilisation >= 75) {
+      fillClass = '#fb923c';
+    } else if (gate.utilisation >= 50) {
+      fillClass = '#facc15';
+    }
+
     const safeGateId = DOMPurify.sanitize(gate.gateId);
     const safeWaitTime = DOMPurify.sanitize(gate.waitTime || '--');
-    
+
     const row = document.createElement('div');
     row.className = 'flex items-center gap-2 mb-1';
     row.setAttribute('role', 'listitem');
-    row.setAttribute('aria-label', `Gate ${safeGateId} is at ${gate.utilisation} percent capacity with a ${safeWaitTime} wait time`);
-    
+    row.setAttribute(
+      'aria-label',
+      `Gate ${safeGateId} is at ${gate.utilisation} percent capacity with a ${safeWaitTime} wait time`,
+    );
+
     const labelDiv = document.createElement('div');
     labelDiv.className = 'w-8 font-label-md text-sm';
     labelDiv.setAttribute('aria-hidden', 'true');
@@ -140,7 +158,7 @@ setTimeout(() => {
     { gateId: 'B1', utilisation: 75, waitTime: '12m' },
     { gateId: 'C1', utilisation: 100, waitTime: '40m' },
     { gateId: 'D1', utilisation: 30, waitTime: '1m' },
-    { gateId: 'E1', utilisation: 85, waitTime: '20m' }
+    { gateId: 'E1', utilisation: 85, waitTime: '20m' },
   ]);
 
   // Set AI recommendations to display routing advice

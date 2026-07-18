@@ -7,12 +7,10 @@ const app = require('../server/index');
 
 describe('POST /api/translate', () => {
   it('should translate Hello to es -> 200', async () => {
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        text: 'Hello',
-        targetLanguage: 'es'
-      });
+    const res = await request(app).post('/api/translate').send({
+      text: 'Hello',
+      targetLanguage: 'es',
+    });
     expect(res.status).toBe(200);
     expect(res.body.original).toBe('Hello');
     expect(res.body.translated).toBe('Hola');
@@ -22,12 +20,10 @@ describe('POST /api/translate', () => {
   });
 
   it('should bypass translation for targetLanguage: en -> 200 with source: passthrough', async () => {
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        text: 'Welcome',
-        targetLanguage: 'en'
-      });
+    const res = await request(app).post('/api/translate').send({
+      text: 'Welcome',
+      targetLanguage: 'en',
+    });
     expect(res.status).toBe(200);
     expect(res.body.original).toBe('Welcome');
     expect(res.body.translated).toBe('Welcome');
@@ -36,42 +32,34 @@ describe('POST /api/translate', () => {
   });
 
   it('should return 400 for missing text', async () => {
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        targetLanguage: 'es'
-      });
+    const res = await request(app).post('/api/translate').send({
+      targetLanguage: 'es',
+    });
     expect(res.status).toBe(400);
   });
 
   it('should return 400 for unsupported language xyz', async () => {
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        text: 'Hello',
-        targetLanguage: 'xyz'
-      });
+    const res = await request(app).post('/api/translate').send({
+      text: 'Hello',
+      targetLanguage: 'xyz',
+    });
     expect(res.status).toBe(400);
   });
 
   it('should return 400 for text longer than 500 characters', async () => {
     const longText = 'a'.repeat(501);
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        text: longText,
-        targetLanguage: 'es'
-      });
+    const res = await request(app).post('/api/translate').send({
+      text: longText,
+      targetLanguage: 'es',
+    });
     expect(res.status).toBe(400);
   });
 
   it('should handle Gemini failure gracefully -> 200 with fallback message', async () => {
-    const res = await request(app)
-      .post('/api/translate')
-      .send({
-        text: 'xqz999zzz',
-        targetLanguage: 'es'
-      });
+    const res = await request(app).post('/api/translate').send({
+      text: 'xqz999zzz',
+      targetLanguage: 'es',
+    });
     expect(res.status).toBe(200);
     expect(res.body.translated).toContain('Translation unavailable');
     expect(res.body.source).toBe('fallback');

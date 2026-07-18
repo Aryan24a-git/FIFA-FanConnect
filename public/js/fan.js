@@ -20,9 +20,9 @@ const crowdPill = document.getElementById('fan-crowd-pill');
 function appendMessage(text, sender = 'user') {
   const safeText = DOMPurify.sanitize(text);
   const formattedText = sender === 'ai' ? safeText.replace(/\n/g, '<br>') : safeText;
-  
+
   const msgWrapper = document.createElement('div');
-  
+
   if (sender === 'ai') {
     msgWrapper.className = 'flex flex-col gap-1 items-start max-w-[85%]';
     msgWrapper.innerHTML = `
@@ -40,7 +40,7 @@ function appendMessage(text, sender = 'user') {
       </div>
     `;
   }
-  
+
   chatWindow.appendChild(msgWrapper);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
@@ -51,12 +51,14 @@ function appendMessage(text, sender = 'user') {
  * @returns {Promise<void>}
  */
 async function sendAssistQuery(query) {
-  if (!query.trim()) {return;}
-  
+  if (!query.trim()) {
+    return;
+  }
+
   appendMessage(query, 'user');
   chatInput.value = '';
   chatLoading.classList.remove('hidden');
-  
+
   checkAndLogChatIncident(query);
 
   try {
@@ -67,22 +69,22 @@ async function sendAssistQuery(query) {
         persona: AppState.currentPersona,
         query,
         language: AppState.language,
-        stadiumId: AppState.stadiumId
-      })
+        stadiumId: AppState.stadiumId,
+      }),
     });
-    
+
     const data = await res.json();
     chatLoading.classList.add('hidden');
-    
+
     if (res.ok && data.response) {
       appendMessage(data.response, 'ai');
     } else {
-      appendMessage("Sorry, I encountered an error. Please try again.", 'ai');
+      appendMessage('Sorry, I encountered an error. Please try again.', 'ai');
       window.showToast(data.message || 'Error fetching response', 'error');
     }
   } catch (error) {
     chatLoading.classList.add('hidden');
-    appendMessage("Network error. Please check your connection.", 'ai');
+    appendMessage('Network error. Please check your connection.', 'ai');
     window.showToast('Network error', 'error');
   }
 }
@@ -94,7 +96,7 @@ chatForm.addEventListener('submit', (e) => {
 });
 
 // Bind quick-tap buttons
-document.querySelectorAll('.quick-btn').forEach(btn => {
+document.querySelectorAll('.quick-btn').forEach((btn) => {
   btn.addEventListener('click', (e) => {
     sendAssistQuery(e.target.dataset.query);
   });
@@ -105,8 +107,10 @@ document.querySelectorAll('.quick-btn').forEach(btn => {
  * @returns {Promise<void>}
  */
 async function pollCrowdStatus() {
-  if(AppState.currentPersona !== 'fan') {return;} // Only poll heavily if on fan screen (optimization)
-  
+  if (AppState.currentPersona !== 'fan') {
+    return;
+  } // Only poll heavily if on fan screen (optimization)
+
   try {
     // Use the assist route silently to check "crowd status"
     const res = await fetch('/api/assist', {
@@ -116,30 +120,30 @@ async function pollCrowdStatus() {
         persona: 'fan',
         query: 'crowd status',
         language: 'en',
-        stadiumId: AppState.stadiumId
-      })
+        stadiumId: AppState.stadiumId,
+      }),
     });
-    
+
     const data = await res.json();
     if (data.decision && data.decision.overallLevel) {
       const level = data.decision.overallLevel;
       crowdPill.textContent = level;
-      
+
       const baseClasses = 'px-2 py-1 rounded font-label-md text-caption border';
       if (level === 'LOW') {
-          crowdPill.className = `${baseClasses} bg-green-500/20 text-green-400 border-green-500/30`;
+        crowdPill.className = `${baseClasses} bg-green-500/20 text-green-400 border-green-500/30`;
       } else if (level === 'MODERATE') {
-          crowdPill.className = `${baseClasses} bg-yellow-500/20 text-yellow-400 border-yellow-500/30`;
+        crowdPill.className = `${baseClasses} bg-yellow-500/20 text-yellow-400 border-yellow-500/30`;
       } else if (level === 'HIGH') {
-          crowdPill.className = `${baseClasses} bg-orange-500/20 text-orange-400 border-orange-500/30`;
+        crowdPill.className = `${baseClasses} bg-orange-500/20 text-orange-400 border-orange-500/30`;
       } else if (level === 'CRITICAL') {
-          crowdPill.className = `${baseClasses} bg-red-500/20 text-red-400 border-red-500/30 neon-glow-effect`;
+        crowdPill.className = `${baseClasses} bg-red-500/20 text-red-400 border-red-500/30 neon-glow-effect`;
       }
-      
+
       crowdPill.setAttribute('aria-label', `Current stadium crowd status is ${level}`);
     }
   } catch (err) {
-    console.warn("Failed to poll crowd status", err);
+    console.warn('Failed to poll crowd status', err);
   }
 }
 
@@ -159,10 +163,10 @@ if (reportBtn && incidentModal && closeBtn) {
     incidentModal.classList.remove('hidden');
     // Focus trap: move focus into the modal for accessibility
     setTimeout(() => {
-      const firstFocusable = incidentModal.querySelector(
-        'button, select, textarea, input'
-      );
-      if (firstFocusable) {firstFocusable.focus();}
+      const firstFocusable = incidentModal.querySelector('button, select, textarea, input');
+      if (firstFocusable) {
+        firstFocusable.focus();
+      }
     }, 50);
   });
 
@@ -174,11 +178,11 @@ if (reportBtn && incidentModal && closeBtn) {
 if (incidentForm) {
   incidentForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const category = document.getElementById('incident-category').value;
     const location = document.getElementById('incident-location').value;
     const desc = document.getElementById('incident-desc').value;
-    
+
     let type = 'GENERAL';
     let severity = 'LOW';
     if (category === 'MEDICAL') {
@@ -188,17 +192,22 @@ if (incidentForm) {
       type = 'SECURITY';
       severity = 'HIGH';
     }
-    
-    const categoryText = category === 'MEDICAL' ? 'Medical Alert' : (category === 'SECURITY' ? 'Security Issue' : 'General Inquiry');
+
+    const categoryText =
+      category === 'MEDICAL'
+        ? 'Medical Alert'
+        : category === 'SECURITY'
+          ? 'Security Issue'
+          : 'General Inquiry';
     const userMsg = `🚨 REPORT SUBMITTED: ${categoryText} in ${location}. Description: "${desc}"`;
-    
+
     appendMessage(userMsg, 'user');
-    
+
     incidentModal.classList.add('hidden');
     incidentForm.reset();
-    
+
     chatLoading.classList.remove('hidden');
-    
+
     try {
       const res = await fetch('/api/alert', {
         method: 'POST',
@@ -208,13 +217,13 @@ if (incidentForm) {
           type,
           severity,
           location,
-          reportedBy: 'Fan'
-        })
+          reportedBy: 'Fan',
+        }),
       });
-      
+
       const data = await res.json();
       chatLoading.classList.add('hidden');
-      
+
       if (res.ok && data.alert) {
         const incNum = Math.floor(Math.random() * 800) + 100;
         const alertMsg = `🚨 <b>Incident Alert Logged:</b><br>We have logged your report (<b>INC-${incNum}</b>) regarding <b>${categoryText}</b> at <b>${location}</b>.<br>- Stadium safety coordinators have been notified.<br>- Operational response dispatched.<br><br><i>Thank you for helping keep the stadium safe.</i>`;
@@ -224,15 +233,21 @@ if (incidentForm) {
           severity,
           location,
           message: `<b>Category:</b> ${categoryText}<br><b>Location:</b> ${location}<br><b>Details:</b> ${desc}`,
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString(),
         });
       } else {
-        appendMessage("We could not process your report automatically. Please find the nearest safety coordinator.", 'ai');
+        appendMessage(
+          'We could not process your report automatically. Please find the nearest safety coordinator.',
+          'ai',
+        );
         window.showToast(data.message || 'Error submitting report', 'error');
       }
     } catch (err) {
       chatLoading.classList.add('hidden');
-      appendMessage("Network error: Could not submit report. Please alert a steward directly.", 'ai');
+      appendMessage(
+        'Network error: Could not submit report. Please alert a steward directly.',
+        'ai',
+      );
       window.showToast('Network error submitting incident', 'error');
     }
   });
@@ -246,27 +261,29 @@ const SharedAlertStore = window.SharedAlertStore || [
   {
     severity: 'MEDIUM',
     location: 'Section C1 Concourse',
-    message: '<b>Category:</b> Health/Medical<br><b>Location:</b> Section C1 Concourse<br><b>Details:</b> Fan experiencing heat exhaustion and dehydration. Medical team successfully dispatched.',
-    timestamp: '14:32'
+    message:
+      '<b>Category:</b> Health/Medical<br><b>Location:</b> Section C1 Concourse<br><b>Details:</b> Fan experiencing heat exhaustion and dehydration. Medical team successfully dispatched.',
+    timestamp: '14:32',
   },
   {
     severity: 'LOW',
     location: 'Gate E1',
-    message: '<b>Category:</b> Crowd Control<br><b>Location:</b> Gate E1<br><b>Details:</b> Turnstile mechanical malfunction causing entry bottlenecking.',
-    timestamp: '14:35'
+    message:
+      '<b>Category:</b> Crowd Control<br><b>Location:</b> Gate E1<br><b>Details:</b> Turnstile mechanical malfunction causing entry bottlenecking.',
+    timestamp: '14:35',
   },
   {
     severity: 'CRITICAL',
     location: 'Gate C1',
     message: 'AVOID GATE C1 - Maximum Capacity Reached',
-    timestamp: '14:40'
+    timestamp: '14:40',
   },
   {
     severity: 'MEDIUM',
     location: 'Gate E1',
     message: 'Expect slight delays at Gate E1 due to turnstile maintenance.',
-    timestamp: '14:42'
-  }
+    timestamp: '14:42',
+  },
 ];
 window.SharedAlertStore = SharedAlertStore;
 
@@ -291,18 +308,24 @@ function buildAlertCard(alertObj) {
   let textClass = 'text-white';
 
   if (alertObj.severity === 'CRITICAL') {
-    bgClass = 'bg-red-500/20'; borderClass = 'border-red-500/40'; textClass = 'text-red-400';
+    bgClass = 'bg-red-500/20';
+    borderClass = 'border-red-500/40';
+    textClass = 'text-red-400';
   } else if (alertObj.severity === 'HIGH') {
-    bgClass = 'bg-orange-500/20'; borderClass = 'border-orange-500/40'; textClass = 'text-orange-400';
+    bgClass = 'bg-orange-500/20';
+    borderClass = 'border-orange-500/40';
+    textClass = 'text-orange-400';
   } else if (['MODERATE', 'MEDIUM', 'LOW'].includes(alertObj.severity)) {
-    bgClass = 'bg-yellow-500/20'; borderClass = 'border-yellow-500/40'; textClass = 'text-yellow-400';
+    bgClass = 'bg-yellow-500/20';
+    borderClass = 'border-yellow-500/40';
+    textClass = 'text-yellow-400';
   }
 
   const div = document.createElement('div');
   div.className = `p-3 rounded-lg border ${bgClass} ${borderClass} text-sm`;
   div.innerHTML = DOMPurify.sanitize(
     `<strong class="${textClass}">${alertObj.severity} PRIORITY</strong> — ${alertObj.timestamp}<br>` +
-    `<span class="mt-1 block text-white">${alertObj.message || ('Incident at ' + alertObj.location)}</span>`
+      `<span class="mt-1 block text-white">${alertObj.message || 'Incident at ' + alertObj.location}</span>`,
   );
   return div;
 }
@@ -312,7 +335,9 @@ function buildAlertCard(alertObj) {
  * @param {HTMLElement|null} feedEl - The feed container element.
  */
 function renderFeed(feedEl) {
-  if (!feedEl) {return;}
+  if (!feedEl) {
+    return;
+  }
   feedEl.innerHTML = '';
   if (SharedAlertStore.length === 0) {
     const p = document.createElement('p');
@@ -322,7 +347,7 @@ function renderFeed(feedEl) {
     return;
   }
   // newest first
-  [...SharedAlertStore].reverse().forEach(alertObj => {
+  [...SharedAlertStore].reverse().forEach((alertObj) => {
     feedEl.appendChild(buildAlertCard(alertObj));
   });
 }
@@ -360,8 +385,15 @@ document.addEventListener('click', (e) => {
  */
 function checkAndLogChatIncident(query) {
   const q = query.toLowerCase();
-  const isReport = q.includes('report') || q.includes('emergency') || q.includes('incident') || q.includes('medical') || q.includes('security') || q.includes('fire') || q.includes('injury');
-  
+  const isReport =
+    q.includes('report') ||
+    q.includes('emergency') ||
+    q.includes('incident') ||
+    q.includes('medical') ||
+    q.includes('security') ||
+    q.includes('fire') ||
+    q.includes('injury');
+
   if (isReport) {
     let type = 'GENERAL';
     let severity = 'LOW';
@@ -372,14 +404,14 @@ function checkAndLogChatIncident(query) {
       type = 'SECURITY';
       severity = 'HIGH';
     }
-    
+
     // Parse location
     let location = 'General Stadium Area';
     const locMatch = query.match(/(?:at|in|near|gate|section)\s+([a-zA-Z0-9\s]+)/i);
     if (locMatch && locMatch[1]) {
       location = locMatch[1].trim();
     }
-    
+
     fetch('/api/alert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -388,22 +420,27 @@ function checkAndLogChatIncident(query) {
         type,
         severity,
         location,
-        reportedBy: 'Fan AI Chat'
+        reportedBy: 'Fan AI Chat',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.alert) {
+          const categoryText =
+            type === 'MEDICAL'
+              ? 'Medical Alert'
+              : type === 'SECURITY'
+                ? 'Security Issue'
+                : 'General Inquiry';
+          addFanAlertToFeed({
+            severity: data.alert.severity,
+            location: data.alert.location,
+            message: `<b>Category:</b> ${categoryText}<br><b>Location:</b> ${data.alert.location}<br><b>Details:</b> "${query}"`,
+            timestamp: new Date().toLocaleTimeString(),
+          });
+        }
       })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.alert) {
-        const categoryText = type === 'MEDICAL' ? 'Medical Alert' : (type === 'SECURITY' ? 'Security Issue' : 'General Inquiry');
-        addFanAlertToFeed({
-          severity: data.alert.severity,
-          location: data.alert.location,
-          message: `<b>Category:</b> ${categoryText}<br><b>Location:</b> ${data.alert.location}<br><b>Details:</b> "${query}"`,
-          timestamp: new Date().toLocaleTimeString()
-        });
-      }
-    })
-    .catch(err => console.warn('Failed to log chat incident', err));
+      .catch((err) => console.warn('Failed to log chat incident', err));
   }
 }
 

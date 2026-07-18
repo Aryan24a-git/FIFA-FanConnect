@@ -34,7 +34,7 @@ router.post('/', async (req, res, next) => {
       throw new AppError(
         `Validation failed: ${valResult.errors.join(', ')}`,
         HTTP.BAD_REQUEST,
-        'transport_validation_error'
+        'transport_validation_error',
       );
     }
 
@@ -48,10 +48,13 @@ router.post('/', async (req, res, next) => {
 
     if (isModelReady()) {
       try {
-        const optionsSummary = recommendation.recommendations.map(r => 
-          `- ${r.mode} (${r.name}): Wait ${r.baseWaitMinutes}m, Cost ${r.costEstimate}, Status: ${r.statusMessage}`
-        ).join('\n');
-        
+        const optionsSummary = recommendation.recommendations
+          .map(
+            (r) =>
+              `- ${r.mode} (${r.name}): Wait ${r.baseWaitMinutes}m, Cost ${r.costEstimate}, Status: ${r.statusMessage}`,
+          )
+          .join('\n');
+
         const prompt = `Stadium: ${recommendation.stadiumName}
 Destination: ${destination}
 Departure Window: ${time}
@@ -76,9 +79,9 @@ Provide a short, 2-3 sentence travel guide explaining the best options, safety t
       success: true,
       recommendation: {
         ...recommendation,
-        generalAdvice: explainedAdvice
+        generalAdvice: explainedAdvice,
       },
-      translationSource
+      translationSource,
     });
   } catch (err) {
     next(err);

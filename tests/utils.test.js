@@ -11,7 +11,12 @@ const { generateAlert } = require('../server/engines/alertEngine');
 
 describe('Utils & Engines', () => {
   it('validateAssist valid -> valid:true', () => {
-    const res = validateAssist({ persona: 'fan', query: 'x', language: 'en', stadiumId: 'metlife' });
+    const res = validateAssist({
+      persona: 'fan',
+      query: 'x',
+      language: 'en',
+      stadiumId: 'metlife',
+    });
     expect(res.success).toBe(true);
   });
 
@@ -21,7 +26,12 @@ describe('Utils & Engines', () => {
   });
 
   it('validateAlert missing type -> valid:false', () => {
-    const res = validateAlert({ stadiumId: 'metlife', severity: 'HIGH', location: 'x', reportedBy: 'x' });
+    const res = validateAlert({
+      stadiumId: 'metlife',
+      severity: 'HIGH',
+      location: 'x',
+      reportedBy: 'x',
+    });
     expect(res.success).toBe(false);
   });
 
@@ -50,7 +60,7 @@ describe('Utils & Engines', () => {
   it('alertEngine all types return structured alert', () => {
     const a1 = generateAlert('CROWD', 'HIGH', 'Gate');
     expect(a1.id).toContain('ALERT-CROWD');
-    
+
     const a2 = generateAlert('MEDICAL', 'LOW', 'Zone');
     expect(a2.id).toContain('ALERT-MEDICAL');
   });
@@ -74,20 +84,17 @@ describe('Utils & Engines', () => {
     // Fire 21 concurrent requests from same IP
     for (let i = 0; i <= 20; i++) {
       requests.push(
-        request(app)
-          .post('/api/assist')
-          .set('X-Forwarded-For', uniqueIP)
-          .send({
-            persona: 'fan',
-            query: 'test query',
-            language: 'en',
-            stadiumId: 'metlife'
-          })
+        request(app).post('/api/assist').set('X-Forwarded-For', uniqueIP).send({
+          persona: 'fan',
+          query: 'test query',
+          language: 'en',
+          stadiumId: 'metlife',
+        }),
       );
     }
 
     const responses = await Promise.all(requests);
-    const statuses = responses.map(r => r.status);
+    const statuses = responses.map((r) => r.status);
 
     // At least one should be 429
     expect(statuses).toContain(429);

@@ -25,7 +25,7 @@ const logger = require('../utils/logger');
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-router.post('/', async (req, res, next) => {
+const handleTranslateRequest = async (req, res, next) => {
   try {
     // 1. Validate input
     const validation = validateTranslate(req.body);
@@ -62,7 +62,8 @@ router.post('/', async (req, res, next) => {
         source = 'gemini';
       } catch (geminiErr) {
         logger.warn({ event: 'gemini_translate_error', reason: geminiErr.message });
-        translated = 'Translation unavailable. Please visit the Fan Information Desk for assistance.';
+        translated =
+          'Translation unavailable. Please visit the Fan Information Desk for assistance.';
         source = 'fallback';
       }
     }
@@ -77,6 +78,8 @@ router.post('/', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-});
+};
+
+router.post('/', handleTranslateRequest);
 
 module.exports = router;

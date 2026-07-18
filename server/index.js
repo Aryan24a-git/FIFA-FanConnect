@@ -33,7 +33,12 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://ajax.googleapis.com"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-eval'",
+          'https://cdn.tailwindcss.com',
+          'https://ajax.googleapis.com',
+        ],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https:'],
@@ -46,7 +51,7 @@ app.use(
       preload: true,
     },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-  })
+  }),
 );
 
 // ─── PERMISSIONS POLICY ───────────────────────────────────────────────────────
@@ -67,7 +72,7 @@ app.use((req, res, next) => {
   const origin = req.header('Origin');
   const host = req.header('Host');
   const protocol = req.headers['x-forwarded-proto'] || (req.secure ? 'https' : 'http');
-  const sameOrigin = origin && (origin === `${protocol}://${host}`);
+  const sameOrigin = origin && origin === `${protocol}://${host}`;
 
   cors({
     origin: function (requestOrigin, callback) {
@@ -75,7 +80,7 @@ app.use((req, res, next) => {
         !requestOrigin ||
         sameOrigin ||
         allowedOrigins.includes(requestOrigin) ||
-        (process.env.VERCEL && requestOrigin.endsWith('.vercel.app'))
+        (process.env.VERCEL && requestOrigin === 'https://fifa-fan-connect.vercel.app')
       ) {
         callback(null, true);
       } else {
@@ -120,17 +125,19 @@ const geminiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 
 // ─── STATIC FILES ─────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, '../public'), {
-  maxAge: '1d',
-  etag: true,
-  lastModified: true,
-  setHeaders: (res, filePath) => {
-    // DOMPurify and init.js can be cached longer
-    if (filePath.endsWith('dompurify.min.js') || filePath.endsWith('init.js')) {
-      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
-    }
-  }
-}));
+app.use(
+  express.static(path.join(__dirname, '../public'), {
+    maxAge: '1d',
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      // DOMPurify and init.js can be cached longer
+      if (filePath.endsWith('dompurify.min.js') || filePath.endsWith('init.js')) {
+        res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+      }
+    },
+  }),
+);
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 /**
@@ -156,9 +163,11 @@ app.get('/health/ai', (req, res) => {
   res.status(HTTP.OK).json({
     status: 'ok',
     aiProvider: process.env.GEMINI_API_KEY
-      ? (process.env.GEMINI_API_KEY.startsWith('gsk_') ? 'groq'
-        : process.env.GEMINI_API_KEY.startsWith('sk-or-') ? 'openrouter'
-        : 'gemini')
+      ? process.env.GEMINI_API_KEY.startsWith('gsk_')
+        ? 'groq'
+        : process.env.GEMINI_API_KEY.startsWith('sk-or-')
+          ? 'openrouter'
+          : 'gemini'
       : 'not_configured',
     modelReady: isModelReady(),
     model: process.env.GEMINI_API_KEY ? 'gemini-2.0-flash' : null,
@@ -181,7 +190,7 @@ footballPages.forEach((page) => {
   app.get(`/${page}`, (req, res) => {
     res.setHeader(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://ajax.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;",
     );
     res.sendFile(path.join(__dirname, `../public/${page}`));
   });

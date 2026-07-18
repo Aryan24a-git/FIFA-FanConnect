@@ -29,7 +29,7 @@ const CROWD_LEVELS = Object.freeze({
  */
 const CROWD_THRESHOLDS = Object.freeze({
   CRITICAL: 90, // >90% → CRITICAL
-  HIGH: 75,     // >75% → HIGH
+  HIGH: 75, // >75% → HIGH
   MODERATE: 50, // >50% → MODERATE
   // ≤50%     → LOW
 });
@@ -110,7 +110,19 @@ const VALID_PERSONAS = Object.freeze(['fan', 'volunteer', 'staff']);
  * @readonly
  * @type {readonly [string, ...string[]]}
  */
-const SUPPORTED_LANGUAGES = Object.freeze(['en', 'es', 'fr', 'ar', 'pt', 'de', 'ja', 'hi', 'zh', 'it', 'ko']);
+const SUPPORTED_LANGUAGES = Object.freeze([
+  'en',
+  'es',
+  'fr',
+  'ar',
+  'pt',
+  'de',
+  'ja',
+  'hi',
+  'zh',
+  'it',
+  'ko',
+]);
 
 /**
  * Maximum length for any user-submitted message or query.
@@ -131,8 +143,6 @@ const ALERT_PRIORITIES = Object.freeze({
   P4: 'P4_LOW',
 });
 
-
-
 // ─── API / RATE LIMITS ────────────────────────────────────────────────────────
 
 /**
@@ -140,13 +150,11 @@ const ALERT_PRIORITIES = Object.freeze({
  * @readonly
  */
 const RATE_LIMIT = Object.freeze({
-  WINDOW_MS: 15 * 60 * 1000,   // 15 minutes
+  WINDOW_MS: 15 * 60 * 1000, // 15 minutes
   MAX_REQUESTS: 100,
-  GEMINI_MAX_REQUESTS: 20,     // Stricter limit for AI calls
+  GEMINI_MAX_REQUESTS: 20, // Stricter limit for AI calls
   GEMINI_WINDOW_MS: 60 * 1000, // 1 minute window for Gemini calls
 });
-
-
 
 // ─── INPUT LIMITS ─────────────────────────────────────────────────────────────
 
@@ -155,9 +163,9 @@ const RATE_LIMIT = Object.freeze({
  * @readonly
  */
 const INPUT_LIMITS = Object.freeze({
-  MAX_QUERY_LENGTH: 500,       // Max chars for fan query strings
-  MAX_BODY_SIZE: '10kb',       // Express body parser limit
-  MAX_LANGUAGE_CODE_LEN: 10,   // Max length for language codes (e.g. 'en', 'es-MX')
+  MAX_QUERY_LENGTH: 500, // Max chars for fan query strings
+  MAX_BODY_SIZE: '10kb', // Express body parser limit
+  MAX_LANGUAGE_CODE_LEN: 10, // Max length for language codes (e.g. 'en', 'es-MX')
 });
 
 // ─── GEMINI AI ─────────────────────────────────────────────────────────────────
@@ -170,9 +178,10 @@ const INPUT_LIMITS = Object.freeze({
 const GEMINI = Object.freeze({
   MODEL: 'gemini-2.0-flash',
   MAX_OUTPUT_TOKENS: 512,
-  TEMPERATURE: 0.3,             // Low temperature = factual, consistent responses
-  TIMEOUT_MS: 8000,             // Abort Gemini call after 8 seconds
-  FALLBACK_MESSAGE: 'I am unable to process your request at this moment. Please visit the Fan Information Desk at Gate A1 or Gate C1 for assistance.',
+  TEMPERATURE: 0.3, // Low temperature = factual, consistent responses
+  TIMEOUT_MS: 8000, // Abort Gemini call after 8 seconds
+  FALLBACK_MESSAGE:
+    'I am unable to process your request at this moment. Please visit the Fan Information Desk at Gate A1 or Gate C1 for assistance.',
 });
 
 // ─── STADIUM CONFIG ────────────────────────────────────────────────────────────
@@ -225,10 +234,10 @@ const VALID_TRANSPORT_MODES = Object.freeze(['metro', 'bus', 'parking', 'ridesha
  * @readonly
  */
 const ECO_METRICS = Object.freeze({
-  metro: 28,      // 28g CO2e per km
-  bus: 68,        // 68g CO2e per km
+  metro: 28, // 28g CO2e per km
+  bus: 68, // 68g CO2e per km
   rideshare: 171, // 171g CO2e per km (split/pooled)
-  parking: 220,   // 220g CO2e per km (single passenger car)
+  parking: 220, // 220g CO2e per km (single passenger car)
 });
 
 module.exports = {

@@ -30,18 +30,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const defaultWaterStations = [
     { name: 'North Concourse Refill', loc: 'Near Gate A1', icon: 'water_drop' },
     { name: 'South Concourse Refill', loc: 'Near Gate C1', icon: 'water_drop' },
-    { name: 'Accessible Rest Refill', loc: 'Gate E1 Lobby', icon: 'water_drop' }
+    { name: 'Accessible Rest Refill', loc: 'Gate E1 Lobby', icon: 'water_drop' },
   ];
 
   const defaultWasteSorting = [
     { bin: 'Compost (Green)', items: 'Food waste, paper containers', color: 'text-green-400' },
-    { bin: 'Recycling (Blue)', items: 'Plastics bottles, clean aluminum cans', color: 'text-blue-400' },
-    { bin: 'Landfill (Black)', items: 'Wrappers, unlabelled materials', color: 'text-gray-400' }
+    {
+      bin: 'Recycling (Blue)',
+      items: 'Plastics bottles, clean aluminum cans',
+      color: 'text-blue-400',
+    },
+    { bin: 'Landfill (Black)', items: 'Wrappers, unlabelled materials', color: 'text-gray-400' },
   ];
 
   // Render static defaults
   if (waterStationsList) {
-    waterStationsList.innerHTML = defaultWaterStations.map(station => `
+    waterStationsList.innerHTML = defaultWaterStations
+      .map(
+        (station) => `
       <div class="flex items-center gap-3 bg-white/5 p-2.5 rounded-lg border border-white/5">
         <span class="material-symbols-outlined text-blue-400 text-[20px]">${station.icon}</span>
         <div>
@@ -49,16 +55,22 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="text-[10px] text-on-surface-variant">${station.loc}</p>
         </div>
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
   }
 
   if (wasteSortingList) {
-    wasteSortingList.innerHTML = defaultWasteSorting.map(w => `
+    wasteSortingList.innerHTML = defaultWasteSorting
+      .map(
+        (w) => `
       <div class="flex flex-col bg-white/5 p-2 rounded border border-white/5">
         <span class="text-xs font-bold ${w.color}">${w.bin}</span>
         <span class="text-[10px] text-on-surface-variant mt-0.5">${w.items}</span>
       </div>
-    `).join('');
+    `,
+      )
+      .join('');
   }
 
   // Sustainability Calculation Action
@@ -88,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
             stadiumId,
             transportMode: mode,
             distanceKm,
-            language: window.AppState?.language || 'en'
-          })
+            language: window.AppState?.language || 'en',
+          }),
         });
         const data = await res.json();
 
@@ -97,14 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
           const rec = data.recommendation;
           const emissionsKg = rec.carbonFootprintGrams / 1000;
           ecoCarbonValue.textContent = `${emissionsKg.toFixed(2)} kg CO2`;
-          
+
           if (ecoDistanceValDisplay) {
             ecoDistanceValDisplay.textContent = distanceKm;
           }
 
           let listHtml = '';
           if (rec.comparison && rec.comparison.length > 0) {
-            rec.comparison.forEach(item => {
+            rec.comparison.forEach((item) => {
               listHtml += `<li>${DOMPurify.sanitize(item)}</li>`;
             });
           }
@@ -154,40 +166,47 @@ document.addEventListener('DOMContentLoaded', () => {
             stadiumId,
             destination,
             time: departureWindow,
-            language: window.AppState?.language || 'en'
-          })
+            language: window.AppState?.language || 'en',
+          }),
         });
         const data = await res.json();
 
         if (res.ok && data.success) {
           const rec = data.recommendation;
-          transportAdvice.innerHTML = DOMPurify.sanitize(`🤖 <b>AI Route Guide:</b> ${rec.generalAdvice}`);
-          
+          transportAdvice.innerHTML = DOMPurify.sanitize(
+            `🤖 <b>AI Route Guide:</b> ${rec.generalAdvice}`,
+          );
+
           if (rec.recommendations && rec.recommendations.length > 0) {
-            transportRankingList.innerHTML = rec.recommendations.map((opt) => {
-              let congestionBg = 'bg-green-500/20 text-green-400 border-green-500/30';
-              if (opt.status === 'GRIDLOCK' || opt.status === 'HEAVY_CONGESTION') {
-                congestionBg = 'bg-red-500/20 text-red-400 border-red-500/30';
-              } else if (opt.status === 'MODERATE_DELAYS' || opt.status === 'CONGESTED_BUT_FAST') {
-                congestionBg = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-              }
+            transportRankingList.innerHTML = rec.recommendations
+              .map((opt) => {
+                let congestionBg = 'bg-green-500/20 text-green-400 border-green-500/30';
+                if (opt.status === 'GRIDLOCK' || opt.status === 'HEAVY_CONGESTION') {
+                  congestionBg = 'bg-red-500/20 text-red-400 border-red-500/30';
+                } else if (
+                  opt.status === 'MODERATE_DELAYS' ||
+                  opt.status === 'CONGESTED_BUT_FAST'
+                ) {
+                  congestionBg = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                }
 
-              const recBadge = opt.efficiencyScore >= 80
-                ? `<span class="bg-[#00daf3]/20 text-[#00daf3] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#00daf3]/30">RECOMMENDED</span>`
-                : '';
+                const recBadge =
+                  opt.efficiencyScore >= 80
+                    ? `<span class="bg-[#00daf3]/20 text-[#00daf3] text-[9px] font-bold px-1.5 py-0.5 rounded border border-[#00daf3]/30">RECOMMENDED</span>`
+                    : '';
 
-              let icon = 'directions_transit';
-              if (opt.mode === 'shuttle' || opt.mode === 'bus') {
-                icon = 'directions_bus';
-              }
-              if (opt.mode === 'rideshare') {
-                icon = 'hail';
-              }
-              if (opt.mode === 'parking' || opt.mode === 'car') {
-                icon = 'directions_car';
-              }
+                let icon = 'directions_transit';
+                if (opt.mode === 'shuttle' || opt.mode === 'bus') {
+                  icon = 'directions_bus';
+                }
+                if (opt.mode === 'rideshare') {
+                  icon = 'hail';
+                }
+                if (opt.mode === 'parking' || opt.mode === 'car') {
+                  icon = 'directions_car';
+                }
 
-              return `
+                return `
                 <div class="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10 hover:bg-white/10 transition-colors">
                   <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-secondary-fixed-dim/20 flex items-center justify-center text-secondary-fixed-dim font-bold">
@@ -207,9 +226,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
                 </div>
               `;
-            }).join('');
+              })
+              .join('');
           } else {
-            transportRankingList.innerHTML = '<p class="text-xs text-on-surface-variant">No routes found.</p>';
+            transportRankingList.innerHTML =
+              '<p class="text-xs text-on-surface-variant">No routes found.</p>';
           }
 
           transportResults.classList.remove('hidden');

@@ -29,7 +29,9 @@ const logger = require('../utils/logger');
 function buildGeminiContext(query, stadium, engineResult) {
   const faqs = searchFaqs(query);
   const faqText = faqs.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join('\n\n');
-  const engineText = engineResult ? `Engine Decision:\n${JSON.stringify(engineResult, null, 2)}` : '';
+  const engineText = engineResult
+    ? `Engine Decision:\n${JSON.stringify(engineResult, null, 2)}`
+    : '';
   const stadiumText = stadium
     ? `Stadium: ${stadium.name} in ${stadium.city} (capacity: ${stadium.capacity})`
     : '';
@@ -47,30 +49,55 @@ function runRelevantEngine(query, stadium) {
   const q = query.toLowerCase();
   const gates = stadium ? stadium.gates : [];
 
-  if (q.includes('crowd') || q.includes('queue') || q.includes('busy') || q.includes('gate') || q.includes('enter')) {
+  if (
+    q.includes('crowd') ||
+    q.includes('queue') ||
+    q.includes('busy') ||
+    q.includes('gate') ||
+    q.includes('enter')
+  ) {
     const engineResult = analyzeCrowd(stadium.id, gates);
     return { engineName: 'crowdEngine', engineResult };
   }
 
   if (
-    q.includes('where') || q.includes('navigate') || q.includes('direction') ||
-    q.includes('find') || q.includes('get to') || q.includes('route') ||
-    q.includes('food') || q.includes('toilet') || q.includes('medical') ||
-    q.includes('exit') || q.includes('parking') || q.includes('metro')
+    q.includes('where') ||
+    q.includes('navigate') ||
+    q.includes('direction') ||
+    q.includes('find') ||
+    q.includes('get to') ||
+    q.includes('route') ||
+    q.includes('food') ||
+    q.includes('toilet') ||
+    q.includes('medical') ||
+    q.includes('exit') ||
+    q.includes('parking') ||
+    q.includes('metro')
   ) {
     const from = 'entrance';
-    const to = q.includes('food') ? 'food'
-      : q.includes('toilet') || q.includes('restroom') ? 'toilet'
-      : q.includes('medical') || q.includes('first aid') ? 'medical'
-      : q.includes('exit') ? 'exit'
-      : q.includes('parking') ? 'parking'
-      : q.includes('metro') || q.includes('train') ? 'metro'
-      : 'info_desk';
+    const to = q.includes('food')
+      ? 'food'
+      : q.includes('toilet') || q.includes('restroom')
+        ? 'toilet'
+        : q.includes('medical') || q.includes('first aid')
+          ? 'medical'
+          : q.includes('exit')
+            ? 'exit'
+            : q.includes('parking')
+              ? 'parking'
+              : q.includes('metro') || q.includes('train')
+                ? 'metro'
+                : 'info_desk';
     const engineResult = getRoute(from, to, false);
     return { engineName: 'routingEngine', engineResult };
   }
 
-  if (q.includes('alert') || q.includes('emergency') || q.includes('danger') || q.includes('evacuate')) {
+  if (
+    q.includes('alert') ||
+    q.includes('emergency') ||
+    q.includes('danger') ||
+    q.includes('evacuate')
+  ) {
     const engineResult = generateAlert('SECURITY', 'MEDIUM', 'General Stadium Area');
     return { engineName: 'alertEngine', engineResult };
   }
@@ -88,7 +115,7 @@ function runRelevantEngine(query, stadium) {
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-router.post('/', async (req, res, next) => {
+const handleAssistRequest = async (req, res, next) => {
   try {
     // 1. Validate input
     const validation = validateAssist(req.body);
@@ -100,7 +127,9 @@ router.post('/', async (req, res, next) => {
     const stadium = getStadiumById(stadiumId);
 
     if (!stadium) {
-      return next(new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'));
+      return next(
+        new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'),
+      );
     }
 
     logger.info({ event: 'assist_request', persona, stadiumId, language });
@@ -115,7 +144,9 @@ router.post('/', async (req, res, next) => {
     if (isModelReady()) {
       try {
         const geminiContext = buildGeminiContext(query, stadium, engineResult);
-        const combinedContext = context ? `${geminiContext}\n\nAdditional context: ${context}` : geminiContext;
+        const combinedContext = context
+          ? `${geminiContext}\n\nAdditional context: ${context}`
+          : geminiContext;
         response = await answerFanQuestion(query, combinedContext);
         if (language !== 'en') {
           response = await translateToLanguage(response, language);
@@ -160,6 +191,8 @@ router.post('/', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-});
+};
+
+router.post('/', handleAssistRequest);
 
 module.exports = router;

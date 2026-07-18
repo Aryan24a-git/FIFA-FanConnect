@@ -27,7 +27,7 @@ const logger = require('../utils/logger');
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-router.post('/', async (req, res, next) => {
+const handleAlertRequest = async (req, res, next) => {
   try {
     // 1. Validate input
     const validation = validateAlert(req.body);
@@ -40,7 +40,9 @@ router.post('/', async (req, res, next) => {
     // 2. Validate stadium exists
     const stadium = getStadiumById(stadiumId);
     if (!stadium) {
-      return next(new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'));
+      return next(
+        new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'),
+      );
     }
 
     logger.info({ event: 'alert_request', stadiumId, type, severity, location, reportedBy });
@@ -73,7 +75,9 @@ router.post('/', async (req, res, next) => {
       alert,
       broadcastMessage,
       broadcastSource: broadcastMessage
-        ? (isModelReady() ? 'gemini' : 'deterministic_fallback')
+        ? isModelReady()
+          ? 'gemini'
+          : 'deterministic_fallback'
         : null,
       affectedZones: alert.affectedZones,
       stadium: { id: stadium.id, name: stadium.name },
@@ -83,6 +87,8 @@ router.post('/', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-});
+};
+
+router.post('/', handleAlertRequest);
 
 module.exports = router;

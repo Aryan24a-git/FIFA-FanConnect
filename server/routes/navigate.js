@@ -28,7 +28,7 @@ const logger = require('../utils/logger');
  * @param {express.Response} res
  * @param {express.NextFunction} next
  */
-router.post('/', async (req, res, next) => {
+const handleNavigateRequest = async (req, res, next) => {
   try {
     // 1. Validate input
     const validation = validateNavigate(req.body);
@@ -41,7 +41,9 @@ router.post('/', async (req, res, next) => {
     // 2. Validate stadium exists
     const stadium = getStadiumById(stadiumId);
     if (!stadium) {
-      return next(new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'));
+      return next(
+        new AppError(`Stadium '${stadiumId}' not found.`, HTTP.NOT_FOUND, 'STADIUM_NOT_FOUND'),
+      );
     }
 
     logger.info({ event: 'navigate_request', stadiumId, from, to, accessibility, language });
@@ -95,6 +97,8 @@ router.post('/', async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-});
+};
+
+router.post('/', handleNavigateRequest);
 
 module.exports = router;

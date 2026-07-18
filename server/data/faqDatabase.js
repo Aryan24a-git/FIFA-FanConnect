@@ -341,7 +341,7 @@ const faqs = [
     category: 'ticketing',
     question: 'Can children attend matches? Do they need a ticket?',
     answer:
-      'Children 3 years and under do not require a ticket if they sit on a parent\'s lap and do not occupy a seat. Children 4 and above require a valid ticket. Child (4–11) and Youth (12–17) pricing categories are available on the FIFA ticketing platform.',
+      "Children 3 years and under do not require a ticket if they sit on a parent's lap and do not occupy a seat. Children 4 and above require a valid ticket. Child (4–11) and Youth (12–17) pricing categories are available on the FIFA ticketing platform.",
     languages: ['en'],
   },
   {
@@ -371,7 +371,7 @@ const faqs = [
   {
     id: 'faq_044',
     category: 'ticketing',
-    question: 'What if my phone dies and I can\'t show my digital ticket?',
+    question: "What if my phone dies and I can't show my digital ticket?",
     answer:
       'Visit the Ticket Service Centre with your ID and booking reference number. Staff can verify your ticket and issue a printed backup. We recommend screenshotting your ticket or printing it in advance as a precaution.',
     languages: ['en'],
@@ -461,22 +461,22 @@ function getFaqsByCategory(category) {
 function searchFaqs(keyword) {
   const lower = keyword.toLowerCase();
   let results = faqs.filter(
-    (f) => f.question.toLowerCase().includes(lower) || f.answer.toLowerCase().includes(lower)
+    (f) => f.question.toLowerCase().includes(lower) || f.answer.toLowerCase().includes(lower),
   );
-  
+
   // If no exact match, split by words and find general matches (ignoring short words)
   if (results.length === 0) {
-    const words = lower.split(/\s+/).filter(w => w.length > 3);
+    const words = lower.split(/\s+/).filter((w) => w.length > 3);
     for (const word of words) {
       const wordResults = faqs.filter(
-        (f) => f.question.toLowerCase().includes(word) || f.answer.toLowerCase().includes(word)
+        (f) => f.question.toLowerCase().includes(word) || f.answer.toLowerCase().includes(word),
       );
       if (wordResults.length > 0) {
         results = results.concat(wordResults);
       }
     }
   }
-  
+
   // Remove duplicates
   const uniqueResults = [];
   const seenIds = new Set();
@@ -486,7 +486,7 @@ function searchFaqs(keyword) {
       uniqueResults.push(item);
     }
   }
-  
+
   return uniqueResults.slice(0, 5);
 }
 

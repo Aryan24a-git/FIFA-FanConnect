@@ -33,7 +33,7 @@ router.post('/', async (req, res, next) => {
       throw new AppError(
         `Validation failed: ${valResult.errors.join(', ')}`,
         HTTP.BAD_REQUEST,
-        'sustainability_validation_error'
+        'sustainability_validation_error',
       );
     }
 
@@ -58,9 +58,9 @@ router.post('/', async (req, res, next) => {
       success: true,
       recommendation: {
         ...recommendation,
-        ecoTip: explainedTip
+        ecoTip: explainedTip,
       },
-      translationSource
+      translationSource,
     });
   } catch (err) {
     next(err);

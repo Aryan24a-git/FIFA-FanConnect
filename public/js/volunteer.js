@@ -7,8 +7,10 @@
  */
 
 document.getElementById('vol-report-btn').addEventListener('click', async () => {
-  if(!confirm("Report a high crowd issue in Zone B?")) {return;}
-  
+  if (!confirm('Report a high crowd issue in Zone B?')) {
+    return;
+  }
+
   try {
     const res = await fetch('/api/alert', {
       method: 'POST',
@@ -18,17 +20,18 @@ document.getElementById('vol-report-btn').addEventListener('click', async () => 
         type: 'CROWD',
         severity: 'HIGH',
         location: 'Zone B Concourse',
-        reportedBy: 'Volunteer Alex Doe'
-      })
+        reportedBy: 'Volunteer Alex Doe',
+      }),
     });
-    
+
     if (res.ok) {
       window.showToast('Alert reported successfully', 'success');
       addAlertToFeed({
         severity: 'HIGH',
         location: 'Zone B Concourse',
-        message: '<b>Category:</b> Crowd Alert<br><b>Location:</b> Zone B Concourse<br><b>Details:</b> High crowd density reported by Volunteer Alex Doe.',
-        timestamp: new Date().toLocaleTimeString()
+        message:
+          '<b>Category:</b> Crowd Alert<br><b>Location:</b> Zone B Concourse<br><b>Details:</b> High crowd density reported by Volunteer Alex Doe.',
+        timestamp: new Date().toLocaleTimeString(),
       });
     } else {
       window.showToast('Failed to report alert', 'error');
@@ -47,10 +50,16 @@ const volEditForm = document.getElementById('vol-edit-form');
 if (volEditBtn && volEditModal && volEditCancel && volEditForm) {
   volEditBtn.addEventListener('click', () => {
     // Populate form fields with current values
-    document.getElementById('vol-edit-name').value = document.getElementById('vol-profile-name').textContent.trim();
-    document.getElementById('vol-edit-zone').value = document.getElementById('vol-profile-zone').textContent.trim();
-    document.getElementById('vol-edit-shift').value = document.getElementById('vol-profile-shift').textContent.trim();
-    
+    document.getElementById('vol-edit-name').value = document
+      .getElementById('vol-profile-name')
+      .textContent.trim();
+    document.getElementById('vol-edit-zone').value = document
+      .getElementById('vol-profile-zone')
+      .textContent.trim();
+    document.getElementById('vol-edit-shift').value = document
+      .getElementById('vol-profile-shift')
+      .textContent.trim();
+
     volEditModal.classList.remove('hidden');
   });
 
@@ -60,7 +69,7 @@ if (volEditBtn && volEditModal && volEditCancel && volEditForm) {
 
   volEditForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     const newName = document.getElementById('vol-edit-name').value.trim();
     const newZone = document.getElementById('vol-edit-zone').value.trim();
     const newShift = document.getElementById('vol-edit-shift').value.trim();
@@ -81,7 +90,9 @@ document.getElementById('vol-briefing-btn').addEventListener('click', async () =
   const briefingContainer = document.getElementById('vol-briefing-container');
   const briefingContent = document.getElementById('vol-briefing-content');
 
-  if (!briefingContainer || !briefingContent) {return;}
+  if (!briefingContainer || !briefingContent) {
+    return;
+  }
 
   briefingContent.textContent = '';
   const span = document.createElement('span');
@@ -98,11 +109,11 @@ document.getElementById('vol-briefing-btn').addEventListener('click', async () =
         persona: 'volunteer',
         query: `Give me a zone briefing for ${zoneName}`,
         language: AppState.language,
-        stadiumId: AppState.stadiumId
-      })
+        stadiumId: AppState.stadiumId,
+      }),
     });
     const data = await res.json();
-    if(res.ok) {
+    if (res.ok) {
       briefingContent.textContent = data.response;
     } else {
       briefingContainer.classList.add('hidden');

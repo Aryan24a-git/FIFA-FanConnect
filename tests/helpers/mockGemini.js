@@ -14,26 +14,36 @@ module.exports = {
           }
           if (promptStr.includes('translate') || promptStr.includes('translation')) {
             return {
-              response: { text: () => 'Hola' }
+              response: { text: () => 'Hola' },
             };
           }
-          if (promptStr.includes('route') || promptStr.includes('navigate') || promptStr.includes('wayfinding') || promptStr.includes('path')) {
+          if (
+            promptStr.includes('route') ||
+            promptStr.includes('navigate') ||
+            promptStr.includes('wayfinding') ||
+            promptStr.includes('path')
+          ) {
             return {
               response: {
-                text: () => 'Step 1: Ingrese por la puerta asignada y escanee su boleto.\nStep 2: Siga los letreros de la zona de color.'
-              }
+                text: () =>
+                  'Step 1: Ingrese por la puerta asignada y escanee su boleto.\nStep 2: Siga los letreros de la zona de color.',
+              },
             };
           }
-          if (promptStr.includes('broadcast') || promptStr.includes('PA') || promptStr.includes('broadcastMessage')) {
+          if (
+            promptStr.includes('broadcast') ||
+            promptStr.includes('PA') ||
+            promptStr.includes('broadcastMessage')
+          ) {
             return {
-              response: { text: () => 'Mocked AI PA Broadcast Message' }
+              response: { text: () => 'Mocked AI PA Broadcast Message' },
             };
           }
           return {
-            response: { text: () => 'Mocked AI Response' }
+            response: { text: () => 'Mocked AI Response' },
           };
-        })
-      })
+        }),
+      }),
     };
-  })
+  }),
 };

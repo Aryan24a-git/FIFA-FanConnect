@@ -20,115 +20,303 @@
 const ROUTE_MAP = {
   'entrance:seat': {
     steps: [
-      { step: 1, instruction: 'Enter through your assigned gate and scan your ticket.', icon: '🎫' },
+      {
+        step: 1,
+        instruction: 'Enter through your assigned gate and scan your ticket.',
+        icon: '🎫',
+      },
       { step: 2, instruction: 'Follow the coloured zone signs on the concourse wall.', icon: '🗺️' },
       { step: 3, instruction: 'Take the stairs or escalator to your floor level.', icon: '🪜' },
-      { step: 4, instruction: 'Match your section number to the tunnel entrance signs.', icon: '🔢' },
-      { step: 5, instruction: 'Locate your row letter and seat number. Enjoy the match!', icon: '🪑' },
+      {
+        step: 4,
+        instruction: 'Match your section number to the tunnel entrance signs.',
+        icon: '🔢',
+      },
+      {
+        step: 5,
+        instruction: 'Locate your row letter and seat number. Enjoy the match!',
+        icon: '🪑',
+      },
     ],
     time: '5–8 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Enter through Gate E1 or F1 (accessible entrances). Scan your ticket.', icon: '♿' },
-      { step: 2, instruction: 'Follow the blue accessibility signs along the ground-level concourse.', icon: '🗺️' },
-      { step: 3, instruction: 'Use the elevator — located 20m past the gate on your left.', icon: '🛗' },
-      { step: 4, instruction: 'Exit elevator at your floor. Follow section number signs.', icon: '🔢' },
-      { step: 5, instruction: 'Accessible seating is at the end of each row. Staff will assist.', icon: '🪑' },
+      {
+        step: 1,
+        instruction: 'Enter through Gate E1 or F1 (accessible entrances). Scan your ticket.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction: 'Follow the blue accessibility signs along the ground-level concourse.',
+        icon: '🗺️',
+      },
+      {
+        step: 3,
+        instruction: 'Use the elevator — located 20m past the gate on your left.',
+        icon: '🛗',
+      },
+      {
+        step: 4,
+        instruction: 'Exit elevator at your floor. Follow section number signs.',
+        icon: '🔢',
+      },
+      {
+        step: 5,
+        instruction: 'Accessible seating is at the end of each row. Staff will assist.',
+        icon: '🪑',
+      },
     ],
     accessibleTime: '7–10 min',
   },
   'seat:food': {
     steps: [
-      { step: 1, instruction: 'Exit your seating row and walk to the nearest concourse tunnel.', icon: '🚶' },
-      { step: 2, instruction: 'Turn left or right to reach the nearest food court on your level.', icon: '↔️' },
-      { step: 3, instruction: 'Look for the food stall signage and join the shortest queue.', icon: '🍔' },
+      {
+        step: 1,
+        instruction: 'Exit your seating row and walk to the nearest concourse tunnel.',
+        icon: '🚶',
+      },
+      {
+        step: 2,
+        instruction: 'Turn left or right to reach the nearest food court on your level.',
+        icon: '↔️',
+      },
+      {
+        step: 3,
+        instruction: 'Look for the food stall signage and join the shortest queue.',
+        icon: '🍔',
+      },
       { step: 4, instruction: 'All payments are cashless — card or mobile pay only.', icon: '💳' },
     ],
     time: '3–5 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Exit your accessible seating area via the dedicated aisle.', icon: '♿' },
-      { step: 2, instruction: 'Use the ground-level concourse — all food outlets are reachable without stairs.', icon: '🗺️' },
-      { step: 3, instruction: 'Accessible counters are available at all food stalls — ask a staff member.', icon: '🍔' },
+      {
+        step: 1,
+        instruction: 'Exit your accessible seating area via the dedicated aisle.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction:
+          'Use the ground-level concourse — all food outlets are reachable without stairs.',
+        icon: '🗺️',
+      },
+      {
+        step: 3,
+        instruction: 'Accessible counters are available at all food stalls — ask a staff member.',
+        icon: '🍔',
+      },
     ],
     accessibleTime: '4–6 min',
   },
   'seat:medical': {
     steps: [
-      { step: 1, instruction: 'Alert the nearest steward immediately for urgent medical help.', icon: '🚨' },
-      { step: 2, instruction: 'If mobile, exit to the concourse and head to Gate A1 or C1 corridor.', icon: '🚶' },
-      { step: 3, instruction: 'First Aid is marked with a green cross sign. Staff will assist you.', icon: '🏥' },
+      {
+        step: 1,
+        instruction: 'Alert the nearest steward immediately for urgent medical help.',
+        icon: '🚨',
+      },
+      {
+        step: 2,
+        instruction: 'If mobile, exit to the concourse and head to Gate A1 or C1 corridor.',
+        icon: '🚶',
+      },
+      {
+        step: 3,
+        instruction: 'First Aid is marked with a green cross sign. Staff will assist you.',
+        icon: '🏥',
+      },
     ],
     time: '2–4 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Alert the nearest steward — they will call for accessible transport (wheelchair/cart).', icon: '🚨' },
-      { step: 2, instruction: 'Medical center has step-free access via the west tunnel (field level).', icon: '♿' },
-      { step: 3, instruction: 'Do not use stairs. Wait for the steward-led escort if needed.', icon: '🏥' },
+      {
+        step: 1,
+        instruction:
+          'Alert the nearest steward — they will call for accessible transport (wheelchair/cart).',
+        icon: '🚨',
+      },
+      {
+        step: 2,
+        instruction: 'Medical center has step-free access via the west tunnel (field level).',
+        icon: '♿',
+      },
+      {
+        step: 3,
+        instruction: 'Do not use stairs. Wait for the steward-led escort if needed.',
+        icon: '🏥',
+      },
     ],
     accessibleTime: '3–5 min',
   },
   'seat:toilet': {
     steps: [
-      { step: 1, instruction: 'Exit your row and head to the nearest concourse aisle.', icon: '🚶' },
-      { step: 2, instruction: 'Restrooms are located every 50m along the concourse. Follow the signs.', icon: '🚻' },
+      {
+        step: 1,
+        instruction: 'Exit your row and head to the nearest concourse aisle.',
+        icon: '🚶',
+      },
+      {
+        step: 2,
+        instruction: 'Restrooms are located every 50m along the concourse. Follow the signs.',
+        icon: '🚻',
+      },
     ],
     time: '2–3 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Exit via the accessible aisle and head to the concourse.', icon: '♿' },
-      { step: 2, instruction: 'Accessible restrooms are located near Gate E1 corridor. Follow blue signs.', icon: '🚻' },
+      {
+        step: 1,
+        instruction: 'Exit via the accessible aisle and head to the concourse.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction: 'Accessible restrooms are located near Gate E1 corridor. Follow blue signs.',
+        icon: '🚻',
+      },
     ],
     accessibleTime: '3–4 min',
   },
   'seat:exit': {
     steps: [
-      { step: 1, instruction: 'At final whistle, stay seated for 5 minutes to let initial crowds clear.', icon: '⏳' },
-      { step: 2, instruction: 'Exit your row and follow the EXIT signs to the nearest concourse tunnel.', icon: '🚶' },
-      { step: 3, instruction: 'Follow crowd management staff instructions for your exit direction.', icon: '👮' },
-      { step: 4, instruction: 'Head to your transport — check the FIFA FanConnect app for live transport updates.', icon: '🚌' },
+      {
+        step: 1,
+        instruction: 'At final whistle, stay seated for 5 minutes to let initial crowds clear.',
+        icon: '⏳',
+      },
+      {
+        step: 2,
+        instruction: 'Exit your row and follow the EXIT signs to the nearest concourse tunnel.',
+        icon: '🚶',
+      },
+      {
+        step: 3,
+        instruction: 'Follow crowd management staff instructions for your exit direction.',
+        icon: '👮',
+      },
+      {
+        step: 4,
+        instruction:
+          'Head to your transport — check the FIFA FanConnect app for live transport updates.',
+        icon: '🚌',
+      },
     ],
     time: '10–20 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Wait for the accessible exit announcement (approx. 5 min after final whistle).', icon: '⏳' },
+      {
+        step: 1,
+        instruction:
+          'Wait for the accessible exit announcement (approx. 5 min after final whistle).',
+        icon: '⏳',
+      },
       { step: 2, instruction: 'Use the elevator to the ground level concourse.', icon: '🛗' },
-      { step: 3, instruction: 'Exit via Gate E1 or F1 (accessible exits). Staff will escort if needed.', icon: '♿' },
+      {
+        step: 3,
+        instruction: 'Exit via Gate E1 or F1 (accessible exits). Staff will escort if needed.',
+        icon: '♿',
+      },
     ],
     accessibleTime: '12–20 min',
   },
   'entrance:parking': {
     steps: [
-      { step: 1, instruction: 'After exiting the gate, follow the parking signage for your lot (A, B, or C).', icon: '🅿️' },
-      { step: 2, instruction: 'Lot A is 3 min walk (North), Lot B is 10 min (East), Lot C is 15 min (South).', icon: '🚗' },
+      {
+        step: 1,
+        instruction:
+          'After exiting the gate, follow the parking signage for your lot (A, B, or C).',
+        icon: '🅿️',
+      },
+      {
+        step: 2,
+        instruction:
+          'Lot A is 3 min walk (North), Lot B is 10 min (East), Lot C is 15 min (South).',
+        icon: '🚗',
+      },
     ],
     time: '3–15 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Follow blue accessibility signs from Gate E1 to designated accessible parking.', icon: '♿' },
-      { step: 2, instruction: 'Accessible parking bays are in Lot A, closest to the stadium entrance.', icon: '🅿️' },
+      {
+        step: 1,
+        instruction:
+          'Follow blue accessibility signs from Gate E1 to designated accessible parking.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction: 'Accessible parking bays are in Lot A, closest to the stadium entrance.',
+        icon: '🅿️',
+      },
     ],
     accessibleTime: '3–5 min',
   },
   'entrance:metro': {
     steps: [
-      { step: 1, instruction: 'Exit through Gate A1 (North) or C1 (South) towards the main plaza.', icon: '🚶' },
-      { step: 2, instruction: 'Follow blue Metro signs to the transit station (5–10 min walk).', icon: '🚇' },
-      { step: 3, instruction: 'Purchase or tap your transit card at the station entrance.', icon: '💳' },
-      { step: 4, instruction: 'Platform signs will display the next train. Check the schedule board.', icon: '🚉' },
+      {
+        step: 1,
+        instruction: 'Exit through Gate A1 (North) or C1 (South) towards the main plaza.',
+        icon: '🚶',
+      },
+      {
+        step: 2,
+        instruction: 'Follow blue Metro signs to the transit station (5–10 min walk).',
+        icon: '🚇',
+      },
+      {
+        step: 3,
+        instruction: 'Purchase or tap your transit card at the station entrance.',
+        icon: '💳',
+      },
+      {
+        step: 4,
+        instruction: 'Platform signs will display the next train. Check the schedule board.',
+        icon: '🚉',
+      },
     ],
     time: '10–15 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Exit via Gate E1 for the most direct accessible route to metro.', icon: '♿' },
-      { step: 2, instruction: 'Follow the kerb-level blue signs — no stairs required on this route.', icon: '🗺️' },
-      { step: 3, instruction: 'Metro station has elevator access. Ask station staff for assistance.', icon: '🛗' },
+      {
+        step: 1,
+        instruction: 'Exit via Gate E1 for the most direct accessible route to metro.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction: 'Follow the kerb-level blue signs — no stairs required on this route.',
+        icon: '🗺️',
+      },
+      {
+        step: 3,
+        instruction: 'Metro station has elevator access. Ask station staff for assistance.',
+        icon: '🛗',
+      },
     ],
     accessibleTime: '12–18 min',
   },
   'seat:info_desk': {
     steps: [
       { step: 1, instruction: 'Exit your row and head to the main concourse.', icon: '🚶' },
-      { step: 2, instruction: 'Fan Information Desks are located near Gate A1 (North) and Gate C1 (South).', icon: '📍' },
-      { step: 3, instruction: 'Look for the blue "i" information sign. Staff speak multiple languages.', icon: 'ℹ️' },
+      {
+        step: 2,
+        instruction: 'Fan Information Desks are located near Gate A1 (North) and Gate C1 (South).',
+        icon: '📍',
+      },
+      {
+        step: 3,
+        instruction: 'Look for the blue "i" information sign. Staff speak multiple languages.',
+        icon: 'ℹ️',
+      },
     ],
     time: '4–7 min',
     accessibleSteps: [
-      { step: 1, instruction: 'Use the ground-level concourse. Info Desks are at gate level — no stairs needed.', icon: '♿' },
-      { step: 2, instruction: 'Fan Information Desks near Gate E1 also have accessible service counters.', icon: 'ℹ️' },
+      {
+        step: 1,
+        instruction:
+          'Use the ground-level concourse. Info Desks are at gate level — no stairs needed.',
+        icon: '♿',
+      },
+      {
+        step: 2,
+        instruction: 'Fan Information Desks near Gate E1 also have accessible service counters.',
+        icon: 'ℹ️',
+      },
     ],
     accessibleTime: '4–8 min',
   },
@@ -141,15 +329,65 @@ const ROUTE_MAP = {
  */
 function normalizeLocation(location) {
   const loc = location.toLowerCase().trim();
-  if (loc.includes('seat') || loc.includes('section') || loc.includes('stand')) {return 'seat';}
-  if (loc.includes('gate') || loc.includes('entrance') || loc.includes('entry') || loc.includes('enter')) {return 'entrance';}
-  if (loc.includes('food') || loc.includes('eat') || loc.includes('restaurant') || loc.includes('concession') || loc.includes('drink')) {return 'food';}
-  if (loc.includes('toilet') || loc.includes('restroom') || loc.includes('bathroom') || loc.includes('wc')) {return 'toilet';}
-  if (loc.includes('medical') || loc.includes('first aid') || loc.includes('doctor') || loc.includes('health')) {return 'medical';}
-  if (loc.includes('exit') || loc.includes('leave') || loc.includes('out')) {return 'exit';}
-  if (loc.includes('parking') || loc.includes('car') || loc.includes('park')) {return 'parking';}
-  if (loc.includes('metro') || loc.includes('train') || loc.includes('subway') || loc.includes('transit') || loc.includes('bus')) {return 'metro';}
-  if (loc.includes('info') || loc.includes('help') || loc.includes('desk') || loc.includes('service')) {return 'info_desk';}
+  if (loc.includes('seat') || loc.includes('section') || loc.includes('stand')) {
+    return 'seat';
+  }
+  if (
+    loc.includes('gate') ||
+    loc.includes('entrance') ||
+    loc.includes('entry') ||
+    loc.includes('enter')
+  ) {
+    return 'entrance';
+  }
+  if (
+    loc.includes('food') ||
+    loc.includes('eat') ||
+    loc.includes('restaurant') ||
+    loc.includes('concession') ||
+    loc.includes('drink')
+  ) {
+    return 'food';
+  }
+  if (
+    loc.includes('toilet') ||
+    loc.includes('restroom') ||
+    loc.includes('bathroom') ||
+    loc.includes('wc')
+  ) {
+    return 'toilet';
+  }
+  if (
+    loc.includes('medical') ||
+    loc.includes('first aid') ||
+    loc.includes('doctor') ||
+    loc.includes('health')
+  ) {
+    return 'medical';
+  }
+  if (loc.includes('exit') || loc.includes('leave') || loc.includes('out')) {
+    return 'exit';
+  }
+  if (loc.includes('parking') || loc.includes('car') || loc.includes('park')) {
+    return 'parking';
+  }
+  if (
+    loc.includes('metro') ||
+    loc.includes('train') ||
+    loc.includes('subway') ||
+    loc.includes('transit') ||
+    loc.includes('bus')
+  ) {
+    return 'metro';
+  }
+  if (
+    loc.includes('info') ||
+    loc.includes('help') ||
+    loc.includes('desk') ||
+    loc.includes('service')
+  ) {
+    return 'info_desk';
+  }
   return loc;
 }
 
@@ -197,9 +435,7 @@ function getRoute(from, to, accessibilityNeeded = false) {
 
   const useAccessible = accessibilityNeeded && routeData.accessibleSteps;
   const steps = useAccessible ? routeData.accessibleSteps : routeData.steps;
-  const estimatedTime = useAccessible
-    ? (routeData.accessibleTime || routeData.time)
-    : routeData.time;
+  const estimatedTime = useAccessible ? routeData.accessibleTime || routeData.time : routeData.time;
 
   const note = accessibilityNeeded
     ? 'Accessible route: elevator and ramp access only. No stairs on this path.'

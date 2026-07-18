@@ -19,7 +19,7 @@ const { GEMINI } = require('../utils/constants');
  */
 async function withTimeout(promise, ms) {
   const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error(`AI call timed out after ${ms}ms`)), ms)
+    setTimeout(() => reject(new Error(`AI call timed out after ${ms}ms`)), ms),
   );
   return Promise.race([promise, timeout]);
 }
@@ -47,7 +47,10 @@ if (process.env.GEMINI_API_KEY && !isOpenRouter && !isGroq) {
 }
 
 /**
- * Helper to call OpenRouter API via raw HTTPS.
+ * Calls the OpenRouter API to generate a completion.
+ * @param {string} systemPrompt - The system context prompt.
+ * @param {string} userPrompt - The user message prompt.
+ * @returns {Promise<string>} The generated text response.
  */
 function callOpenRouter(systemPrompt, userPrompt) {
   return new Promise((resolve, reject) => {
@@ -55,8 +58,8 @@ function callOpenRouter(systemPrompt, userPrompt) {
       model: process.env.OPENROUTER_MODEL || 'google/gemma-2-9b-it:free',
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ]
+        { role: 'user', content: userPrompt },
+      ],
     });
 
     const options = {
@@ -64,17 +67,25 @@ function callOpenRouter(systemPrompt, userPrompt) {
       path: '/api/v1/chat/completions',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
+        Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'http://localhost:8080',
         'X-Title': 'FIFA FanConnect',
-        'Content-Length': Buffer.byteLength(postData)
-      }
+        'Content-Length': Buffer.byteLength(postData),
+      },
     };
 
     const req = https.request(options, (res) => {
       let data = '';
-      res.on('data', (chunk) => data += chunk);
+      let byteCount = 0;
+      res.on('data', (chunk) => {
+        byteCount += chunk.length;
+        if (byteCount > 1024 * 1024) { // 1MB limit
+          req.destroy(new Error('Payload too large to process'));
+          return;
+        }
+        data += chunk;
+      });
       res.on('end', () => {
         if (res.statusCode !== 200) {
           reject(new Error(`OpenRouter status ${res.statusCode}: ${data}`));
@@ -103,7 +114,10 @@ function callOpenRouter(systemPrompt, userPrompt) {
 }
 
 /**
- * Helper to call Groq API via raw HTTPS.
+ * Calls the Groq API to generate a completion.
+ * @param {string} systemPrompt - The system context prompt.
+ * @param {string} userPrompt - The user message prompt.
+ * @returns {Promise<string>} The generated text response.
  */
 function callGroq(systemPrompt, userPrompt) {
   return new Promise((resolve, reject) => {
@@ -111,8 +125,8 @@ function callGroq(systemPrompt, userPrompt) {
       model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant',
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ]
+        { role: 'user', content: userPrompt },
+      ],
     });
 
     const options = {
@@ -120,15 +134,23 @@ function callGroq(systemPrompt, userPrompt) {
       path: '/openai/v1/chat/completions',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
+        Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
         'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
-      }
+        'Content-Length': Buffer.byteLength(postData),
+      },
     };
 
     const req = https.request(options, (res) => {
       let data = '';
-      res.on('data', (chunk) => data += chunk);
+      let byteCount = 0;
+      res.on('data', (chunk) => {
+        byteCount += chunk.length;
+        if (byteCount > 1024 * 1024) { // 1MB limit
+          req.destroy(new Error('Payload too large to process'));
+          return;
+        }
+        data += chunk;
+      });
       res.on('end', () => {
         if (res.statusCode !== 200) {
           reject(new Error(`Groq status ${res.statusCode}: ${data}`));
@@ -157,8 +179,10 @@ function callGroq(systemPrompt, userPrompt) {
 }
 
 /**
- * Asserts that the Gemini model has been configured.
- * @throws {Error} If GEMINI_API_KEY was not set at startup.
+ * Asserts that at least one AI provider is configured.
+ * Throws if no API key prefix matches a known provider.
+ * @throws {Error} If no AI provider is configured.
+ * @returns {void}
  */
 function assertModelConfigured() {
   if (!model && !isOpenRouter && !isGroq) {
@@ -167,12 +191,14 @@ function assertModelConfigured() {
 }
 
 /**
- * Generates a natural-language explanation of a stadium situation.
+ * @description Generates a natural-language explanation of a stadium situation.
  * Gemini is the explanation layer only — it does NOT make decisions.
  *
  * @param {string} prompt - The situation description to explain in plain language.
  * @returns {Promise<string>} Natural language explanation from Gemini.
  * @throws {Error} If Gemini model is not configured or API call fails.
+ * @example
+ * const msg = await explainSituation("Crowd at Gate A is HIGH");
  */
 async function explainSituation(prompt) {
   assertModelConfigured();
@@ -189,19 +215,21 @@ Keep your response under 120 words. Do not make any decisions — only explain.`
 
   const result = await withTimeout(
     model.generateContent(`${systemPrompt}\nSituation: ${prompt}`),
-    GEMINI.TIMEOUT_MS
+    GEMINI.TIMEOUT_MS,
   );
   return result.response.text().trim();
 }
 
 /**
- * Translates a given text into the specified target language.
+ * @description Translates a given text into the specified target language.
  * Used as a pure translation layer after deterministic engines produce English output.
  *
  * @param {string} text - The English text to translate.
  * @param {string} targetLanguage - Target language code or name (e.g. 'es', 'French', 'Arabic').
  * @returns {Promise<string>} Translated text string.
  * @throws {Error} If Gemini model is not configured or API call fails.
+ * @example
+ * const translated = await translateToLanguage("Hello", "es");
  */
 async function translateToLanguage(text, targetLanguage) {
   assertModelConfigured();
@@ -217,14 +245,14 @@ Return ONLY the translated text — no explanations, no labels, no extra comment
 
   const result = await withTimeout(
     model.generateContent(`${systemPrompt}\nText to translate: "${text}"`),
-    GEMINI.TIMEOUT_MS
+    GEMINI.TIMEOUT_MS,
   );
   return result.response.text().trim();
 }
 
 /**
  * Answers a fan's question using provided context.
- * Response is Capped at 100 words. Gemini only explains — it does NOT decide.
+ * Response is capped at 100 words. Gemini only explains — it does NOT decide.
  *
  * @param {string} question - The fan's question.
  * @param {string} context - Supporting context (FAQ content, engine output, stadium data).
@@ -250,7 +278,7 @@ ${context}`;
 
   const result = await withTimeout(
     model.generateContent(`${systemPrompt}\n\nFan's Question: ${question}`),
-    GEMINI.TIMEOUT_MS
+    GEMINI.TIMEOUT_MS,
   );
   return result.response.text().trim();
 }

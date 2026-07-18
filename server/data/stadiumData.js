@@ -29,8 +29,20 @@ const stadiums = [
       { id: 'C2', name: 'Gate C2 – South West', section: 'C', currentQueue: 0, maxQueue: 100 },
       { id: 'D1', name: 'Gate D1 – West Main', section: 'D', currentQueue: 0, maxQueue: 100 },
       { id: 'D2', name: 'Gate D2 – West Upper', section: 'D', currentQueue: 0, maxQueue: 100 },
-      { id: 'E1', name: 'Gate E1 – Accessible North', section: 'E', currentQueue: 0, maxQueue: 100 },
-      { id: 'F1', name: 'Gate F1 – Accessible South', section: 'F', currentQueue: 0, maxQueue: 100 },
+      {
+        id: 'E1',
+        name: 'Gate E1 – Accessible North',
+        section: 'E',
+        currentQueue: 0,
+        maxQueue: 100,
+      },
+      {
+        id: 'F1',
+        name: 'Gate F1 – Accessible South',
+        section: 'F',
+        currentQueue: 0,
+        maxQueue: 100,
+      },
     ],
     facilities: {
       food: [
@@ -129,7 +141,11 @@ const stadiums = [
     },
     transport: {
       metro: [
-        { name: 'No direct rail', line: 'Trinity Railway Express (TRE) – Nearest: CentrePort', walkTime: '20 min + shuttle' },
+        {
+          name: 'No direct rail',
+          line: 'Trinity Railway Express (TRE) – Nearest: CentrePort',
+          walkTime: '20 min + shuttle',
+        },
       ],
       bus: [
         { name: 'Arlington Express', route: 'Special Event Shuttle', duration: '15 min from DFW' },
@@ -165,8 +181,20 @@ const stadiums = [
       { id: 'C2', name: 'Gate C2 – South West', section: 'C', currentQueue: 0, maxQueue: 100 },
       { id: 'D1', name: 'Gate D1 – West Entry', section: 'D', currentQueue: 0, maxQueue: 100 },
       { id: 'D2', name: 'Gate D2 – West Upper', section: 'D', currentQueue: 0, maxQueue: 100 },
-      { id: 'E1', name: 'Gate E1 – Accessible North', section: 'E', currentQueue: 0, maxQueue: 100 },
-      { id: 'F1', name: 'Gate F1 – Accessible South', section: 'F', currentQueue: 0, maxQueue: 100 },
+      {
+        id: 'E1',
+        name: 'Gate E1 – Accessible North',
+        section: 'E',
+        currentQueue: 0,
+        maxQueue: 100,
+      },
+      {
+        id: 'F1',
+        name: 'Gate F1 – Accessible South',
+        section: 'F',
+        currentQueue: 0,
+        maxQueue: 100,
+      },
     ],
     facilities: {
       food: [
@@ -196,9 +224,7 @@ const stadiums = [
       ],
     },
     transport: {
-      metro: [
-        { name: 'Inglewood Station', line: 'Metro K Line (Crenshaw)', walkTime: '10 min' },
-      ],
+      metro: [{ name: 'Inglewood Station', line: 'Metro K Line (Crenshaw)', walkTime: '10 min' }],
       bus: [
         { name: 'LAX Shuttle', route: 'Event Express from LAX', duration: '15 min' },
         { name: 'LA Metro Bus', route: 'Route 115', duration: '30 min from Downtown' },

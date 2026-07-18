@@ -32,9 +32,15 @@ function generateAlertId(type) {
  * @returns {string} Priority label.
  */
 function resolvePriority(severity) {
-  if (severity === ALERT_SEVERITIES.CRITICAL) {return ALERT_PRIORITIES.P1;}
-  if (severity === ALERT_SEVERITIES.HIGH) {return ALERT_PRIORITIES.P2;}
-  if (severity === ALERT_SEVERITIES.MEDIUM) {return ALERT_PRIORITIES.P3;}
+  if (severity === ALERT_SEVERITIES.CRITICAL) {
+    return ALERT_PRIORITIES.P1;
+  }
+  if (severity === ALERT_SEVERITIES.HIGH) {
+    return ALERT_PRIORITIES.P2;
+  }
+  if (severity === ALERT_SEVERITIES.MEDIUM) {
+    return ALERT_PRIORITIES.P3;
+  }
   return ALERT_PRIORITIES.P4;
 }
 
@@ -48,14 +54,30 @@ function resolveAffectedZones(location, type) {
   const loc = location.toLowerCase();
 
   // Map known sections/areas to zones
-  if (loc.includes('gate a') || loc.includes('north')) {return ['Zone A', 'North Concourse'];}
-  if (loc.includes('gate b') || loc.includes('east')) {return ['Zone B', 'East Concourse'];}
-  if (loc.includes('gate c') || loc.includes('south')) {return ['Zone C', 'South Concourse'];}
-  if (loc.includes('gate d') || loc.includes('west')) {return ['Zone D', 'West Concourse'];}
-  if (loc.includes('gate e') || loc.includes('gate f')) {return ['Zone E', 'Zone F', 'Accessible Areas'];}
-  if (loc.includes('field') || loc.includes('pitch')) {return ['Field Level', 'All Lower Sections'];}
-  if (type === ALERT_TYPES.WEATHER) {return ['All Zones', 'Entire Stadium'];}
-  if (type === ALERT_TYPES.SECURITY) {return ['All Zones', 'All Concourses'];}
+  if (loc.includes('gate a') || loc.includes('north')) {
+    return ['Zone A', 'North Concourse'];
+  }
+  if (loc.includes('gate b') || loc.includes('east')) {
+    return ['Zone B', 'East Concourse'];
+  }
+  if (loc.includes('gate c') || loc.includes('south')) {
+    return ['Zone C', 'South Concourse'];
+  }
+  if (loc.includes('gate d') || loc.includes('west')) {
+    return ['Zone D', 'West Concourse'];
+  }
+  if (loc.includes('gate e') || loc.includes('gate f')) {
+    return ['Zone E', 'Zone F', 'Accessible Areas'];
+  }
+  if (loc.includes('field') || loc.includes('pitch')) {
+    return ['Field Level', 'All Lower Sections'];
+  }
+  if (type === ALERT_TYPES.WEATHER) {
+    return ['All Zones', 'Entire Stadium'];
+  }
+  if (type === ALERT_TYPES.SECURITY) {
+    return ['All Zones', 'All Concourses'];
+  }
 
   return ['All Zones'];
 }
@@ -254,7 +276,7 @@ function buildTransportAlert(severity, location) {
 }
 
 /**
- * Generates a structured, deterministic stadium alert.
+ * @description Generates a structured, deterministic stadium alert.
  * Alert content, priority, and affected zones are all derived using IF/ELSE rules.
  * Gemini AI is never invoked for alert generation.
  *
@@ -262,6 +284,8 @@ function buildTransportAlert(severity, location) {
  * @param {string} severity - Severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'.
  * @param {string} location - Location string describing where the alert applies.
  * @returns {Alert} Structured alert object with priority, message, affected zones, and instructions.
+ * @example
+ * const alert = generateAlert('CROWD', 'HIGH', 'Gate A1');
  */
 function generateAlert(type, severity, location) {
   const normalizedType = (type || '').toUpperCase();
@@ -287,7 +311,10 @@ function generateAlert(type, severity, location) {
     // Unknown alert type — safe fallback
     alertContent = {
       message: `⚠️ STADIUM NOTICE at ${location}. Please follow staff instructions.`,
-      instructions: ['Follow steward and security officer instructions.', 'Visit the nearest Fan Info Desk for assistance.'],
+      instructions: [
+        'Follow steward and security officer instructions.',
+        'Visit the nearest Fan Info Desk for assistance.',
+      ],
     };
   }
 
